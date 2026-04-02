@@ -26,35 +26,44 @@ def save_courses(subject: str, courses: list[dict]) -> None:
         json.dump(courses, f, indent=2)
 
 
+def _normalize_course(entry: dict, subject: str) -> dict:
+    """Normalize a raw VT API entry into a consistent course dict."""
+    return {
+        "crn": entry.get("crn"),
+        "code": f"{subject.upper()} {entry.get('courseNumber', '')}".strip(),
+        "name": entry.get("title", ""),
+        "credits": entry.get("creditHours", ""),
+        "instructor": entry.get("instructor", ""),
+        "schedule": entry.get("schedule", ""),
+        "location": entry.get("buildingRoom", ""),
+        "seats_available": entry.get("seatsAvailable", ""),
+        "description": entry.get("description", ""),
+        "prerequisites": entry.get("prereqs", ""),
+    }
+
+
 def scrape_vt_courses(subject: str, year_term: str = "202509") -> list[dict]:
     """
     Fetch course listings for a VT subject code from the VT Timetable API.
     year_term format: YYYYMM — e.g. 202509 = Fall 2025, 202601 = Spring 2026.
-    Returns a list of course dicts and caches them to JSON.
+
+    Falls back to cached data if the API is unreachable.
+    Returns a normalized list of course dicts and caches them to JSON.
     """
     url = f"{VT_TIMETABLE_BASE}/courses/{year_term}/{subject.upper()}"
 
-    with httpx.Client(timeout=15) as client:
-        response = client.get(url)
-        response.raise_for_status()
-        raw = response.json()
+    try:
+        with httpx.Client(timeout=15) as client:
+            response = client.get(url)
+            response.raise_for_status()
+            raw = response.json()
+    except Exception as e:
+        cached = load_courses(subject)
+        if cached is not None:
+            return cached
+        raise RuntimeError(f"Scrape failed and no cache available for {subject}: {e}") from e
 
-    courses = []
-    for entry in raw:
-        course = {
-            "crn": entry.get("crn"),
-            "code": f"{subject.upper()} {entry.get('courseNumber', '')}",
-            "name": entry.get("title", ""),
-            "credits": entry.get("creditHours", ""),
-            "instructor": entry.get("instructor", ""),
-            "schedule": entry.get("schedule", ""),
-            "location": entry.get("buildingRoom", ""),
-            "seats_available": entry.get("seatsAvailable", ""),
-            "description": entry.get("description", ""),
-            "prerequisites": entry.get("prereqs", ""),
-        }
-        courses.append(course)
-
+    courses = [_normalize_course(entry, subject) for entry in raw]
     save_courses(subject, courses)
     return courses
 

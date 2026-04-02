@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import chat, courses
+from app.routes import advisor
 
 app = FastAPI(
     title="Fcounselors API",
     description="AI-powered academic advising backend for Virginia Tech students.",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 # Allow requests from localhost (for iOS Simulator and local testing)
@@ -18,6 +19,7 @@ app.add_middleware(
 
 app.include_router(chat.router)
 app.include_router(courses.router)
+app.include_router(advisor.router)
 
 
 @app.get("/", tags=["Health"])

@@ -4,132 +4,163 @@ Reimagining academic advising through personalization, accessibility, and intell
 
 ---
 
-## Vision
+## Quick Start
 
-Academic advising is one of the most important support systems in education.  
-Yet for many students, it feels impersonal, slow, and difficult to access.
+### 1. Set up environment
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 2. Configure API key
+
+```bash
+cp .env.example .env
+# Edit .env and set your OpenAI API key:
+# OPENAI_API_KEY=sk-...
+```
+
+### 3. Run the server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Server starts at `http://localhost:8000`  
+Interactive docs at `http://localhost:8000/docs`
+
+### 4. Run the test script
+
+```bash
+python test_api.py
+```
+
+---
+
+## API Endpoints
+
+### Health
+```
+GET /health
+```
+Returns `{"status": "ok"}`
+
+---
+
+### Chat with advisor
+```
+POST /chat
+```
+```json
+{
+  "messages": [
+    {"role": "user", "content": "What CS courses should I take sophomore year?"}
+  ]
+}
+```
+Returns:
+```json
+{"reply": "..."}
+```
+
+---
+
+### Get personalized course plan
+```
+POST /advisor/plan
+```
+```json
+{
+  "completed_courses": ["CS 1114", "MATH 1225"],
+  "major": "Computer Science",
+  "constraints": ["light workload", "internship focus"]
+}
+```
+Returns:
+```json
+{
+  "recommended_courses": [
+    {"code": "CS 2114", "name": "Software Design and Data Structures", "reason": "..."}
+  ],
+  "reasoning": "Based on your completed coursework...",
+  "warnings": ["Verify prerequisites with your degree audit."]
+}
+```
+
+---
+
+### Course data (VT Timetable)
+```
+GET /courses/{subject}?year_term=202601&refresh=false
+```
+Examples: `GET /courses/CS`, `GET /courses/MATH`
+
+Returns cached course data or scrapes live from VT's timetable API.
+Falls back to cache if the VT API is unreachable.
+
+```
+GET /courses/subjects
+```
+Lists all locally cached subjects.
+
+---
+
+## Project Structure
+
+```
+backend/
+├── app/
+│   ├── main.py            # FastAPI app, routers, CORS
+│   ├── config.py          # Central config (model, API key, paths)
+│   ├── routes/
+│   │   ├── chat.py        # POST /chat
+│   │   ├── advisor.py     # POST /advisor/plan
+│   │   └── courses.py     # GET /courses/*
+│   └── services/
+│       ├── ai_service.py  # OpenAI integration with retry logic
+│       └── scraper_service.py  # VT Timetable API + caching
+├── data/courses/          # Cached course JSON files
+├── requirements.txt
+├── .env                   # Your secrets (not committed)
+├── .env.example           # Template
+├── run.py                 # Alternative: python run.py
+└── test_api.py            # Integration test script
+```
+
+---
+
+## Configuration
+
+All model and environment settings live in `backend/.env`:
+
+```
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-5.4-nano   # Change model here — affects the entire app
+APP_ENV=development
+```
+
+---
+
+## Vision
 
 Fcounselors aims to build an intelligent advising companion that helps students navigate their academic journey with clarity, confidence, and autonomy.
 
-Our long term goal is to create a scalable advising platform that integrates institutional data, student goals, and AI driven insights to deliver personalized academic guidance.
+**Current focus:** Virginia Tech pilot using publicly available course data.
 
----
-
-## The Problem
-
-Modern counseling and advising systems face structural challenges:
-
-### 1. Lack of Personalization  
-Advisors are responsible for hundreds or even thousands of students.  
-This makes deeply personalized guidance difficult to provide.
-
-Students often have to repeatedly explain their academic history, goals, and special circumstances in every interaction.
-
-### 2. Limited Accessibility  
-Advising is typically constrained by:
-- appointment availability  
-- response delays  
-- institutional bottlenecks  
-
-Students cannot always get answers when they need them.
-
-### 3. Information Fragmentation  
-Degree requirements, pathway options, electives, timelines, and opportunities are scattered across:
-- university websites  
-- PDFs  
-- advisor knowledge  
-- student communities  
-
-Students must piece together their academic strategy manually.
-
----
-
-## Our Solution
-
-Fcounselors proposes an AI powered advising companion that provides:
-
-- Personalized academic recommendations  
-- Instant access to degree requirement insights  
-- Dynamic course planning assistance  
-- Goal aligned academic guidance  
-- Context aware advising conversations  
-
-Students can interact with the system through a simple messaging interface, similar to modern conversational apps.
-
-The system learns from:
-- student input  
-- institutional curriculum data  
-- academic progression models  
-
-This allows guidance to evolve as the student progresses.
-
----
-
-## Initial Scope (Virginia Tech Pilot)
-
-Our current focus is building a prototype using publicly available academic data from Virginia Tech.
-
-Potential features include:
-
-- Major requirement breakdown  
-- Pathways planning support  
-- Recommended semester scheduling  
-- Exploration suggestions (electives, minors, interdisciplinary courses)  
-- Academic milestone tracking  
-
-Future iterations may explore authenticated integrations such as:
-- student login based personalization  
-- transcript aware advising  
-- real time academic progress tracking  
-
----
-
-## Technical Direction
-
-Current architecture ideas include:
-
-- LLM powered advising engine  
-- Backend API layer for academic data retrieval  
-- Structured curriculum database  
-- Web or mobile interface for conversational interaction  
-
-This project is currently exploratory and aims to validate:
-- student demand  
-- usability  
-- technical feasibility  
-- institutional compatibility  
-
----
-
-## Long Term Goal
-
-Fcounselors is not just a tool.  
-
-It is an attempt to rethink how students receive academic guidance in a world where intelligent systems can provide scalable personalization.
-
-We believe future advising ecosystems will combine:
-- human mentorship  
-- intelligent automation  
-- student owned academic strategy  
-
-This project is an early step toward that future.
+**Long-term goal:** Combine human mentorship, intelligent automation, and student-owned academic strategy to rethink how students receive academic guidance.
 
 ---
 
 ## Status
 
-Early prototype stage.
-
-Researching:
-- data sourcing strategies  
-- LLM cost optimization  
-- user experience design  
-- institutional integration possibilities  
+Active development — backend API layer complete.  
+Next: iOS app integration via Swift/Xcode.
 
 ---
 
 ## Contributors
 
-Student led initiative.
-
-Open to collaboration, feedback, and experimentation.
+Student-led initiative. Open to collaboration, feedback, and experimentation.
