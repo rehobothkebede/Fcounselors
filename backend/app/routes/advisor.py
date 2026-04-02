@@ -1,7 +1,10 @@
+import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.ai_service import recommend_courses
-from app.services.scraper_service import load_courses
+from app.services.scraper_service import load_courses, scrape_vt_major_catalog, MAJOR_TO_SUBJECT, _normalize_major
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/advisor", tags=["Advisor"])
 
@@ -24,6 +27,15 @@ class PlanResponse(BaseModel):
     warnings: list[str]
 
 
+def _resolve_subject(major: str) -> str:
+    """Resolve a major name to a VT subject code for timetable lookup."""
+    key = _normalize_major(major)
+    if key in MAJOR_TO_SUBJECT:
+        return MAJOR_TO_SUBJECT[key]
+    # Fallback: treat first word as subject code
+    return major.strip().split()[0].upper()
+
+
 @router.post("/plan", response_model=PlanResponse)
 def get_plan(request: PlanRequest):
     """
@@ -39,22 +51,29 @@ def get_plan(request: PlanRequest):
     if not request.major:
         raise HTTPException(status_code=400, detail="major cannot be empty")
 
-    # Try to load cached courses for the major's primary subject
-    subject_map = {
-        "computer science": "CS",
-        "mathematics": "MATH",
-        "electrical engineering": "ECE",
-        "mechanical engineering": "ME",
-    }
-    subject = subject_map.get(request.major.lower(), request.major.split()[0].upper())
-    available_courses = load_courses(subject)  # None if not yet cached — that's fine
+    # 1. Load timetable courses (cached)
+    subject = _resolve_subject(request.major)
+    available_courses = load_courses(subject)
 
+    # 2. Fetch degree requirements from VT catalog (with fail-safe)
+    major_requirements: dict | None = None
+    try:
+        major_requirements = scrape_vt_major_catalog(request.major)
+        if not major_requirements.get("required_courses"):
+            logger.info("Catalog returned no required courses for '%s' — proceeding without it", request.major)
+            major_requirements = None
+    except Exception as e:
+        logger.warning("Catalog fetch failed for '%s': %s — continuing without catalog", request.major, e)
+        major_requirements = None
+
+    # 3. Ask AI to build the plan
     try:
         result = recommend_courses(
             completed_courses=request.completed_courses,
             major=request.major,
             constraints=request.constraints,
             available_courses=available_courses,
+            major_requirements=major_requirements,
         )
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")

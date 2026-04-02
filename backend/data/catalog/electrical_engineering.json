@@ -1,0 +1,34 @@
+{
+  "major": "Electrical Engineering",
+  "required_courses": [
+    "ECE 2004",
+    "ECE 2014",
+    "ECE 2024",
+    "ECE 2034",
+    "ECE 2074",
+    "ECE 2564",
+    "ECE 2574",
+    "ECE 3004",
+    "ECE 3054",
+    "ECE 3074",
+    "ECE 4524",
+    "ECE 4534",
+    "MATH 1225",
+    "MATH 1226",
+    "MATH 2114",
+    "MATH 2214",
+    "PHYS 2305",
+    "PHYS 2306"
+  ],
+  "electives": [
+    "ECE 4104",
+    "ECE 4154",
+    "ECE 4214",
+    "ECE 4264",
+    "ECE 4404",
+    "ECE 4414",
+    "ECE 4424",
+    "ECE 4444"
+  ],
+  "notes": "Senior design is a two-semester sequence (ECE 4524/4534). Four technical elective credits required at 4000-level."
+}

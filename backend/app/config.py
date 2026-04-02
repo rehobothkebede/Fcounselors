@@ -9,5 +9,7 @@ APP_ENV = os.getenv("APP_ENV", "development")
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 COURSES_DIR = os.path.join(DATA_DIR, "courses")
+CATALOG_DIR = os.path.join(DATA_DIR, "catalog")
 
 os.makedirs(COURSES_DIR, exist_ok=True)
+os.makedirs(CATALOG_DIR, exist_ok=True)

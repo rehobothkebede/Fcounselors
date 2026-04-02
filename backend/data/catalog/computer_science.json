@@ -1,0 +1,33 @@
+{
+  "major": "Computer Science",
+  "required_courses": [
+    "CS 1114",
+    "CS 2114",
+    "CS 2505",
+    "CS 2506",
+    "CS 3114",
+    "CS 3304",
+    "CS 3744",
+    "CS 4104",
+    "CS 4234",
+    "MATH 1225",
+    "MATH 1226",
+    "MATH 2114",
+    "MATH 2534",
+    "STAT 4105",
+    "ECE 2574"
+  ],
+  "electives": [
+    "CS 3654",
+    "CS 4244",
+    "CS 4284",
+    "CS 4404",
+    "CS 4414",
+    "CS 4664",
+    "CS 4734",
+    "CS 4824",
+    "CS 4954",
+    "CS 4984"
+  ],
+  "notes": "Students must complete a senior project (CS 4000-level). 15-credit minimum in CS 3000+ electives. Verify current requirements with your degree audit."
+}

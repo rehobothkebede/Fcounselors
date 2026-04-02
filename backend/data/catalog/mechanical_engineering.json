@@ -1,0 +1,34 @@
+{
+  "major": "Mechanical Engineering",
+  "required_courses": [
+    "ME 2004",
+    "ME 2024",
+    "ME 2134",
+    "ME 3134",
+    "ME 3404",
+    "ME 3504",
+    "ME 3514",
+    "ME 3524",
+    "ME 4024",
+    "ME 4154",
+    "ME 4974",
+    "MATH 1225",
+    "MATH 1226",
+    "MATH 2114",
+    "MATH 2214",
+    "PHYS 2305",
+    "PHYS 2306",
+    "CHEM 1035",
+    "CHEM 1045"
+  ],
+  "electives": [
+    "ME 4214",
+    "ME 4234",
+    "ME 4244",
+    "ME 4314",
+    "ME 4324",
+    "ME 4334",
+    "ME 4344"
+  ],
+  "notes": "Senior Capstone Design is two semesters (ME 4024 + ME 4974)."
+}

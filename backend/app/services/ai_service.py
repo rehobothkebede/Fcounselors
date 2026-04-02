@@ -81,6 +81,7 @@ def recommend_courses(
     major: str,
     constraints: list[str],
     available_courses: list[dict] | None = None,
+    major_requirements: dict | None = None,
 ) -> dict:
     """
     Generate a structured academic plan with course recommendations.
@@ -100,7 +101,19 @@ def recommend_courses(
             f"- {c.get('code', '')} | {c.get('name', '')} | Credits: {c.get('credits', '?')} | Prereqs: {c.get('prerequisites', 'None')}"
             for c in trimmed
         ]
-        course_context = "\nAvailable courses from VT system:\n" + "\n".join(lines)
+        course_context = "\nAvailable courses from VT timetable:\n" + "\n".join(lines)
+
+    catalog_context = ""
+    if major_requirements:
+        req = major_requirements.get("required_courses", [])
+        elec = major_requirements.get("electives", [])
+        notes = major_requirements.get("notes", "")
+        if req:
+            catalog_context += f"\nDegree required courses (from VT catalog): {', '.join(req)}"
+        if elec:
+            catalog_context += f"\nApproved electives: {', '.join(elec[:20])}"
+        if notes:
+            catalog_context += f"\nCatalog notes: {notes}"
 
     prompt = f"""You are an academic advisor for Virginia Tech.
 
@@ -108,6 +121,7 @@ Student profile:
 - Major: {major}
 - Completed courses: {completed_str}
 - Constraints / preferences: {constraints_str}
+{catalog_context}
 {course_context}
 
 Task: Recommend the next semester of courses for this student.
@@ -123,9 +137,12 @@ Respond ONLY with valid JSON in this exact structure:
 }}
 
 Rules:
-- Only recommend courses the student is eligible for (prereqs satisfied by completed courses)
-- Aim for 12–16 credits total
-- Flag anything the student should watch out for in warnings
+- Prioritize courses that appear in the degree required courses list and are NOT yet completed
+- Only recommend courses whose prerequisites are satisfied by the completed list
+- Never recommend a course the student has already completed
+- Aim for 12–16 credits total (most VT courses are 3–4 credits)
+- Balance workload — avoid stacking all difficult courses in one semester
+- Flag prerequisite gaps or risky combinations in warnings
 - If you lack data on a specific course, add a warning instead of guessing"""
 
     def _call():
