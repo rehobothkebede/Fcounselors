@@ -31,6 +31,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 import httpx
+import requests as _requests
 from bs4 import BeautifulSoup
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -45,7 +46,6 @@ log = logging.getLogger("vt_scraper")
 # ── Constants ─────────────────────────────────────────────────────────────────
 
 CATALOG_BASE = "https://catalog.vt.edu"
-TIMETABLE_BASE = "https://apps.cs.vt.edu/timetable/api"
 
 COURSE_CODE_RE = re.compile(r"\b([A-Z]{2,5})\s+(\d{4}[A-Z]?)\b")
 
@@ -81,13 +81,25 @@ def _make_client() -> httpx.Client:
 
 
 def _get(url: str, client: httpx.Client, max_retries: int = MAX_RETRIES) -> httpx.Response:
-    """GET with exponential-backoff retry and rate-limit delay."""
+    """GET with exponential-backoff retry and rate-limit delay.
+
+    Handles 202 Accepted (page still generating) by polling up to max_retries times.
+    """
     time.sleep(REQUEST_DELAY)
     last_exc: Exception = RuntimeError("no attempts made")
+    last_202_response: Optional[httpx.Response] = None
     for attempt in range(max_retries):
         try:
             r = client.get(url)
             r.raise_for_status()
+            # 202 Accepted means the server is still generating the page; poll.
+            if r.status_code == 202:
+                wait = 2.0 ** attempt
+                log.debug("  202 Accepted for %s — retrying in %.0fs (attempt %d/%d)", url, wait, attempt + 1, max_retries)
+                last_202_response = r
+                last_exc = RuntimeError(f"server kept returning 202 after {max_retries} attempts (JS-rendered page?): {url}")
+                time.sleep(wait)
+                continue
             return r
         except (httpx.HTTPStatusError, httpx.TransportError, httpx.TimeoutException) as exc:
             last_exc = exc
@@ -109,17 +121,18 @@ def _page_text(soup: BeautifulSoup) -> str:
 
 # ── Subject discovery ─────────────────────────────────────────────────────────
 
-def discover_subjects(client: httpx.Client) -> list[dict]:
+def _discover_subjects_from_catalog(client: httpx.Client) -> list[dict]:
     """
     Scrape https://catalog.vt.edu/undergraduate/course-descriptions/ and return
     every subject entry: {"code": "CS", "name": "Computer Science", "url": "..."}.
+    Returns an empty list if the page is JS-rendered or unreachable.
     """
     url = f"{CATALOG_BASE}/undergraduate/course-descriptions/"
-    log.info("Discovering subjects from %s", url)
+    log.info("Discovering subjects from catalog: %s", url)
     try:
         r = _get(url, client)
     except Exception as exc:
-        log.error("Cannot reach course-descriptions index: %s", exc)
+        log.warning("Cannot reach course-descriptions index: %s", exc)
         return []
 
     soup = BeautifulSoup(r.text, "html.parser")
@@ -145,7 +158,20 @@ def discover_subjects(client: httpx.Client) -> list[dict]:
         full_url = href if href.startswith("http") else f"{CATALOG_BASE}{href}"
         subjects.append({"code": code, "name": name, "url": full_url})
 
-    log.info("  Found %d subject codes", len(subjects))
+    log.info("  Found %d subject codes from catalog", len(subjects))
+    return subjects
+
+
+def discover_subjects(client: httpx.Client) -> list[dict]:
+    """
+    Return every subject as {"code": "CS", "name": "Computer Science", "url": "..."}.
+    Source: catalog HTML index page. If the page is JS-rendered (returns 202 or empty),
+    subject discovery fails — use --subjects to specify codes explicitly.
+    """
+    subjects = _discover_subjects_from_catalog(client)
+    if not subjects:
+        log.warning("Catalog subject discovery returned nothing (page may be JS-rendered).")
+        log.warning("Use --subjects CS MATH ECE ... to specify subject codes directly.")
     return subjects
 
 
@@ -306,39 +332,40 @@ def discover_programs(client: httpx.Client, scrape_pages: bool = True) -> list[d
     return programs
 
 
-# ── Timetable course fetching ─────────────────────────────────────────────────
+# ── Timetable course fetching (via py-vt / Banner) ───────────────────────────
 
-def _normalize_section(entry: dict, subject: str) -> dict:
+_timetable = pyvt.Timetable()
+
+
+def _normalize_section(section: pyvt.Section) -> dict:
+    days = " ".join(section.days) if isinstance(section.days, list) else (section.days or "")
+    schedule = f"{days} {section.begin_time}-{section.end_time}".strip() if (section.begin_time or days) else ""
     return {
-        "crn": entry.get("crn"),
-        "code": f"{subject.upper()} {entry.get('courseNumber', '')}".strip(),
-        "name": entry.get("title", ""),
-        "credits": entry.get("creditHours", ""),
-        "instructor": entry.get("instructor", ""),
-        "schedule": entry.get("schedule", ""),
-        "location": entry.get("buildingRoom", ""),
-        "seats_available": entry.get("seatsAvailable", ""),
-        "description": entry.get("description", ""),
-        "prerequisites": entry.get("prereqs", ""),
+        "crn": section.crn,
+        "code": section.code,
+        "name": section.name,
+        "credits": section.credits,
+        "instructor": section.instructor,
+        "schedule": schedule,
+        "location": section.location,
+        "seats_available": section.capacity,
+        "description": "",
+        "prerequisites": "",
     }
 
 
 def fetch_subject_courses(subject: str, term: str, client: httpx.Client) -> list[dict]:
-    """Fetch all sections for a subject from the VT timetable API."""
-    url = f"{TIMETABLE_BASE}/courses/{term}/{subject.upper()}"
+    """Fetch all sections for a subject via py-vt (Banner)."""
     try:
-        r = _get(url, client)
-        raw = r.json()
-    except httpx.HTTPStatusError as exc:
-        if exc.response.status_code == 404:
-            log.debug("  No timetable data for %s (404)", subject)
-            return []
-        raise
+        raw = _timetable.subject_lookup(subject.upper(), term_year=term, open_only=False)
     except Exception as exc:
         log.warning("  Timetable fetch failed for %s: %s", subject, exc)
         return []
 
-    sections = [_normalize_section(e, subject) for e in raw]
+    if raw is None:
+        return []
+
+    sections = [_normalize_section(s) for s in raw]
 
     # Write per-subject cache (backward compat)
     path = os.path.join(COURSES_DIR, f"{subject.upper()}.json")
