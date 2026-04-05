@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "scraped_at": "2026-04-05T16:18:42.422416+00:00",
+    "term": "202601",
+    "subject_count": 2,
+    "program_count": 0,
+    "total_sections": 0,
+    "unique_course_count": 0
+  },
+  "subjects": [
+    {
+      "code": "CS",
+      "name": "CS",
+      "url": ""
+    },
+    {
+      "code": "MATH",
+      "name": "MATH",
+      "url": ""
+    }
+  ],
+  "programs": [],
+  "courses": {},
+  "unique_courses": {},
+  "program_requirements": {}
+}

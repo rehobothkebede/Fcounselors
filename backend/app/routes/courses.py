@@ -1,62 +1,81 @@
 from fastapi import APIRouter, HTTPException, Query
 from app.services.scraper_service import (
-    scrape_vt_courses,
     load_courses,
+    load_unique_courses,
+    list_all_subjects,
     list_cached_subjects,
-    scrape_vt_catalog_page,
+    list_all_programs,
+    search_programs,
+    search_courses_by_keyword,
+    get_catalog_meta,
+    scrape_vt_major_catalog,
 )
-from app.services.ai_service import summarize_course_data
 
 router = APIRouter(prefix="/courses", tags=["Courses"])
 
 
+@router.get("/meta")
+def get_catalog_meta_endpoint():
+    """Return scrape metadata (timestamp, counts) from the full catalog."""
+    meta = get_catalog_meta()
+    if meta is None:
+        return {"status": "no_full_catalog", "hint": "Run `python scraper/vt_scraper.py` to build the catalog."}
+    return meta
+
+
 @router.get("/subjects")
-def get_cached_subjects():
-    """List all subject codes that have been scraped and cached locally."""
-    return {"subjects": list_cached_subjects()}
+def get_subjects():
+    """List all known VT subject codes."""
+    return {"subjects": list_all_subjects()}
+
+
+@router.get("/programs")
+def get_programs(q: str = Query(default="", description="Filter programs by name keyword")):
+    """List all discovered VT undergraduate programs. Optionally filter by keyword."""
+    if q:
+        programs = search_programs(q)
+    else:
+        programs = list_all_programs()
+    return {"count": len(programs), "programs": programs}
+
+
+@router.get("/programs/{major}/requirements")
+def get_program_requirements(major: str):
+    """Return degree requirements for a major/minor (from the full catalog or legacy cache)."""
+    data = scrape_vt_major_catalog(major)
+    if not data.get("required_courses") and not data.get("electives"):
+        raise HTTPException(
+            status_code=404,
+            detail=f"No requirements found for '{major}'. Run the scraper or check the major name.",
+        )
+    return data
+
+
+@router.get("/search")
+def search_courses(q: str = Query(..., description="Keyword to search in course names/descriptions")):
+    """Search all scraped courses by keyword across all subjects."""
+    results = search_courses_by_keyword(q)
+    return {"query": q, "count": len(results), "courses": results}
 
 
 @router.get("/{subject}")
 def get_courses(
     subject: str,
-    year_term: str = Query(default="202601", description="VT term code e.g. 202601 = Spring 2026"),
-    refresh: bool = Query(default=False, description="Force re-scrape even if cached"),
+    unique: bool = Query(default=False, description="Return deduplicated course records instead of all sections"),
 ):
     """
     Get course listings for a VT subject code (e.g. CS, MATH, ECE).
-    Returns cached data unless refresh=true.
+    Use ?unique=true for one record per course code (no duplicate sections).
     """
     subject = subject.upper()
+    if unique:
+        courses = load_unique_courses(subject)
+    else:
+        courses = load_courses(subject)
 
-    if not refresh:
-        cached = load_courses(subject)
-        if cached is not None:
-            return {"source": "cache", "subject": subject, "courses": cached}
-
-    try:
-        courses = scrape_vt_courses(subject, year_term)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Scrape failed: {str(e)}")
-
-    return {"source": "scraped", "subject": subject, "courses": courses}
-
-
-@router.post("/parse-url")
-def parse_catalog_url(
-    url: str = Query(..., description="URL of a VT catalog page to parse"),
-):
-    """
-    Scrape a VT catalog HTML page and use AI to extract structured course data.
-    Useful for one-off catalog pages not covered by the timetable API.
-    """
-    try:
-        raw_text = scrape_vt_catalog_page(url)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Could not fetch page: {str(e)}")
-
-    try:
-        structured = summarize_course_data(raw_text)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"AI parsing failed: {str(e)}")
-
-    return {"parsed": structured}
+    if courses is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No cached data for '{subject}'. Run `python scraper/vt_scraper.py` to populate the cache.",
+        )
+    return {"subject": subject, "count": len(courses), "unique": unique, "courses": courses}

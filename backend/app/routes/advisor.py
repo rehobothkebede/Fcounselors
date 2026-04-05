@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.ai_service import recommend_courses
-from app.services.scraper_service import load_courses, scrape_vt_major_catalog, MAJOR_TO_SUBJECT, _normalize_major
+from app.services.scraper_service import load_courses, scrape_vt_major_catalog, resolve_subject_for_major
 
 logger = logging.getLogger(__name__)
 
@@ -29,11 +29,7 @@ class PlanResponse(BaseModel):
 
 def _resolve_subject(major: str) -> str:
     """Resolve a major name to a VT subject code for timetable lookup."""
-    key = _normalize_major(major)
-    if key in MAJOR_TO_SUBJECT:
-        return MAJOR_TO_SUBJECT[key]
-    # Fallback: treat first word as subject code
-    return major.strip().split()[0].upper()
+    return resolve_subject_for_major(major)
 
 
 @router.post("/plan", response_model=PlanResponse)
