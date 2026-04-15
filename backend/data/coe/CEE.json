@@ -1,0 +1,488 @@
+{
+  "courses": [
+    {
+      "code": "CEE 1984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 2804",
+      "name": "Introduction to Civil and Environmental Engineering",
+      "credits": "3",
+      "description": "Overview of the specialty areas within the civil engineering profession, professional engineer licensing, and engineering ethics.  Includes recognizing contemporary issues in civil engineering, civil engineering work in the surrounding community, and the impact of civil engineering solutions on society.  Emphasizes successful personal business practices for civil engineering professionals, to include the fundamentals of effective oral, written, and visual communication skills for the Civil Engineer.  Introduction to engineering library resources. For Pathways Advanced Discourse credit, must complete combination ofCEE\u00a02804,CEE\u00a03304,CEE\u00a04804",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 2814",
+      "name": "Geomatics",
+      "credits": "4",
+      "description": "Introduction to data measurement issues in the civil and environmental engineering sub disciplines. Collection techniques, analysis, errors, statistical description and visualization.  Spatial measurements such as leveling, distance and angles, mapping and topographic surveys, the Global Positioning System, LiDAR, terrain models, earthwork methods, construction surveying, coordinate systems, and Geographic Information Systems. Non-CEE students are exempt from theCEE\u00a02834corerequisite.",
+      "prerequisites": "ENGE 1216 or ENGE 1414"
+    },
+    {
+      "code": "CEE 2834",
+      "name": "Civil Engineering Drawings and Virtual Modeling",
+      "credits": "3",
+      "description": "Introduction to the use of Computer-Aided Drafting, Building Information Modeling and Geographic Information Systems software. Interpretation of civil engineering drawings. Creation of civil engineering plans and two- and three- dimensional visualizations. Professional collaboration tools. Basemap creation. Basic analysis tools utilizing Geographic Information Systems.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 3014",
+      "name": "Construction Management",
+      "credits": "3",
+      "description": "Introduction to the fundamental elements involved in managing construction projects. Project lifecycle, delivery methods and contracts, equipment and labor productivity, scheduling, and cost estimating and control. Pre: Junior standing",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 3104",
+      "name": "Introduction to Environmental Engineering",
+      "credits": "3",
+      "description": "Overall view of environmental engineering with emphasis on hazardous waste management, water treatment, wastewater treatment, air pollution and its control, solid waste management, groundwater pollution and environmental regulations.",
+      "prerequisites": "CHEM 1035 and CHEM 1045 and ( MATH 1026 or MATH 1206 or MATH 1206H or MATH 1226 or MATH 2016 or MATH 2024) and ( PHYS 2305 or PHYS 2205 )"
+    },
+    {
+      "code": "CEE 3274",
+      "name": "Introduction to Land Development Design",
+      "credits": "3",
+      "description": "An introduction to the land development design process including site selection and feasibility, environmental considerations, utility layout, grading, stormwater management and integrating planning with the design of infrastructure to support residential and commercial development.",
+      "prerequisites": "CEE 2814 and (CEE 2824 or CEE 2834 )"
+    },
+    {
+      "code": "CEE 3304",
+      "name": "Fluid Mechanics for Civil and Environmental Engineering",
+      "credits": "4",
+      "description": "Introductory course in fluid mechanics.  Includes concepts and measurements of fluid properties; computing hydrostatic and hydrodynamic forces on hydraulic structures; computing fluid pressures, discharges, and velocities; and determining energy losses in pipe flows. Course includes conducting hydraulic laboratory experiments and demonstrations, analyzing and interpreting collected data, and preparing technical laboratory reports.  Emphasizes the fundamentals of effective interpersonal, written, and visual communication skills for technical civil engineering reports. Design Lab/Studio. For Pathways Advanced Discourse credit, must complete combination ofCEE\u00a02804,CEE\u00a03304,CEE\u00a04804",
+      "prerequisites": "ESM 2104 and CEE 2804"
+    },
+    {
+      "code": "CEE 3314",
+      "name": "Water Resources Engineering",
+      "credits": "4",
+      "description": "Open channel flow; hydrology; hydraulic modeling; hydraulic machinery and structures; laboratory experiments and demonstrations. Design Lab/Studio.",
+      "prerequisites": "CEE 3304"
+    },
+    {
+      "code": "CEE 3404",
+      "name": "Introduction to Structural Engineering",
+      "credits": "3",
+      "description": "Introduction to structural engineering as an art and science and its fundamental tenets; description of structural systems, structural loads, and load paths; structural models, case studies of successful and unsuccessful structural designs; calculations of forces and deformation for simple determinate structures (trusses, beams and simple frames) and indeterminate structures using virtual work, use of stiffness methods in computer programs.",
+      "prerequisites": "ESM 2204"
+    },
+    {
+      "code": "CEE 3514",
+      "name": "Introduction to Geotechnical Engineering",
+      "credits": "4",
+      "description": "Introduction to soil as an engineering material for construction and infrastructure support. Geological processes, soil classification, phase relations, geostatic and applied stresses, permeability, seepage effects, settlement, and strength. Laboratory testing, interpretation, and presentation of results. Application of geotechnical principles to civil and environmental engineering problems.  Design Lab/Studio.",
+      "prerequisites": "ESM 2204 and GEOS 2104"
+    },
+    {
+      "code": "CEE 3604",
+      "name": "Introduction to Transportation Engineering",
+      "credits": "3",
+      "description": "Planning, design and operation of transportation systems with emphasis in multimodal transportation techniques and unified system engineering theories to analyze large scale transportation problems.  Discussion of Intelligent Vehicle Highway Systems (IVHS) and hands on experience in computer models in transportation operations and planning. Interactions between transportation infrastructure and environmental engineering planning.  Junior standing required.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 3684",
+      "name": "Civil Engineering Materials",
+      "credits": "4",
+      "description": "Fundamental nature and performance of civil infrastructure materials, including metals, portland cement concrete, asphalt concrete, polymers, and wood. Material properties, microstructure, and mechanical behavior. Laboratory experimental procedures and standardized testing, property variability, durability, sustainability and resilience. Design of cementitious and asphalt mixtures, experimental design, non-destructive testing. Design lab/studio.",
+      "prerequisites": "CHEM 1045 and CHEM 1035 and ESM 2204 and GEOS 2104 and ( CEE 2814 or CEM 2824 )"
+    },
+    {
+      "code": "CEE 3804",
+      "name": "Computer Applications for Civil and Environmental Engineers",
+      "credits": "3",
+      "description": "Introduction to computer applications in civil and environmental engineering. Integration of quantitative analysis for design, data management, computer programming and problem solving skills with computer tools and techniques.\nTopics include systems analysis, numerical methods, optimization, data mining, computer programming and data queries. Analysis and interpretation of a global data set. Pre: Junior Standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 3814",
+      "name": "Analytical Tools in Civil and Environmental Engineering",
+      "credits": "3",
+      "description": "Computer programming and data analysis for civil and environmental engineering projects. Acquiring, cleaning and pre-processing data sets. Probability distributions, hypothesis testing, and regression modeling. Time series and frequency analysis. Data visualization.",
+      "prerequisites": "CEE 3804"
+    },
+    {
+      "code": "CEE 3900",
+      "name": "Bridge Experience",
+      "credits": "0",
+      "description": "Application of academic knowledge and skills to in a work-based experience aligned with post-graduation goals using research-based learning processes. Satisfactory completion of work-based experience often in the form of internship, undergraduate research, co-op, or study abroad; self-evaluation; reflection; and showcase of learning. Pre: Departmental approval of 3900 plan.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 3954",
+      "name": "Study Abroad",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4014",
+      "name": "Estimating, Production, and Cost Engineering",
+      "credits": "3",
+      "description": "Interpretation of plans and specifications, preparation of construction estimates, and cost control. Methods analysis, resource requirements, and resource costs in building systems, including system components, and in large-scale civil engineering works such as highways, bridges, and hydraulic structures.",
+      "prerequisites": "CEE 3014"
+    },
+    {
+      "code": "CEE 4024",
+      "name": "Construction Control Techniques",
+      "credits": "3",
+      "description": "Techniques used to plan, schedule, and control the Construction Process.  Emphasizes manual and computer-based approaches.  Focuses on an analytical approach towards the construction process whereby good technical methodologies and solutions are converted to reality through construction practices.",
+      "prerequisites": "CEE 3014"
+    },
+    {
+      "code": "CEE 4034",
+      "name": "Smart Sustainable Infrastructure",
+      "credits": "3",
+      "description": "Challenges and barriers to sustainable infrastructure. Effects of a changing planet and society on current infrastructure systems. Technology and data use for engineering. Infrastructure data interpretation. Data-driven engineering solutions.",
+      "prerequisites": "CEE 3804"
+    },
+    {
+      "code": "CEE 4074",
+      "name": "Construction Engineering: Means and Methods",
+      "credits": "3",
+      "description": "Construction means, methods, and equipment used to transform a particular design concept into a completed usable structure or facility.  Selection and optimization of individual units as well as the systems needed to produce the required work to the required quality on time and on budget.",
+      "prerequisites": "CEE 3014 or CEM 2104"
+    },
+    {
+      "code": "CEE 4104",
+      "name": "Water and Wastewater Treatment Design",
+      "credits": "3",
+      "description": "Design of municipal water and wastewater treatment plants. Emphasis on characterization of water and wastewater and physical, chemical, and biological treatment methods. Sludge processing advanced treatment methods and treatment plant hydraulics are considered. A grade of C- or better required in prerequisites.",
+      "prerequisites": "CEE 3104"
+    },
+    {
+      "code": "CEE 4114",
+      "name": "Fundamentals of Public Health Engineering",
+      "credits": "3",
+      "description": "Public health engineering principles for protection against biological and chemical health hazards.  Emphasis on major communicable diseases that plague mankind, organisms that cause them, routes of transmission, and engineering methods of control.  Appropriate control methods for rural areas and developing countries.",
+      "prerequisites": "CEE 3104"
+    },
+    {
+      "code": "CEE 4134",
+      "name": "Environmental Sustainability - A Systems Approach",
+      "credits": "3",
+      "description": "Quantitative methods to evaluate environmental sustainability using a sytems approach.  Sustainability assessment frameworks, oreintors and indicators, indicators of sustainable development, green-house gas emissions, renewable energy systems, whole-system design, economic systems and input-outpur techniques, system dynamics models, emergence and agent-based models.  Class project requiring integration of environmental, economic and social systems using system dynamics and agent-based models. Senior Standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4144",
+      "name": "Air Resources Engineering",
+      "credits": "3",
+      "description": "Effects, regulation, sources, and control of air pollution. Application of engineering calculations and models to estimate emissions, predict pollutant concentrations, and design pollution control equipment. Senior standing required. A grade of C- or better required in prerequisites.",
+      "prerequisites": "CEE 3104 or ENGR 3124 or GEOS 3114 or ENSC 3634"
+    },
+    {
+      "code": "CEE 4254",
+      "name": "Municipal Engineering",
+      "credits": "3",
+      "description": "An introduction to the field of municipal engineering. Infrastructure, capital projects, financing, sustainability, disaster planning and response, and plan review for development projects. Senior standing required.",
+      "prerequisites": "CEE 3274"
+    },
+    {
+      "code": "CEE 4264",
+      "name": "Sustainable Land Development",
+      "credits": "3",
+      "description": "An introduction to the modern techniques for developing land while maintaining a focus on long-term sustainability. Topics include site layout, stormwater impact, air quality and microclimate, living resources, LEED and EarthCraft development standards. Pre-requisite: Senior Standing required",
+      "prerequisites": "CEE 3274"
+    },
+    {
+      "code": "CEE 4274",
+      "name": "Land Development Design",
+      "credits": "3",
+      "description": "Overview of land development projects including construction practices, legal issues, and government policies. Feasibility study, engineering evaluation. Grading and roadway design, layout design of lots, buildings, streets, sewers, and stormwater control. Interactive graphics and automated drafting.",
+      "prerequisites": "CEE 3274"
+    },
+    {
+      "code": "CEE 4284",
+      "name": "Advanced Land Development Design",
+      "credits": "3",
+      "description": "Advanced course in land development design focusing on site grading and parking, stormwater management, and erosion control.  Reviews project design criteria and applicable municipal and state guidelines.  Uses CAD software for design and deliverables.  Senior/Graduate standing required.",
+      "prerequisites": "CEE 3274"
+    },
+    {
+      "code": "CEE 4304",
+      "name": "Hydrology",
+      "credits": "3",
+      "description": "Precipitation, evaporation, consumptive use, infiltration; stream flow, flood routing; statistical analysis of hydrologic data, flood and drought forecasting, risk analysis, subsurface flow, well hydraulics, introduction to urban drainage design.  A grade of C- or better required in pre-requisite.",
+      "prerequisites": "CEE 3304"
+    },
+    {
+      "code": "CEE 4314",
+      "name": "Groundwater Resources",
+      "credits": "3",
+      "description": "Fundamentals of groundwater hydrology; flow through porous media, both saturated and unsaturated; flow to wells in both confined and unconfined aquifers; seepage of groundwater to canals and field drains; analysis of aquifer test data to quantify flow and storage parameters; contaminants in groundwater, basic introduction to groundwater modeling. A grade of C- or better required in pre-requisite 3304.",
+      "prerequisites": "CEE 3304"
+    },
+    {
+      "code": "CEE 4324",
+      "name": "Open Channel Flow",
+      "credits": "3",
+      "description": "Mechanics of open channel flow, including uniform flow, gradually varied flow, channel transitions, and unsteady flow.",
+      "prerequisites": "CEE 3314"
+    },
+    {
+      "code": "CEE 4334",
+      "name": "Hydraulic Structures",
+      "credits": "3",
+      "description": "Hydraulic analysis and design of engineering structures for water control, including reservoirs, dams, spillways, spilling basins, drainage structures, and hydraulic models.",
+      "prerequisites": "CEE 3314"
+    },
+    {
+      "code": "CEE 4344",
+      "name": "Water Resources Planning",
+      "credits": "3",
+      "description": "Analysis of the water resources planning process and the institutional framework for water resources management. Criteria and procedures for evaluating management alternatives are examined, with emphasis on assessment of economic and environmental impacts.  Senior standing required.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4364",
+      "name": "Geospatial Analysis and Hydrologic Design",
+      "credits": "3",
+      "description": "Application of geospatial analysis and hydrologic modeling to problems of design using industry standard GIS tools and processes. Introduction to geospatial analysis, terrain analysis, flood frequency analysis, and hydraulic design for solving water resources engineering problems in practice. Evaluation of urbanization and climate change on watersheds and their impacts on populated areas. Design of flood risk maps. Team-based design project with report and presentation.",
+      "prerequisites": "CEE 3314 or BSE 4344"
+    },
+    {
+      "code": "CEE 4384",
+      "name": "Coastal Engineering",
+      "credits": "3",
+      "description": "Basic wave mechanics principles, surf-zone processes, littoral and sediment processes, shoreline features, astronomical tides, coastal hazards, and functional design of coastal structures. Field trips.",
+      "prerequisites": "CEE 3304"
+    },
+    {
+      "code": "CEE 4394",
+      "name": "Urban Water Sustainability",
+      "credits": "3",
+      "description": "Coupled socio-hydrologic feedback loops and implications for water systems resilience. Urban water transitions theory and the evolution of water systems through time. Water productivity and the soft path for water. Ecosystem services. Urban water system challenges, including climate change, urbanization, equity and environmental justice, and water security. Centralized and distributed drinking water, stormwater, and wastewater treatment systems. Statistical analysis of urban water systems.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4404",
+      "name": "Intermediate Structural Analysis",
+      "credits": "3",
+      "description": "Analysis of statically indeterminate 2D and 3D beam, truss and frame structures by the force and displacement methods. Computer implementation of force method. Influence lines and approximate methods of analysis.",
+      "prerequisites": "CEE 3404"
+    },
+    {
+      "code": "CEE 4424",
+      "name": "Design of Reinforced Concrete Structures",
+      "credits": "3",
+      "description": "Behavior and design of reinforced concrete members based on ultimate strength. Uncertainty, load and resistance factors. Load paths in framing systems. Beams, columns and slabs in flexure and shear. Deflections and crack control. Design of reinforced concrete members. Columns under axial forces, shear and flexure.CEE\u00a04424duplicates material in CEE 3424, and both may not be taken for credit.",
+      "prerequisites": "CEE 3404 and CEE 3684"
+    },
+    {
+      "code": "CEE 4434",
+      "name": "Introduction to Steel Design",
+      "credits": "3",
+      "description": "Design of steel members and connections following the American Institute of Steel Construction specification. Properties and mechanical behavior of structural steel. Effect of loads, structural safety, and serviceability on the design of members to resist tension, compression, and flexure. Braced and unbraced beams. Design of simple steel connections including tension connections, shear connections, and base plates.  Serviceability checks.CEE\u00a04434duplicates material in CEE 3434, and both may not be taken for credit.",
+      "prerequisites": "CEE 3404 and CEE 3684"
+    },
+    {
+      "code": "CEE 4444",
+      "name": "Topics in Structural Engineering Design",
+      "credits": "1",
+      "description": "Concepts of structural design for a multi-story building through a team-based project. Comparison of alternatives for structural systems to resist lateral forces and gravity loads. Development of design drawings. Oral and written communication. May be repeated one time with different content for a maximum of two credit hours.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4454",
+      "name": "Masonry Structural Design",
+      "credits": "3",
+      "description": "Masonry materials, material testing, material specifications. Structural behavior and design of masonry elements (walls, beams, and columns) and systems used in structures. Construction techniques and the details of masonry construction. Building codes relating to analysis and design of masonry structures.",
+      "prerequisites": "CEE 3684 and CEE 3424"
+    },
+    {
+      "code": "CEE 4484",
+      "name": "Bridges and Their Builders",
+      "credits": "3",
+      "description": "History of bridges, bridge builders, and bridge construction; study of the physical principles underlying the capacity and stability of bridges; comparison of the load-carrying function of various forms of bridge structure; bridge failures, obsolescence, and future needs.",
+      "prerequisites": "CEE 3424"
+    },
+    {
+      "code": "CEE 4534",
+      "name": "Earth Pressures and Foundation Structures",
+      "credits": "3",
+      "description": "Earth pressure theories and their applications to the design of retaining structures, anchors, and excavation bracing. Bearing capacity and settlement of shallow foundations. Types and capacity of deep foundations.",
+      "prerequisites": "CEE 3514"
+    },
+    {
+      "code": "CEE 4544",
+      "name": "Design of Earth Structures",
+      "credits": "3",
+      "description": "Application of geotechnical engineering principles in the design and construction of earth structures. Subsurface models, shear strength of soil, slope stability, earth fills, earth retention, ground improvement, sustainability considerations, geotechnical reporting. Team-based design project.",
+      "prerequisites": "CEE 3514"
+    },
+    {
+      "code": "CEE 4554",
+      "name": "Natural Disaster Mitigation and Recovery",
+      "credits": "3",
+      "description": "Causes, mechanics, classifications, and forces associated with tornadoes, hurricanes, floods, earthquakes, and landslides.  Resistance evaluation for existing ground, facilities and structures.  Hazard-resistant design of new facilities.  Risk and reliability assessment and decision analysis.  Strategies and designs for natural disaster risk mitigation.  Emergency response for protection of life and property and restoration of lifelines.  Includes an interdisciplinary team project. Prerequisite: Senior Standing Required",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4564",
+      "name": "Introduction to Coastal and Marine Geotechnics",
+      "credits": "3",
+      "description": "Geotechnical aspects of coastal and marine engineering. Introduction to the coastal zone as a working environment. In-situ geotechnical methods and complementary techniques for investigation. Survey strategies. Local field trips for demonstrating methods, practice and design.",
+      "prerequisites": "CEE 3514"
+    },
+    {
+      "code": "CEE 4604",
+      "name": "Traffic Engineering",
+      "credits": "3",
+      "description": "Study of traffic and parking characteristics; application of traffic control devices; principles and techniques used to improve the efficiency and safety of traffic flow systems.  A grade of C- or better required in pre-requisite 3604.",
+      "prerequisites": "CEE 3604"
+    },
+    {
+      "code": "CEE 4610",
+      "name": "Mechanics of Composite Materials",
+      "credits": "3",
+      "description": "Introduction to the deformation, stress, and strength analysis of continuous-fiber-polymer-matrix laminated composites.  Fabrication, micromechanics of stiffness and expansional coefficients, classical lamination theory (CLT).  Environmentally induced stresses.  Computerized implementation and design",
+      "prerequisites": "ESM 2204 or AOE 2024"
+    },
+    {
+      "code": "CEE 4614",
+      "name": "Concrete Materials",
+      "credits": "3",
+      "description": "Fundamental properties of portland cement concretes. Concrete mixture design procedures. Testing of fresh and hardened properties of concrete. Durability and degradation mechanisms. Condition assessments, forensic materials engineering, and repair strategies.",
+      "prerequisites": "CEE 3684 or BC 2044"
+    },
+    {
+      "code": "CEE 4624",
+      "name": "Planning Transportation Facilities",
+      "credits": "3",
+      "description": "Transportation planning process; urban and regional studies, surveys, data analysis, model development and testing; transportation management, administration, finance, system evaluation, implementation, and integration.",
+      "prerequisites": "CEE 3604"
+    },
+    {
+      "code": "CEE 4634",
+      "name": "Infrastructure Condition Assessment",
+      "credits": "3",
+      "description": "Infrastructure components and assessment needs; physical and chemical properties of construction materials; deterioration causes, assessment methods, nondestructive evaluation techniques, infrastructure management systems, performance models, service-life-cycle estimates.",
+      "prerequisites": "CEE 3684"
+    },
+    {
+      "code": "CEE 4654",
+      "name": "Geometric Design of Highways",
+      "credits": "3",
+      "description": "Functional design of highways; curves, intersections, interchanges, drainage, and other features involved in highway safety and traffic efficiency.",
+      "prerequisites": "CEE 3604"
+    },
+    {
+      "code": "CEE 4664",
+      "name": "Pavement Design",
+      "credits": "3",
+      "description": "Principles underlying methods for the design of  various elements  of  flexible  and rigid pavements for highways and airports; climate and traffic effects; pavement management systems.  A grade of C- or better required in pre-requisite 3684.",
+      "prerequisites": "CEE 3684"
+    },
+    {
+      "code": "CEE 4674",
+      "name": "Airport Planning and Design",
+      "credits": "3",
+      "description": "Airport planning and economic justification, site selection, configuration, development and design of terminal areas, demand forecasting, access, traffic control.",
+      "prerequisites": "CEE 3604"
+    },
+    {
+      "code": "CEE 4684",
+      "name": "Transportation Safety",
+      "credits": "3",
+      "description": "Basic principles associated with transportation safety related to humans, vehicles and infrastructure as well as principles of design for safety and practices of empirical evaluation of safety. Principles and practices of accident investigation and injury epidemiology as well as safeguards and control practices.",
+      "prerequisites": "CEE 3604"
+    },
+    {
+      "code": "CEE 4694",
+      "name": "Freight Operations",
+      "credits": "3",
+      "description": "Introduction to the operation of modal and intermodal freight facilities. Impact of goods movement on the multi-modal transportation system. Role of privately owned and operated goods movement on public sector transportation operations, management, and decision making. Communication of impacts.",
+      "prerequisites": "CEE 3604"
+    },
+    {
+      "code": "CEE 4804",
+      "name": "Professional and Legal Issues in Civil Engineering",
+      "credits": "3",
+      "description": "An overview of civil engineering professional practice, including business etiquette, professional development, leadership, and lifelong learning.  Emphasizes the importance of registration for civil engineers.  Compares and contrasts common project delivery methods, processes, key players, and management topics for the design and construction industry.  Incorporates analyses of legal and ethical aspects of civil engineering practice.  Analyzes contemporary issues and public policies that impact the civil engineering profession, and the impacts of civil engineering solutions on society.  Emphasizes effective written, oral, and visual professional communication for the civil engineering professional. For Pathways Advanced Discourse credit, must complete combination ofCEE\u00a02804,CEE\u00a03304,CEE\u00a04804",
+      "prerequisites": "CEE 2804"
+    },
+    {
+      "code": "CEE 4824",
+      "name": "Introduction to Forensic Engineering",
+      "credits": "3",
+      "description": "Basic processes in engineering failure investigations: response, data gathering, testing, modeling, and reporting. Origins of natural and man-made disasters, role of building codes and material specifications, standard of care, ethical standards and legal issues as related to forensic engineering.",
+      "prerequisites": "CEE 3684 and ESM 2204"
+    },
+    {
+      "code": "CEE 4844",
+      "name": "Building Information Modeling and Integrated Practices",
+      "credits": "3",
+      "description": "Introduction to Building Information Modeling (BIM). Architectural modeling, custom parametric object creation, virtual structural modeling. Constructability and construction management analysis. Reality capturing technologies. Virtual reality and immersive virtual environments. Contemporary topics and new directions for BIM technologies. Pre: Senior Standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4854",
+      "name": "Machine Learning Applications in Civil and Environmental Engineering",
+      "credits": "3",
+      "description": "Solution of practical problems in Civil and Environmental Engineering (CEE) using machine learning (ML).  Fundamental concepts and challenges to using ML in CEE.   Preparation of project data, creation, and training of supervised learning models. Evaluation of model performance.  Introduction to unsupervised learning and deep learning.",
+      "prerequisites": "CEE 3814"
+    },
+    {
+      "code": "CEE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CEE 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

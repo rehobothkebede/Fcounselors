@@ -1,0 +1,285 @@
+{
+  "courses": [
+    {
+      "code": "MINE 1024",
+      "name": "Leadership and Service in the Mineral Industries",
+      "credits": "1",
+      "description": "Leadership and service principles. Awareness of self and others through personality typing. Strategic planning. Importance of energy and mineral industries to developed and developing countries as well as associated consequences. Mineral extraction and purification processes and calculations. Conflict resolution. Challenges and opportunities available in the energy and mineral industries. May include guest speakers and field trips.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 1034",
+      "name": "Automation and Data Analytics in the Mineral Industries",
+      "credits": "1",
+      "description": "Discovering challenges and opportunities available in autonomous vehicles, systems, and data analytics associated with the energy and mineral industries. Fundamentals of robotics and data analytics; hands on projects with autonomous kits and drones; analysis of industry data, including production studies; introduction to presentation of complex data in a simplified manner; introduction to simulations and digital twins.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 1044",
+      "name": "Space Mining",
+      "credits": "1",
+      "description": "Explore challenges and opportunities in off-earth mining. Resources currently identified on earth and critical uses; astroidal, lunar, and martian resources; operating conditions in space; environmental, social, and governance issues; economic drivers; in situ resource utilization.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 1984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 2114",
+      "name": "Energy and Raw Materials: Geopolitics and Sustainable Development",
+      "credits": "3",
+      "description": "Supply and demand of energy resources and raw materials. Domestic and global trends. Development of energy and mineral resources. Electricity generation, efficiency, and distribution. Energy and raw materials infrastructure Disparities in resource-producing vs. resource-consuming regions. Environmental considerations and engineering management. Land use and reclamation. Greenhouse gas management. Policy, regulations, and incentives. Geopolitical considerations. Conservation and efficiency. Sustainable development. This course is available to undergraduate students of all ranks and all majors.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 2504",
+      "name": "Introduction to Mining Engineering",
+      "credits": "3",
+      "description": "Introduction to the complete field of mining and minerals engineering, including phases of mine development, discreet mining methods and mineral processing operations. Consideration in unconventional oil and gas development. Emphasis on basic engineering problem solving skills, and considerations for worker health and safety, economics, and environmental and social issues.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 2534",
+      "name": "Mine Surveying and Mapping",
+      "credits": "3",
+      "description": "Specialized principles of field surveying and mapping as applied to the delineation of mineral deposits and the design and monitoring of surface and underground mining operations. Introduction to modern surveying instruments, field techniques, and computational procedures. Basic digital mine mapping to include standard mine symbols and representation of surface and underground mine workings. Partially duplicates ENGE 2824.",
+      "prerequisites": "MATH 1226"
+    },
+    {
+      "code": "MINE 2544",
+      "name": "Leadership for Responsible Mining",
+      "credits": "2",
+      "description": "Principles of leadership for the global resource industries including identification of project impacts and risks, stakeholder analysis and conflict management. Emphasis on engineering ethics and effective communications. Sustainable development of mineral and energy resources, with focus on emerging technical, economic, environmental and social issues in the US and abroad.",
+      "prerequisites": "ENGL 1105"
+    },
+    {
+      "code": "MINE 2564",
+      "name": "Resource Exploration and Design",
+      "credits": "3",
+      "description": "Basic methods and concepts in exploration and modeling of ore bodies. Resource exploration planning. Exploration technologies for potential mine sites. Design of mining systems. Computational modeling of ore bodies and mine systems. Environmental, regulatory, ethical, and social considerations in mine system design.",
+      "prerequisites": "GEOS 1004"
+    },
+    {
+      "code": "MINE 2714",
+      "name": "Introduction to Petroleum and Natural Gas Engineering",
+      "credits": "3",
+      "description": "Introduction to basics of petroleum and natural gas engineering. Concepts of conventional and unconventional fossil fuel energy; basics of rock mechanics and reservoir fluid properties. Concepts of drilling and completion engineering. Concepts of hydraulic fracturing; basic knowledge of formation evaluation and various rock types. Basics of geophysical monitoring methods; basics of different oil and gas reservoirs; basics of production engineering and fundamentals of recovery mechanisms, discussion of petroleum and natural gas social and policy issues.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 3544",
+      "name": "Mineral Processing Laboratory",
+      "credits": "1",
+      "description": "Laboratory investigations of the unit operations and principles of mineral processing including ore preparation (size reduction, mineral liberation, and classification) and mineral recovery (froth flotation, electrostatic separation, magnetic separation, and solid-liquid separation).",
+      "prerequisites": "MINE 3534"
+    },
+    {
+      "code": "MINE 3564",
+      "name": "Underground Mine Design",
+      "credits": "3",
+      "description": "Design fundamentals of mining systems and stope development for tabular and massive underground mineral deposits. Equipment selection and application, permitting, cost analysis and production simulation.",
+      "prerequisites": "MINE 2564 and MINE 3604"
+    },
+    {
+      "code": "MINE 3574",
+      "name": "Surface Mine and Quarry Design",
+      "credits": "3",
+      "description": "Surface mining methods, and their selection; mine planning and design; excavation, haulage and ancillary systems; equipment selection and maintenance; impoundment and piles design; mine closure/reclamation.",
+      "prerequisites": "MINE 2564 and MINE 3674"
+    },
+    {
+      "code": "MINE 3584",
+      "name": "Ventilation Engineering",
+      "credits": "3",
+      "description": "Subsurface ventilation systems.  Ventilation planning and design, laws of airflow, airway resistance.  Ventilation surveys, network analysis, ventilation economics. Ventilation software.  Fan types, impeller theory, fan laws and testing.  Mine ventilation thermodynamics.",
+      "prerequisites": "MINE 2504"
+    },
+    {
+      "code": "MINE 3604",
+      "name": "Mining Geomechanics",
+      "credits": "3",
+      "description": "Properties and behavior of geologic materials and masses and their classifications and ratings. Design principles of structures founded on and in rocks and basic aspects of ground control in mining. Laboratory techniques used in the determination of geologic materials properties and behavior. Determination of rock index properties, strengths, failure criterion and mechanical behavior.",
+      "prerequisites": "MINE 2504 and GEOS 1004 and ESM 2204"
+    },
+    {
+      "code": "MINE 3624",
+      "name": "Mineral Resource Project Management",
+      "credits": "3",
+      "description": "Applied and theoretical concepts in the valuation and management of mining and energy extraction projects. Project engineering, resource management, scheduling, and tracking. Estimation of capital costs, operating costs, and revenues for underground and surface mines, mineral beneficiation plants, and oil and gas ventures. Commodity sales contracts and price projections. Cash flow analysis, revenue-generating and service producing alternative selection, taxes/deductions. Quantitative risk analysis including stochastic simulation. Environmental, ethical, and legal considerations in project management.",
+      "prerequisites": "MINE 2504"
+    },
+    {
+      "code": "MINE 3634",
+      "name": "Fundamentals of Mineral Processing",
+      "credits": "3",
+      "description": "Principles of mineral processing with an emphasis on metallurgical data evaluation, unit operations, and flowsheet configurations. Metallurgical accounting, slurry calculations, grade-recovery relationships, chemical aspects of mineral processing, and particle size analysis. Unit operations including rushing, grinding, size separation, gravity separation, magnetic and electrostatic separation, froth dewatering. Laboratory investigations of the unit operations and principles of mineral processing.",
+      "prerequisites": "MINE 2504 and GEOS 1004 and CHEM 1035"
+    },
+    {
+      "code": "MINE 3644",
+      "name": "Applications in Mineral Processing",
+      "credits": "2",
+      "description": "Applied concepts in the design and operation of mineral processing plants. Flowsheet engineering, unit selection, unit sizing, water/mass flow balancing, simulation, process control, and cost estimation. Environmental, economic, and legal considerations in process plant design.",
+      "prerequisites": "MINE 3634"
+    },
+    {
+      "code": "MINE 3664",
+      "name": "Fluids and Thermodynamics for Resources",
+      "credits": "3",
+      "description": "Fluid properties and hydrostatics. Derivation and application of the continuity, momentum, and energy equation (Bernoulli's equation) for ideal and real fluid flow (laminar or turbulent). Properties of pure substances: property tables, property software, equations of state. First law of thermodynamics. Second law of thermodynamics. Gas mixtures. Applications in the resource extraction industries.",
+      "prerequisites": "MATH 2214"
+    },
+    {
+      "code": "MINE 3674",
+      "name": "Explosives and Rock Fragmentation",
+      "credits": "3",
+      "description": "Rock fragmentation for excavation; drilling fragmentation, rock drilling systems; blasting fragmentation, types and properties of commercial explosives and accessories, system of initiation, design of blasting rounds, applications in mining and construction, structural damage criteria, overbreak control, safe practice and regulations; fragmentation by excavation machines; excavation system selection and design.",
+      "prerequisites": "MINE 2504 and GEOS 1004 and ESM 2204"
+    },
+    {
+      "code": "MINE 3714",
+      "name": "Petroleum and Natural Gas Reservoir Engineering",
+      "credits": "3",
+      "description": "Introduction to oil and gas reservoirs; basics of reservoir rock and fluid properties; fundamentals of different petroleum reservoirs; determination of oil and gas in place; material balance equation; prediction of transient pressure distribution; prediction of saturation distribution; basics of recovery mechanisms; single and multiphase flows in petroleum reservoirs; and prediction of recovery factor and production rate.",
+      "prerequisites": "MINE 2714"
+    },
+    {
+      "code": "MINE 3724",
+      "name": "Formation Evaluation and Engineering",
+      "credits": "3",
+      "description": "Well log measurements and interpretation; standard logging suites used in industry; core sampling methods and laboratory analysis; relationship of well data to seismic and other geophysical data; relationship of well-derived reservoir properties to reservoir estimation calculations, well completions strategies, and development strategies.",
+      "prerequisites": "MINE 2714"
+    },
+    {
+      "code": "MINE 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 4504",
+      "name": "Materials Handling and Power Systems",
+      "credits": "3",
+      "description": "Principles of materials handling, fluid power and electrical power systems for surface and underground mining operations. Engineering analysis and design of secondary haulage operations (belt conveyors, hoists, trucks, railways), fluid power systems (hydraulics, pumps, piping networks, compressors, pneumatic equipment). Electrical systems (electrical machinery, distribution networks, controls), and other ancillary systems required to support mining operations.  Assessment of equipment reliability and development of preventive maintenance programs.",
+      "prerequisites": "ESM 3024"
+    },
+    {
+      "code": "MINE 4614",
+      "name": "Health and Safety Systems",
+      "credits": "3",
+      "description": "Investigation of health and safety management systems. Study of mine legislation; data analysis of accidents; hazard identification; risk management; training programs; emergency response plans.",
+      "prerequisites": "MINE 3564 or MINE 3574"
+    },
+    {
+      "code": "MINE 4624",
+      "name": "Mine and Water Reservoir Engineering",
+      "credits": "3",
+      "description": "Essential topics related to water in resource extraction projects, including surface and ground water hydrology, chemistry and treatment of mine-influenced waters and waters from unconventional oil and gas production, and mine dewatering. Emphasis on basic design calculations and modeling.",
+      "prerequisites": "( MINE 3564 or MINE 3574 ) and MINE 3664"
+    },
+    {
+      "code": "MINE 4635",
+      "name": "Mining Engineering Capstone",
+      "credits": "2",
+      "description": "4635: Serves as the capstone design course sequence for Mining and Minerals Engineering. Undertake a comprehensive design project\nand feasibility study that integrates courses taken throughout their curriculum, in consideration of public and occupational health,\nsafety, and welfare, as well as global, cultural, social, environmental, and economic factors and constraints. Includes exploration\nof professional and ethical obligations of engineers and impacts of projects on communities, project management, communication,\nand working in teams. 4636: Serves as the capstone design course sequence for Mining and Minerals Engineering. Undertake a comprehensive design project and feasibility study that integrates courses taken throughout their curriculum, in consideration of public and occupational health,\nsafety, and welfare, as well as global, cultural, social, environmental, and economic factors and constraints. Includes exploration of professional and ethical obligations of engineers and impacts of projects on communities, project management, communication, and working in teams. Culminates in the preparation of a technical report that describes the commercial development, extraction and closure of a mineral deposit under global reporting standards, and provides detailed operational layouts, production calculations, and engineering cost analyses.",
+      "prerequisites": "MINE 2544 and ( MINE 3564 or MINE 3574 ) and MINE 3624"
+    },
+    {
+      "code": "MINE 4636",
+      "name": "Mining Engineering Capstone",
+      "credits": "2",
+      "description": "4635: Serves as the capstone design course sequence for Mining and Minerals Engineering. Undertake a comprehensive design project\nand feasibility study that integrates courses taken throughout their curriculum, in consideration of public and occupational health,\nsafety, and welfare, as well as global, cultural, social, environmental, and economic factors and constraints. Includes exploration\nof professional and ethical obligations of engineers and impacts of projects on communities, project management, communication,\nand working in teams. 4636: Serves as the capstone design course sequence for Mining and Minerals Engineering. Undertake a comprehensive design project and feasibility study that integrates courses taken throughout their curriculum, in consideration of public and occupational health,\nsafety, and welfare, as well as global, cultural, social, environmental, and economic factors and constraints. Includes exploration of professional and ethical obligations of engineers and impacts of projects on communities, project management, communication, and working in teams. Culminates in the preparation of a technical report that describes the commercial development, extraction and closure of a mineral deposit under global reporting standards, and provides detailed operational layouts, production calculations, and engineering cost analyses.",
+      "prerequisites": "MINE 4635"
+    },
+    {
+      "code": "MINE 4644",
+      "name": "Environmental Management for Mining and Geoenergy",
+      "credits": "2",
+      "description": "Environmental impacts of mines and geoenergy resource development projects, including water, land and air pollution. Statutory and regulatory environmental requirements, with an emphasis on permitting, monitoring and compliance. Best practices for environmental management systems.",
+      "prerequisites": "MINE 3564 or MINE 3574"
+    },
+    {
+      "code": "MINE 4654",
+      "name": "Mine Power Systems and Automation",
+      "credits": "3",
+      "description": "Fundamentals of electrical theory. Circuit elements, calculations and network analysis. Components and design of mine power systems. Motors, cables, load flow analyses, transmission and distribution. Electrical safety. U.S. mine-specific regulation, intrinsic safety and permissibility. Applications in mine systems automation via programmable logic control. Basic ladder logic routines.",
+      "prerequisites": "MATH 2214"
+    },
+    {
+      "code": "MINE 4664",
+      "name": "Resource Engineering Leadership Seminar",
+      "credits": "1",
+      "description": "Invited speakers and subject experts, assigned readings, facilitated activities and discussions, personality and values assessment, learning taxonomy and learning styles, diversity in the workplace, implications of personal differences for workplace and leadership dynamics, strategies and best practices for effective leadership, oral and written communication for diverse audiences. Pre: Senior Standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 4714",
+      "name": "Well Drilling and Completion Engineering",
+      "credits": "3",
+      "description": "Introduction to drilling and completion design; functions of drilling fluids; wellbore hydraulics and drilling bits; principles of well control; casing design; design of cementing jobs; directional drilling in conventional and unconventional formations, completions.",
+      "prerequisites": "MINE 2714"
+    },
+    {
+      "code": "MINE 4724",
+      "name": "Petroleum and Natural Gas Production Engineering",
+      "credits": "3",
+      "description": "Extraction of reservoir fluids; oil and gas thermodynamic properties; phase behavior of petroleum fluids; analysis of surface production facilities; fluid separation; processing of reservoirs fluids; fluid disposal in an environmentally acceptable manner; surface transportation systems; separator design; design of artificial lift systems.",
+      "prerequisites": "MINE 2714"
+    },
+    {
+      "code": "MINE 4744",
+      "name": "Computer Programming and Data Analyses for Mining Engineering",
+      "credits": "3",
+      "description": "This problem-solving-oriented course introduces senior mining engineering students to applied programming using multiple programming languages (PLs) for mathematical modeling and data analysis. The course emphasizes developing mathematical solutions, numerical modeling, and simulation of mining and mineral processing systems, as well as data-driven approaches focused on data analysis and machine learning methods relevant to mining engineering. By the end of the course, students will be equipped to integrate computational and data-analytic tools into engineering practice. Pre: Senior Standing",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MINE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

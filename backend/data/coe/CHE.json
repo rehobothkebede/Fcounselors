@@ -1,0 +1,250 @@
+{
+  "courses": [
+    {
+      "code": "CHE 2004",
+      "name": "Chemical Engineering Sophomore Seminar",
+      "credits": "1",
+      "description": "Career opportunities and current topics of interest in the Chemical Engineering profession.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 2114",
+      "name": "Mass and Energy Balances",
+      "credits": "3",
+      "description": "Stoichiometric and composition relationships, behavior of gases, vapor pressures, solubility, mass balances, recycling operations, energy balances, first law of thermodynamics, thermophysics, thermochemistry, fuels and combustion, application to chemical operations.",
+      "prerequisites": "MATH 1226 and ( CHEM 1036 or CHEM 1036H or CHEM 1056 or CHEM 1056H)"
+    },
+    {
+      "code": "CHE 2164",
+      "name": "Chemical Engineering Thermodynamics",
+      "credits": "3",
+      "description": "First and Second Laws, properties of fluids, properties of homogeneous mixtures; phase equilibria, chemical-reaction equilibria. Grade of C- or better required in prerequisiteCHE\u00a02114.",
+      "prerequisites": "CHE 2114 and MATH 2204 and PHYS 2306"
+    },
+    {
+      "code": "CHE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 3015",
+      "name": "Process Measurement & Control",
+      "credits": "3",
+      "description": "3015: Common process measurements; applications to theory and practice of automatic control of chemical processes; 3016: Design and laboratory practice underlying the automatic computer control of chemical processes.",
+      "prerequisites": "MATH 2214 and CHE 3114"
+    },
+    {
+      "code": "CHE 3044",
+      "name": "Heat Transfer",
+      "credits": "2",
+      "description": "One and two dimensional conduction, convection, and diffusion of thermal energy; heat transfer rates, steady state and unsteady state conduction, convection; design of heat exchangers; forced and free convection boiling and condensation.",
+      "prerequisites": "CHE 2164 and CHE 3114 and MATH 4564"
+    },
+    {
+      "code": "CHE 3114",
+      "name": "Fluid Transport",
+      "credits": "3",
+      "description": "Fluid statics, surface tension, fluid dynamics, Newtons Law of viscosity, momentum transport, laminar and turbulent flow, velocity profiles, flow in pipes, flow around objects, non-Newtonian fluids, design of piping systems, pumps and mixing.",
+      "prerequisites": "CHE 2114 and PHYS 2305 and MATH 2204"
+    },
+    {
+      "code": "CHE 3124",
+      "name": "Chemical Engineering Simulations and Process Modeling",
+      "credits": "3",
+      "description": "Development of strategies to pose and numerically solve sets of algebraic and differential equations that describe chemical engineering systems and processes.  Iterative root finding and optimization approaches to solving non-linear equations, analyze data, and determine best-fit model parameters. Numerical strategies to integrate and differentiate models and data. Approaches to solve ordinary and partial differential equations that describe reaction kinetics, process control, and transport of momentum, heat and mass. Algorithm development, coding, and graphical representation of solutions. (3H,3C)",
+      "prerequisites": "CHE 2114 and MATH 2214"
+    },
+    {
+      "code": "CHE 3134",
+      "name": "Separation Processes",
+      "credits": "3",
+      "description": "Binary separations and multicomponent separations, distillation, batch distillation, extraction, absorption, McCabe-Thiele and Ponchon Savaret methods, short cut methods, design of plate columns, plate and column efficiencies.",
+      "prerequisites": "CHE 2114 and MATH 2204 and PHYS 2306"
+    },
+    {
+      "code": "CHE 3144",
+      "name": "Mass Transfer",
+      "credits": "3",
+      "description": "Multidimensional molecular diffusion and convection of single and multi-component systems; mass transfer rates; steady state, quasi-steady state and transient mass transfer; effect of reactions on mass transfer; convective mass transfer coefficients; design of stage and continuous gas/liquid contractors, membrane, liquid-liquid and liquid-solid separation processes, artificial kidney and drug delivery systems.",
+      "prerequisites": "CHE 3114 and CHE 2164 and MATH 2214"
+    },
+    {
+      "code": "CHE 3154",
+      "name": "Heat Transfer Analysis",
+      "credits": "3",
+      "description": "Principles of conduction, convection, and radiation of thermal energy through one or more phases; analytical and numerical methods for modeling multi-dimensional and unsteady-state conduction; analysis of forced and free convection in conduits and around submerged bodies; design of heat exchangers; radiative heat transfer; boiling and condensation.",
+      "prerequisites": "CHE 2164 and CHE 3114"
+    },
+    {
+      "code": "CHE 3185",
+      "name": "Chemical Reactor Analysis and Design",
+      "credits": "2",
+      "description": "Introduction to mathematical frameworks for analysis and modeling of chemical reactions within different reactor configurations. 3185: Reaction equilibria, power-law rate expressions, Arrhenius law, rate constants, analysis of kinetic data, design of single and multiple isothermal reactors. 3186: Reaction mechanisms, multiple reactions, selectivity, non-isothermal reactors, catalytic reactions and design of catalytic reactors.",
+      "prerequisites": "CHE 2114 and ( MATH 2214 or MATH 2214H )"
+    },
+    {
+      "code": "CHE 3186",
+      "name": "Chemical Reactor Analysis and Design",
+      "credits": "2",
+      "description": "Introduction to mathematical frameworks for analysis and modeling of chemical reactions within different reactor configurations. 3185: Reaction equilibria, power-law rate expressions, Arrhenius law, rate constants, analysis of kinetic data, design of single and multiple isothermal reactors. 3186: Reaction mechanisms, multiple reactions, selectivity, non-isothermal reactors, catalytic reactions and design of catalytic reactors.",
+      "prerequisites": "CHE 3185 and CHE 3114 and CHE 3144 and ( CHE 3044 or CHE 3154 )"
+    },
+    {
+      "code": "CHE 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 4014",
+      "name": "Chemical Engineering Laboratory",
+      "credits": "4",
+      "description": "Practical experience in the planning of experimentation, gathering of experimental data, interpretation of data, and the preparation of written and oral reports. Use of small-scale processing equipment, automatic control, and data acquisition. Emphasis on teamwork, safety, engineering judgment, and professional behavior. Applications include fluid flow, mixing, filtration, and distillation, process control, heat transfer, mass transfer, and chemical reaction kinetics. Consideration of ethical choices in engineering practice and societal impacts of engineering solutions. In-major GPA of 2.0 or better.",
+      "prerequisites": "CHE 2164 and CHE 3015 and CHE 3114 and CHE 3124 and CHE 3134 and CHE 3144 and ( CHE 3044 or CHE 3154 ) and CHE 3185 and ENGL 3764"
+    },
+    {
+      "code": "CHE 4015",
+      "name": "Chemical Engineering Unit Operations Laboratory",
+      "credits": "2",
+      "description": "Practical experience in the planning of experimentation, gathering of experimental data, interpretation of data, and the preparation of written and oral reports. Use of small-scale processing equipment, automatic control, and data acquisition. Emphasis on teamwork, safety, engineering judgment, and professional behavior. 4015: Applications include fluid flow, mixing, filtration, distillation, and chemical reaction kinetics. Consideration of ethical choices in engineering practice. 4016: Applications in process control, heat transfer, mass transfer, and catalysis. Consideration of the societal impacts of engineering solutions. In-major GPA of 2.0 or better.",
+      "prerequisites": "CHE 2164 and CHE 3114 and CHE 3124 and CHE 3134 and (CHE 3184 or CHE 3185 ) and ENGL 3764"
+    },
+    {
+      "code": "CHE 4016",
+      "name": "Chemical Engineering Unit Operations Laboratory",
+      "credits": "2",
+      "description": "Practical experience in the planning of experimentation, gathering of experimental data, interpretation of data, and the preparation of written and oral reports. Use of small-scale processing equipment, automatic control, and data acquisition. Emphasis on teamwork, safety, engineering judgment, and professional behavior. 4015: Applications include fluid flow, mixing, filtration, distillation, and chemical reaction kinetics. Consideration of ethical choices in engineering practice. 4016: Applications in process control, heat transfer, mass transfer, and catalysis. Consideration of the societal impacts of engineering solutions. In-major GPA of 2.0 or better.",
+      "prerequisites": "CHE 3015 and ( CHE 3044 or CHE 3154 ) and CHE 3124 and CHE 3134 and CHE 3144 and (CHE 3184 or CHE 3185 ) and ENGL 3764"
+    },
+    {
+      "code": "CHE 4024",
+      "name": "Unit Operations and Scale-Up",
+      "credits": "1",
+      "description": "Research of a chemical process unit, design of experiments, analysis and interpretation of experimental data, and scale-up of the unit to meet specific objectives. Teamwork, oral communication, and appropriate use of published information. Consideration of safety, and the societal and environmental impacts of an engineering design. Pre: In-major GPA of 2.0 or better is required.",
+      "prerequisites": "CHE 3015 and CHE 3044 and CHE 3124 and CHE 3134 and CHE 3144 and CHE 3184 and ENGL 3764"
+    },
+    {
+      "code": "CHE 4104",
+      "name": "Process Materials",
+      "credits": "3",
+      "description": "Basics of materials science as it relates to the interest of the chemical engineer.  The course emphasizes the three fundamental areas of material science being polymer materials, metallics, and ceramic/inorganic glasses. The general molecular structure property - application behavior of each area will be presented but with a focus when possible on topics related to the field of chemical engineering.",
+      "prerequisites": "CHE 2164 and ( CHEM 2535 or CHEM 2565 )"
+    },
+    {
+      "code": "CHE 4114",
+      "name": "Energy and Climate Change Solutions",
+      "credits": "3",
+      "description": "Fundamentals of energy production technologies, alternative and renewable energy sources, electrochemical energy storage, direct carbon capture technologies, negative emissions technologies, and chemical process that use CO2 as a feedstock. Fundamentals of water purification technologies, the water cycle, and the impact of climate change on water resources and demands. Discussion of carbon and water economics, and how geographical, societal, and environmental factors affect energy and water management policies. Techno-economic analysis of solutions based on chemical technologies, and the communication of those solutions in the context of policy development.",
+      "prerequisites": "CHE 3144 and CHE 3185"
+    },
+    {
+      "code": "CHE 4144",
+      "name": "Business and Marketing Strategies for the Process Industries",
+      "credits": "3",
+      "description": "Business strategies and industrial marketing concepts, and their application in the chemical, pharmaceutical and related process industries. The course is designed for engineers and other students planning a career in the process industries. Junior standing required.",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 4185",
+      "name": "Process and Plant Design",
+      "credits": "4",
+      "description": "Chemical process synthesis and plant design, economic analysis of alternative processes, process equipment design and specifications, computer-aided process design and simulation, design case studies, application of scientific and engineering knowledge to practical design problems. Grade of C- or better in all CHE prefix courses and in-major GPA of 2.0 or better is required.",
+      "prerequisites": "CHE 3015 and ( CHE 3044 or CHE 3154 ) and CHE 3124 and CHE 3134 and CHE 3144 and (CHE 3184 or CHE 3185 ) and ENGL 3764"
+    },
+    {
+      "code": "CHE 4186",
+      "name": "Process and Plant Design",
+      "credits": "4",
+      "description": "Chemical process synthesis and plant design, economic analysis of alternative processes, process equipment design and specifications, computer-aided process design and simulation, design case studies, application of scientific and engineering knowledge to practical design problems. Grade of C- or better in all CHE prefix courses and in major GPA of 2.0 or better is required.",
+      "prerequisites": "CHE 4185"
+    },
+    {
+      "code": "CHE 4214",
+      "name": "Introduction to Polymer Materials",
+      "credits": "3",
+      "description": "Basics of polymeric materials including description and categorization of macromolecules; characterization; mechanical properties; rubbery, glassy, crystalline, and viscous flow behavior.",
+      "prerequisites": "CHEM 2536 and CHE 2164"
+    },
+    {
+      "code": "CHE 4224",
+      "name": "Introduction to Polymer Processing",
+      "credits": "3",
+      "description": "Basic principles of momentum and heat transfer applied to the analysis of polymer processing operations. Introduction to polymer rheology.",
+      "prerequisites": "CHE 3144 and ( CHE 3044 or CHE 3154 )"
+    },
+    {
+      "code": "CHE 4304",
+      "name": "Biological Transport Phenomena",
+      "credits": "3",
+      "description": "Engineering analysis and predictive modeling of heat and mass transport in biological systems (e.g., tissues, organs, organisms, and biomedical devices). Examination of processes that involve conduction, convection, diffusion, generation/consumption. Application of analytical and computational methods to solve differential equations that describe unsteady and/or multi-dimensional transport. Topics include oxygen transport, pharmacokinetic analysis, kidney function, blood perfusion, burns, and cryopreservation.",
+      "prerequisites": "( CHE 3114 and CHE 3154 and CHE 3144 ) or ( ME 3304 and ME 3414 )"
+    },
+    {
+      "code": "CHE 4334",
+      "name": "Introduction to Colloidal and Interfacial Science",
+      "credits": "3",
+      "description": "Properties and behavior of colloidal systems, primarily in liquid environments.  Size characterization and description, Brownian motion, interparticle forces, dispersion stability, and experimental techniques for characterizing these systems.",
+      "prerequisites": "CHEM 3615 or CHE 2164"
+    },
+    {
+      "code": "CHE 4404",
+      "name": "Machine Learning in Chemical Sciences and Engineering",
+      "credits": "3",
+      "description": "Development and application of data-driven computational models. Focus on applications in chemical sciences and engineering (e.g., materials discovery, property prediction, anomaly detection, process optimization). Preprocessing, data management and visualization, clustering, classification, and regression algorithms, and common pitfalls and practices in training and evaluation of data-driven models. Pre: 3124",
+      "prerequisites": "CHE 3124"
+    },
+    {
+      "code": "CHE 4544",
+      "name": "Protein Separation Engineering",
+      "credits": "3",
+      "description": "Concepts, principles and applications of various unit operations used in protein separations. Properties of biological materials, such as cells and proteins, and their influences on process design. Design of processes for protein purification based on the impurities to be eliminated. Concepts and principles of scale-up of unit operations. Case studies in practical protein recovery and purification issues, with a focus on enhanced protein purification by genetic engineering. Protein purification process simulation and optimization using process simulation software.",
+      "prerequisites": "BSE 3504 or CHE 3144"
+    },
+    {
+      "code": "CHE 4904",
+      "name": "Project and Report",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "CHE 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "Honors course",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

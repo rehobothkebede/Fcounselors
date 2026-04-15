@@ -1,0 +1,285 @@
+{
+  "courses": [
+    {
+      "code": "ISE 2004",
+      "name": "Introduction to Industrial and Systems Engineering",
+      "credits": "1",
+      "description": "Introduction to the Industrial and Systems Engineering profession through exposure to problems, principles, and practice. Systems thinking, critical thinking, and contemporary issues in industrial and systems engineering. Introduction to the ISE Department, focusing on faculty and research areas. Importance of ethics and professionalism. Academic planning for the BSISE degree.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2014",
+      "name": "Engineering Economy",
+      "credits": "2",
+      "description": "Concepts and techniques of analysis for evaluating the value of products/services, projects, and systems in relation to their cost. Economic and cost concepts, calculating economic equivalence, comparison of alternatives, purchase versus lease decisions, financial risk evaluation, cash flow sensitivity analysis, and after-tax analysis.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2024",
+      "name": "Probability Foundations for Industrial and Systems Engineers",
+      "credits": "3",
+      "description": "Introduction to the mathematical foundations of probability theory for industrial engineers. Understanding of probability as a model for real phenomena, with applications of probability in an industrial engineering context. Review of set theory, counting (permutations and combinations), definition of probability axioms, sample spaces, random variables, independence, probability distribution functions, probability mass or density functions, expectations, moment-generating functions, joint and conditional random vectors and distributions, and distributions of functions of random variables, central limit theorem.",
+      "prerequisites": "MATH 2204 or MATH 2204H"
+    },
+    {
+      "code": "ISE 2034",
+      "name": "Data Management for Industrial and Systems Engineers",
+      "credits": "3",
+      "description": "Investigation of data modeling, storage, acquisition, and utilization in industrial and systems engineering. Development of effective spreadsheet applications. Design and implementation of relational databases via entity-relationship modeling, relational schema, normalization, and queries. Structured query language (SQL) fundamentals and SQL relational databases. Overview of non-relational databases, Big Data, and Data Analytics. All topics covered within the context of typical industrial and systems engineering problems.",
+      "prerequisites": "CS 1044 or CS 1064 or CS 1114 or ECE 1574"
+    },
+    {
+      "code": "ISE 2044",
+      "name": "Careers in Industrial and Systems Engineering",
+      "credits": "1",
+      "description": "Overview of the breadth of careers and professional opportunities in the field of industrial and systems engineering. Technical approaches and solutions, emerging trends, career progression, and leadership aspects of industrial and systems engineering practice. Representation of practice across all areas of industrial and systems engineering as well as across a range of industries.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2214",
+      "name": "Manufacturing Processes Laboratory",
+      "credits": "1",
+      "description": "Laboratory exercises and experimentation in manufacturing processes. Emphasis on using production machines and equipment to make products using multiple manufacturing processes, coupled with inspection per engineering drawings. Processes include assembly, casting, machining, forming, welding, and non-traditional machining, performed manually and/or via computer programming. Also covers basic shop floor operation and documents used for monitoring and controlling part production.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2404",
+      "name": "Deterministic Operations Research I",
+      "credits": "3",
+      "description": "Deterministic operations research modeling concepts. Linear programming, integer programming, and non-linear programming modeling, assumptions, algorithms, modeling languages, and modern optimization software. Graphical solution, Simplex tableau method and its graphical interpretation. Branch and bound and branch and cut methods. Duality, sensitivity analysis, and Karush-Kuhn-Tucker (KKT) Optimality Conditions with economic interpretation. Network models (formulations and algorithms) including transportation problems, assignment problems, shortest path problems, maximum flow problems, minimum cost network flow problems, and minimal spanning tree problems.",
+      "prerequisites": "MATH 1114 or MATH 2114"
+    },
+    {
+      "code": "ISE 2804",
+      "name": "Foundations of Systems Engineering",
+      "credits": "3",
+      "description": "A systems approach to designing, building, verifying, deploying, operating, and sustaining complex engineered systems. Emergent properties of systems, system lifecycle, and systems engineering as a process driven discipline. Technical management of processes regarding acquisition, contracting, and development. Problem formulation and elicitation of requirements. Creation of system elements: resource components, functions, internal and external interfaces. Introduction to decision analysis and risk management, model-based systems engineering and system architectures.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 3004",
+      "name": "Industrial Cost Control",
+      "credits": "3",
+      "description": "Introduction to basic accounting concepts and operating characteristics of accounting systems. Principles of financial, cost and activity-based accounting, design of accounting systems, techniques of analysis, and cost control. Emphasis on interpretation of accounting for decision-analysis, including the benefits of limitations of accounting information.",
+      "prerequisites": "ISE 2014 or ME 3024"
+    },
+    {
+      "code": "ISE 3034",
+      "name": "Technical Communication for Engineers",
+      "credits": "3",
+      "description": "Fundamentals of effective technical writing. Structure, presentation, and utility of common engineering documents: laboratory reports, technical reports, proposals, progress reports, and project reports. Practice in writing common engineering documents, both individually and collaboratively. Strategies and practice for effective oral technical presentations, both individually and group-based. Ethical and legal considerations in technical writing and oral technical presentations. All topics covered within the context of typical engineering problems and practice.",
+      "prerequisites": "ENGL 1106"
+    },
+    {
+      "code": "ISE 3204",
+      "name": "Manufacturing Processes",
+      "credits": "3",
+      "description": "Survey of manufacturing processes including casting, forming, machining, welding, joining, and nontraditional processes such as electrical-discharge machining. Basic manufacturing materials and their properties, structure of metals, metal deformation and heat treatment. Mathematical modeling of common manufacturing processes; process planning and the effect of plans on cost; impact of product design on manufacturability and assemblability. Recent trends in manufacturing, sustainable manufacturing. Also includes topics in inspection and testing, computer-aided manufacturing, and numerical control.",
+      "prerequisites": "ENGE 1216 or ENGE 1414"
+    },
+    {
+      "code": "ISE 3214",
+      "name": "Facilities Planning and Logistics",
+      "credits": "3",
+      "description": "Theory, concepts, and methods for designing and analyzing facilities and material flow in manufacturing, storage, and distribution environments. Topic areas include material handling systems, facility layout, facility location, warehousing, distribution, logistics, and transportation.",
+      "prerequisites": "ISE 2014 and ISE 2404"
+    },
+    {
+      "code": "ISE 3414",
+      "name": "Probabilistic Operations Research",
+      "credits": "3",
+      "description": "This course introduces probability models used to investigate the behavior and performance of manufacturing and service systems under conditions of uncertainty. Major topics include probability, conditioning, elementary counting processes, and Markov chains and Markov processes. Emphasis is on the use of these tools to model queues, inventories, process behavior, and equipment reliability.",
+      "prerequisites": "ISE 2024 and ( MATH 2204 or MATH 2204H or MATH 2406H ) and ( MATH 2214 or MATH 2214H )"
+    },
+    {
+      "code": "ISE 3424",
+      "name": "Discrete-Event Computer Simulation",
+      "credits": "3",
+      "description": "Analysis and design of work systems through static and dynamic simulation. Topics include an introduction to systems analysis and modeling, simulation optimization, model development and testing, and problem analysis through simulation.",
+      "prerequisites": "ISE 3414"
+    },
+    {
+      "code": "ISE 3434",
+      "name": "Applied Optimization: Algorithms, Software, & Machine Learning",
+      "credits": "3",
+      "description": "Advanced concepts in operations research, including the theory of complexity, integer programming, nonlinear programming, stochastic programming, and machine learning. Covers modeling languages and computational optimization software, and algorithms, such as polynomial time and exponential time algorithms, and heuristics. Emphasizes solving large-scale optimization problems, understanding underlying algorithms, and analyzing solutions.",
+      "prerequisites": "ISE 2404 and MATH 2204"
+    },
+    {
+      "code": "ISE 3614",
+      "name": "Human Factors Engineering and Ergonomics",
+      "credits": "3",
+      "description": "Investigation of human factors, ergonomics, and work measurement engineering, with emphasis on a systems approach toward workplace and machine design. Discussion of basic human factors research, discipline-specific ethics, design/evaluation methods for industrial and artificial intelligence (AI) systems including human machine interactions, human information processing, visual and auditory processes, design of display and control, effects of environmental stressors on humans, visualization and sonification of large datasets, human factors role in the design of machine learning and AI applications.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 3624",
+      "name": "Industrial Ergonomics",
+      "credits": "3",
+      "description": "Introduction to ergonomics and work measurement with an emphasis on people at work. Discussion of methods for work measurement, ergonomic assessment, and evaluation, with major topics including productivity and performance, manual materials handling, work-related musculoskeletal disorders, safety, training and legal issues.",
+      "prerequisites": "ISE 3614 and ESM 2104"
+    },
+    {
+      "code": "ISE 4004",
+      "name": "Organizational Processes and Design",
+      "credits": "3",
+      "description": "Behavior, structure, culture, and functions of social organizations. Organization analysis using three perspectives, the strategic design, the political, and the cultural perspective. Reasons for organizational change failures and strategies for successful change management. Future of work and implications for employees and managers. Pre: Senior standing",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4005",
+      "name": "Project Management and Systems Design",
+      "credits": "2",
+      "description": "Capstone design experience for ISE majors. 4005: Structured systems engineering and project management methods and tools to plan, manage, and execute technical industrial and systems engineering projects. Students work in teams to apply industrial and systems engineering and project management tools to define and analyze a real-world problem and communicate results effectively. 4006: Designing, implementing, and evaluating work system solutions, all via students working in teams. Communication of solutions to various project stakeholders.",
+      "prerequisites": "ISE 2034 and ISE 2214 and ISE 3034 and ISE 3214 and ISE 3424 and ISE 3624 and ISE 4204 and ISE 2004 and ISE 2804"
+    },
+    {
+      "code": "ISE 4006",
+      "name": "Project Management and Systems Design",
+      "credits": "2",
+      "description": "Capstone design experience for ISE majors. 4005: Structured systems engineering and project management methods and tools to plan, manage, and execute technical industrial and systems engineering projects. Students work in teams to apply industrial and systems engineering and project management tools to define and analyze a real-world problem and communicate results effectively. 4006: Designing, implementing, and evaluating work system solutions, all via students working in teams. Communication of solutions to various project stakeholders.",
+      "prerequisites": "ISE 4005"
+    },
+    {
+      "code": "ISE 4014",
+      "name": "Introduction to Management Systems",
+      "credits": "3",
+      "description": "Introduction to a systems approach for the design and improvement of management systems used in organizations. Discussion of organizational improvement approaches to improve the design and operation of management systems used in managerial decision-making. Analysis of success and failure of organizational improvement projects. Discussion of performance measurement systems, evaluation, and assessment tools.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4204",
+      "name": "Production Planning and Inventory Control",
+      "credits": "3",
+      "description": "Planning and control of operations in both manufacturing and service industries. Management and utilization of resources to support cost effective products and services. Principles, models, and techniques used for production planning and inventory control.",
+      "prerequisites": "ISE 2404 and ISE 3414 and STAT 4706"
+    },
+    {
+      "code": "ISE 4214",
+      "name": "Lean Manufacturing",
+      "credits": "3",
+      "description": "Overview of Lean Manufacturing principles, theory, methods, and techniques in modern manufacturing enterprises. Lean philosophy and basic concepts, master production scheduling and production smoothing, assembly line sequencing, setup time reduction, U-shaped line balancing/operation, machine arrangement, kanban, autonomation, and value stream mapping. Investigation and discussion of lean manufacturing case studies.",
+      "prerequisites": "ISE 4204"
+    },
+    {
+      "code": "ISE 4264",
+      "name": "Industrial Automation",
+      "credits": "3",
+      "description": "Survey of various technologies employed in industrial automation, with emphasis on industrial applications of robotics, machine vision and learning, and programmable controllers. Introductory robot motion modeling, investigation into problems in Computer- Aided Design (CAD)/Computer-Aided Manufacturing (CAM) integration. Examination of components commonly employed in automation systems, their aggregation, and related production process design.",
+      "prerequisites": "ISE 3204 or ISE 2214"
+    },
+    {
+      "code": "ISE 4304",
+      "name": "Global Issues in Industrial Management",
+      "credits": "3",
+      "description": "Introduction to industrial management topics of current interest explored from a global perspective. Current domestic and international challenges resulting from a global marketplace and the proliferation of information and technology. Political, social, ethical and cultural concerns in global industries. Analyzing organizational systems, operations, supply chains, strategy, and structure in a global market from a systems perspective. Pre: Junior Standing",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4404",
+      "name": "Statistical Quality Control",
+      "credits": "3",
+      "description": "Application of statistical methods and probability models to the monitoring and control of product quality. Techniques for acceptance sampling by variables and attributes. Shewhart control charts for both mean and range of quality characteristics. Design of experiments and analysis of variance for effective data-generation processes. Motivation behind, and theoretical development and application of, both control charts and design of experiments. Design of effective quality control procedures.",
+      "prerequisites": "ISE 3414 and STAT 4706"
+    },
+    {
+      "code": "ISE 4414",
+      "name": "Industrial Quality Control",
+      "credits": "3",
+      "description": "Implementation of statistical quality control techniques in an industrial setting.  Development and analysis of cost models for use in the design of optimal quality control plans.  Also included are new techniques, advanced quality control models, and an examination of the role of industrial statistics in the overall product quality assurance function.",
+      "prerequisites": "ISE 4404"
+    },
+    {
+      "code": "ISE 4424",
+      "name": "Logistics Engineering",
+      "credits": "3",
+      "description": "Introduction to the key issues in the integrated support of a product or process.  Synthesis of topics from earlier studies to provide a cohesive approach to their applications.  Logistics engineering provides a survey of product support issues and methods of resolving them within the context of the overall production activity. C- or better required inISE\u00a03414.",
+      "prerequisites": "ISE 3414"
+    },
+    {
+      "code": "ISE 4624",
+      "name": "Physical Work Assessment",
+      "credits": "3",
+      "description": "Physical ergonomics assessment methods, including cardiorespiratory testing, metabolic energy expenditure and balance, strength, anthropometry, endurance and fatigue, electromyography, biomechanics, thermal stress.",
+      "prerequisites": "ISE 3624"
+    },
+    {
+      "code": "ISE 4634",
+      "name": "Human Factors in Transportation",
+      "credits": "3",
+      "description": "Introduction to human factors principles applied to surface transportation for industrial engineers. Understanding of human factors research methods, with applications for safety to the transportation system. Haddon\u2019s Matrix, human factors research methods, crash countermeasures, public policy implications, and automated driving systems.",
+      "prerequisites": "ISE 3614"
+    },
+    {
+      "code": "ISE 4644",
+      "name": "Risk and Hazard Control",
+      "credits": "3",
+      "description": "Introduction to the fields of risk assessment, risk and hazard control, safety management, process safety, and system safety engineering through exposure to problems, principles, and practice. Integrated systems approach to problem solving. Industrial accident and disaster case study analysis and review of contemporary issues. Review of risk analysis and control techniques and overview of global regulations and guidelines for process, industrial, and occupational safety.",
+      "prerequisites": "ISE 3614"
+    },
+    {
+      "code": "ISE 4654",
+      "name": "Principles of Industrial Hygiene",
+      "credits": "3",
+      "description": "Introduction to the foundations of the field of Industrial Hygiene, that discipline devoted to the anticipation, recognition, measurement, evaluation, and control of occupational health hazards. Includes biological (e.g. microbial agents, allergens), chemical (e.g. solvents, carcinogens, dusts), and physical (e.g. radiation , temperature) hazards. Overview of control of health hazards, such as personal protective equipment, administrative controls, and engineering controls. Will involve lecture and participatory case-study activities. Will provide ample opportunity for hands-on use of monitoring equipment, protective equipment and controls testing devices.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4804",
+      "name": "System Dynamics Modeling of Industrial Systems",
+      "credits": "3",
+      "description": "Computer-aided approach to analyze and make better decisions in complex industrial systems. Systems thinking and causal loop modeling of complexity over time. Interconnectivity of industrial systems, production, and service. Stock-flow diagrams. Systems modeling of product development and market adoption. Simulation of dynamic problems arising in complex systems. Systems modeling and simulation-based decision analysis to improve performance in service and manufacturing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4984A",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ISE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

@@ -1,0 +1,180 @@
+{
+  "courses": [
+    {
+      "code": "ENGR 1014",
+      "name": "Engineering Research Seminar",
+      "credits": "1",
+      "description": "Discussion of current research topics in the College of Engineering by Virginia Tech Faculty. (1C, 1H)",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 1034",
+      "name": "First Year Hypatia Seminar",
+      "credits": "2",
+      "description": "Success strategies that are designed for first-year female engineering students who are residents of the Hypatia learning community are presented.  Students are provided information on study skills; resources and academic support for Virginia Tech students; gender issues in engineering; service learning; leadership; technology; and the College of Engineerings departments/majors.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 1054",
+      "name": "First Year Galileo Seminar",
+      "credits": "2",
+      "description": "Success strategies that are designed for first-year male engineering students who are residents of the Galileo learning community are presented.  Students are provided information on study skills; resources and academic support for Virginia Tech students; gender issues in engineering; service learning; leadership; technology; and the College of Engineerings department/majors. (2H, 2C)",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 1984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2004A",
+      "name": "Engineering International Activity",
+      "credits": "0",
+      "description": "Engineering International Education course reflects academic effort in study abroad settings as defined by the college. No degree applicable credit awarded. Enrollment in this course does not apply toward the definition of full time status. 0 Credits.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2004E",
+      "name": "Engineering Experiential Learning",
+      "credits": "0",
+      "description": "Engineering Experiential course reflects college defined experiential learning experiences for undergraduates. No degree applicable credit is awarded. Enrollment in this course does not apply toward the definition of full time status.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2004R",
+      "name": "Engineering Undergraduate Exploratory Activity",
+      "credits": "0",
+      "description": "Engineering Undergraduate Exploratory Activity course is an undergraduate research experience as defined by the college. No degree applicable credit is awarded. Enrollment in this course will not apply toward the definition of full time status. 0 Credits.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2004S",
+      "name": "Engineering Service Learning",
+      "credits": "0",
+      "description": "Engineering  Service Learning course reflects academic effort in service learning settings as defined by the college. No degree applicable credit is awarded. Enrollment in this course will not apply toward the definition of full time status. 0 Credits.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2044",
+      "name": "Second-Year Galileo and Hypatia Seminar",
+      "credits": "1",
+      "description": "Second-Year Galileo and Hypatia seminar for student leaders. Success strategies designed for second-year engineering students who are participants of the Galileo and Hypatia Living-Learning Community; topics include communication skills, critical thinking skills, diversity, leadership, networking with peers and future employers, and goals associated with academic and professional success.",
+      "prerequisites": "ENGR 1034 or ENGR 1054"
+    },
+    {
+      "code": "ENGR 2164",
+      "name": "Introduction to Scieneering",
+      "credits": "1",
+      "description": "Seminar-based course providing a survey of current interdisciplinary science and engineering research problems; introduction interdisciplinary thinking and communication; issues related to interdisciplinary research teams.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2464",
+      "name": "Engineering Fundamentals for Scientists",
+      "credits": "2",
+      "description": "Introduction to the engineering profession and basic engineering skills for students pursuing science majors. Fundamentals of graphing, technical communication, ethics, the design process, project management, and problem solving as applicable to engineering. Partially duplicates ENGE 1024. May not be used for credit towards any degree from the College of Engineering.",
+      "prerequisites": "ENGR 2164 or COS 2164"
+    },
+    {
+      "code": "ENGR 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2984G",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 3044",
+      "name": "Third-Year Galileo and Hypatia Seminar",
+      "credits": "1",
+      "description": "Success strategies designed for third year engineering students who are participants of the Galileo and Hypatia Living-Learning Community; topics include critical thinking skills, diversity, leadership, networking with peers and future employers, and goals associated with academic and professional success.",
+      "prerequisites": "ENGR 2044"
+    },
+    {
+      "code": "ENGR 3124",
+      "name": "Introduction to Green Engineering",
+      "credits": "3",
+      "description": "Introduction to green engineering and global environmental issues.  Impacts of human and engineering activities on the environment, and techniques that can be utilized to minimize adverse environmental impacts with emphasis on environmentally conscious design and manufacturing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 3954",
+      "name": "Study Abroad",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 4064",
+      "name": "Scieneering Capstone",
+      "credits": "3",
+      "description": "A capstone experience centered around an open-ended, faculty-advised senior project involving the design of a process, material, or technique for solving an interdisciplinary problem. Pre: Enrollment in Interdisciplinary Engineering and Science Minor.",
+      "prerequisites": "ENGR 2464 or BIOL 2124"
+    },
+    {
+      "code": "ENGR 4134",
+      "name": "Environmental Life Cycle Assessment",
+      "credits": "3",
+      "description": "Quantification of the environmental impacts for products, processes, and systems across all engineering disciplines. A detailed look at life cycle phases and formal and informal Life Cycle Assessment (LCA) methodologies including ISO standards, stream-lined LCA, green building ratings systems, carbon footprints, and other environmental ratings systems.",
+      "prerequisites": "ENGR 3124"
+    },
+    {
+      "code": "ENGR 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ENGR 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "Honors",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

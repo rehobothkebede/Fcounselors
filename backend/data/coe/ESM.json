@@ -1,0 +1,383 @@
+{
+  "courses": [
+    {
+      "code": "ESM 1114",
+      "name": "Survey Biomed Engr",
+      "credits": "1",
+      "description": "Scope and history of BME, engr for diagnosis, therapy, and rehabilitation of living systems, medical electronics and instrumentation, non-invasive diagnostic imaging, life support equipment, automation/quantification of medical data, biological signal analysis, clinical engr, biomechanics, biotechnology, genetic engr, bionics, biodynamics, bioastronautics, environmental engr, biomaterials, space medicine, prosthetics, orthotics, artificial organs, artificial intelligence, studies of engr contributions to health care and physiological research. I",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 2014",
+      "name": "Professnl Dvlpmnt Seminar ESM",
+      "credits": "1",
+      "description": "Topics designed to foster the professional development of the ESM student. ESM program objectives and outcomes. Professional careers, employment opportunities, expectations to the profession. Technical concentration within the ESM major. Ethical decision-making, safe and life-long learning.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 2104",
+      "name": "Statics",
+      "credits": "3",
+      "description": "Vector mechanics of forces and moments, free-body diagrams, couples, resultants, equilibrium of particles and rigid bodies in two and three dimensions, forces in trusses, frames, and machines, centroids, centers of mass, distributed forces, internal shear forces and bending moments in beams, shear and moment diagrams, friction, belt friction, area of moments of inertia, parallel axis theorem.",
+      "prerequisites": "MATH 1226"
+    },
+    {
+      "code": "ESM 2114",
+      "name": "Statics & Structures",
+      "credits": "3",
+      "description": "Vector algebra of forces, movements, couples and resultants. Free-body diagrams. Equilibrium of particles and rigid bodies in two and three dimensions. Friction. Forces in trusses and frames. Centroids, centers of mass, area moments of inertia. Internal axial forces, shear forces, and bending moments in bars in beams. Shear and moment diagrams. Stress and strain in bars in beams.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 2204",
+      "name": "Mechanics of Deformable Bodies",
+      "credits": "3",
+      "description": "Concepts of stress, strain, and deformation.  Factor of safety.  Stress-strain relationships and material properties.  Stress concentrations.  Area moments of inertia.  Axially loaded members, torsionally loaded members, bending of beams.  Shear and moment diagrams. Stresses due to combined loading.  Thin-walled pressure vessels.  Transformation of stress including Mohrs circle. Beam deflections and buckling stability.",
+      "prerequisites": "( ESM 2104 or ESM 2114 or AOE 2014 ) and ( MATH 2204 or MATH 2204H or MATH 2406H )"
+    },
+    {
+      "code": "ESM 2304",
+      "name": "Dynamics",
+      "credits": "3",
+      "description": "Vector treatment of the kinematics and kinetics of particles and rigid bodies, Newtons laws, work and energy, impulse and momentum, impact, mass moments of inertia, rotating axes.",
+      "prerequisites": "( ESM 2104 or AOE 2014 ) and ( MATH 2204 or MATH 2204H or MATH 2406H )"
+    },
+    {
+      "code": "ESM 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 2994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 3024",
+      "name": "Introduction to Fluid Mechanics",
+      "credits": "3",
+      "description": "Fluid properties. Hydrostatics. Derivation and application of the mass, momentum, and energy conservation equations. Dimensional analysis and similitude. Introduction to analyses of pipe flows and piping systems, open channel flows, and fluid forces on solid bodies.",
+      "prerequisites": "PHYS 2305 and ESM 2104"
+    },
+    {
+      "code": "ESM 3034",
+      "name": "Fluid Mechanics Laboratory",
+      "credits": "1",
+      "description": "Introduction to experimental fluid mechanics. Dimensional analysis. Experiments on fluid properties, flow measurements, and flow visualization, including manometry, determining hydrostatic forces on submerged surfaces, applications of the impulse-momentum principle, velocity measurements, measuring drag forces, quantifying flow in channels. Modern data acquisition techniques.",
+      "prerequisites": "ESM 2304 and ECE 3054"
+    },
+    {
+      "code": "ESM 3054",
+      "name": "Mechanical Behavior of Materials",
+      "credits": "3",
+      "description": "Mechanical properties and behavior of solid materials subjected to static, cyclic, and sustained loads resulting from stress states, environments, and stress histories typical of service conditions; multiaxial failure criteria; behavior of cracked bodies; fatigue of materials; creep of materials; microstructure-property relationships; design methodologies.",
+      "prerequisites": "ESM 2204 and ( MSE 2034 or MSE 2044 or MSE 3094 or AOE 3094 or CEE 3684 )"
+    },
+    {
+      "code": "ESM 3064",
+      "name": "Mechanical Behavior of Materials Laboratory",
+      "credits": "1",
+      "description": "Laboratory experiments on behavior and mechanical properties of solid materials. Tension, compression, bending, hardness, nano-indentation, and impact tests; behavior of cracked bodies; fatigue and crack growth tests; creep deformation; microstructure-property relationships; laboratory equipment, instrumentation, and computers.",
+      "prerequisites": "ESM 2204"
+    },
+    {
+      "code": "ESM 3114",
+      "name": "Problem Definition and Scoping in Engineering Design",
+      "credits": "1",
+      "description": "Define open-ended engineering design projects, identify relevant broad social, global, economic, cultural and technical needs and constraints, determine ways in which technical skills contribute to addressing complex engineering design challenges.  Identify a capstone project forESM\u00a04015-4016.  Pre-requisite: Junior standing in ESM.",
+      "prerequisites": "ESM 2014"
+    },
+    {
+      "code": "ESM 3124",
+      "name": "Dynamics II- Analytical and 3-D Motion",
+      "credits": "3",
+      "description": "Review of Newtons Laws, introduction to Lagranges equations, rotating coordinate systems, particle dynamics, systems of particles, rigid-body dynamics, small amplitude oscillations, holonomic and nonholonomic constraints, phase space and energy methods.",
+      "prerequisites": "ESM 2304 and ( MATH 2214 or MATH 2214H or MATH 2406H ) and ( MATH 2204 or MATH 2204H or MATH 2406H )"
+    },
+    {
+      "code": "ESM 3134",
+      "name": "Dynamics III - Vibration and Control",
+      "credits": "3",
+      "description": "Single-degree-of-freedom vibration, n-degree-of-freedom systems, continuous systems, nonlinear systems, system stability, introduction to the feedback control of dynamic systems.",
+      "prerequisites": "ESM 3124 and MATH 4564"
+    },
+    {
+      "code": "ESM 3154",
+      "name": "Solid Mechanics",
+      "credits": "3",
+      "description": "Introduction to tensors, mathematical description of deformations and internal forces in solids, equations of equilibrium, principle of virtual work, linear elastic material behavior, solution for linear elastic problems including axially and spherically symmetric solutions, stress function solutions to plane stress and strain problems, solutions to 3-D problems, energy methods.",
+      "prerequisites": "ESM 2204 and ( MATH 2214 or MATH 2214H )"
+    },
+    {
+      "code": "ESM 3234",
+      "name": "Fluid Mechanics I-Control Volume Analysis",
+      "credits": "3",
+      "description": "Fluid statics. Control volume approach to flow analysis: conservation laws, pipe flows, compressible flow, open channel flow.",
+      "prerequisites": "ESM 2304 and PHYS 2306"
+    },
+    {
+      "code": "ESM 3274",
+      "name": "Biomedical Instrumentation",
+      "credits": "3",
+      "description": "Principles and practices of measurements, measurement standards and accuracy, specialized measurement systems used in biomedical engineering research and development, detector, transducers, signal modifying systems, readout devices, their use in the biomedical laboratory and in clinical applications.",
+      "prerequisites": "BIOL 1006"
+    },
+    {
+      "code": "ESM 3334",
+      "name": "Fluid Mechanics II-Differential Analysis",
+      "credits": "3",
+      "description": "Introduction to continuum mechanics for fluid systems. Fluid kinematics. Differential approach to flow analysis: conservation equations, exact solutions, potential flows, viscous flows.",
+      "prerequisites": "ESM 3234 or ME 3404"
+    },
+    {
+      "code": "ESM 3444",
+      "name": "Mechanics Laboratory",
+      "credits": "2",
+      "description": "Concepts in instrumentation, data acquisition, and signal analysis. Measurements of mechanics quantities and phenomena associated with solid, fluid, and dynamical systems. Open-ended problem definition and approach formulation. Application and synthesis of engineering mechanics fundamentals to the modeling and solution of open-ended problems. Group-working skills and effective written and oral communication.",
+      "prerequisites": "ESM 3234 and ESM 3034 and ESM 3054 and ESM 3064 and ESM 3124 and ECE 3054"
+    },
+    {
+      "code": "ESM 3704",
+      "name": "Basic Principles of Structures",
+      "credits": "3",
+      "description": "Static equilibrium of forces and moments, concurrent and nonconcurrent force systems, center of gravity, concentrated and distributed loads.  Solution of trusses.  Stress and strain, elastic behavior of materials, cables and arches, shear, bending, and deformation in beams, indeterminate structures.  Not available to students in engineering.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4014",
+      "name": "Applied Fluid Mechanics",
+      "credits": "3",
+      "description": "Analysis of flow over practical configurations, panel methods, Reynolds-averaged Navier-Stokes equations, turbulent boundary layers, flow separation and three-dimensional effects.  Unsteady flows, fluid-structure interactions.",
+      "prerequisites": "ESM 2074 and ESM 3016"
+    },
+    {
+      "code": "ESM 4015",
+      "name": "Creative Design and Project",
+      "credits": "3",
+      "description": "Capstone senior design project. Synthesis and application of fundamental principles of engineering science and mechanics to an open-ended problem. 4015: Project proposal, including objectives, goals and plans for project. Identification of needs, constraints, and engineering standards with consideration of public health, safety, and welfare, including ethical, global, cultural, societal, environmental, and economic contexts. Proof-of-concept prototyping. Teamwork and communication of design and project progress. 4016: Design specifications with consideration of public health, safety, and welfare, as well as ethical, global, cultural, social, environmental, and economic factors where applicable. Design, test, and analysis of functional prototype. Teamwork and communication of design and project progress. Pre: Senior standing.",
+      "prerequisites": "ESM 3114"
+    },
+    {
+      "code": "ESM 4016",
+      "name": "Creative Design and Project",
+      "credits": "3",
+      "description": "Capstone senior design project. Synthesis and application of fundamental principles of engineering science and mechanics to an open-ended problem. 4015: Project proposal, including objectives, goals and plans for project. Identification of needs, constraints, and engineering standards with consideration of public health, safety, and welfare, including ethical, global, cultural, societal, environmental, and economic contexts. Proof-of-concept prototyping. Teamwork and communication of design and project progress. 4016: Design specifications with consideration of public health, safety, and welfare, as well as ethical, global, cultural, social, environmental, and economic factors where applicable. Design, test, and analysis of functional prototype. Teamwork and communication of design and project progress. Pre: Senior standing.",
+      "prerequisites": "ESM 4015"
+    },
+    {
+      "code": "ESM 4024",
+      "name": "Advanced Mechanical Behavior of Materials",
+      "credits": "3",
+      "description": "Mechanical behavior of materials, emphasizing solid mechanics aspects and methods for predicting strength and life of engineering components.  Plasticity, failure criteria, fracture mechanics, crack growth, strain-based fatigue, and creep.  Microstructure-property relationships, and laboratory demonstrations.",
+      "prerequisites": "ESM 3054 or MSE 3054"
+    },
+    {
+      "code": "ESM 4044",
+      "name": "Mechanics of Composite Materials",
+      "credits": "3",
+      "description": "Introduction to the deformation, stress, and strength analysis of continuous-fiber-polymer-matrix laminated composites.  Fabrication, micromechanics of stiffness and expansional coefficients, classical lamination theory (CLT).  Environmentally induced stresses.  Computerized implementation and design",
+      "prerequisites": "ESM 2204 or AOE 2024"
+    },
+    {
+      "code": "ESM 4054",
+      "name": "Solid and Structural Mechanics",
+      "credits": "3",
+      "description": "Introduction to elasticity and continuum mechanics, plane stress and plane strain; bending of beams; deflections, shear center; torsion of general cross-section bars; comparison of elasticity solutions with strength of materials; introduction to energy methods, application of virtual work to frames, beams, and shafts; elastic instability of columns.  3D trusses, cables and arches; flexibility and stiffness coefficients; indeterminate structures, superposition. II",
+      "prerequisites": "( ESM 2204 and ESM 3054 and ESM 2074) or ( MSE 3354 )"
+    },
+    {
+      "code": "ESM 4064",
+      "name": "Experimental Mechanics",
+      "credits": "3",
+      "description": "Analytical and experimental methods for measuring strain fields in elastic bodies including mechanical, electrical, and optical methods (using electric resistance strain gages, photoelasticity, moire interferometry, and crack extension gages).",
+      "prerequisites": "ESM 2204"
+    },
+    {
+      "code": "ESM 4084",
+      "name": "Engineering Design Optimization",
+      "credits": "3",
+      "description": "Use of mathematical programming methods for engineering design optimization including linear programming, penalty function methods, and gradient projection methods. Applications to minimum weight design, open-loop optimum control, machine design, and appropriate design problems from other engineering disciplines.",
+      "prerequisites": "MATH 2224 or MATH 2204 or MATH 2204H"
+    },
+    {
+      "code": "ESM 4094",
+      "name": "Computational Methods in Mechanics",
+      "credits": "3",
+      "description": "Finite-difference methods for parabolic, hyperbolic, and elliptic partial differential equations; explicit and implicit methods; stability analysis; sparse linear systems. Introduction to the finite-element method.  Applications to engineering problems in heat transfer, fluid mechanics, solids, structural mechanics, and motion. II",
+      "prerequisites": "ESM 2074 and MATH 4564"
+    },
+    {
+      "code": "ESM 4105",
+      "name": "Engineering Analysis of Physiologic Systems",
+      "credits": "3",
+      "description": "Engineering analysis of human physiology.  Physiologic systems are treated as engineering systems with emphasis input-output considerations, system interrelationships and engineering analogs. 4105 - Mass and electrolyte transfer, nerves, muscles, renal system. 4106 - cardiovascular mechanics, respiratory system, digestive systems, senses.",
+      "prerequisites": "ESM 2304 and MATH 2214"
+    },
+    {
+      "code": "ESM 4106",
+      "name": "Engineering Analysis of Physiologic Systems",
+      "credits": "3",
+      "description": "Engineering analysis of human physiology.  Physiologic systems are treated as engineering systems with emphasis input-output considerations, system interrelationships and engineering analogs. 4105 - Mass and electrolyte transfer, nerves, muscles, renal system. 4106 - cardiovascular mechanics, respiratory system, digestive systems, senses.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4114",
+      "name": "Nonlinear Dynamics and Chaos",
+      "credits": "3",
+      "description": "Motion of systems governed by differential equations: stability, geometry, phase planes, bifurcations, Poincare sections, point attractors, limit cycles, chaos and strange attractors, Lyapunov exponents. Forced, nonlinear oscillations: jump phenomena, harmonic resonances, Hopf bifurcations, averaging and multiple-scales analysis. Systems governed by discrete maps: return maps, cobweb plots, period-multiplying bifurcations, intermittency, delay coordinates, fractal dimensions.",
+      "prerequisites": "( ESM 2304 or PHYS 2504 ) and ( MATH 2214 or MATH 2214H )"
+    },
+    {
+      "code": "ESM 4124",
+      "name": "Multi-Body Mechanics and Visualization",
+      "credits": "3",
+      "description": "Spatial geometry, vector algebra, three-dimensional rotations, reference frames, generalized coordinates, generalized speeds, configuration constraints, velocity constraints, constraint singularities, kinematic differential equations, force, torque, energy, particle dynamics, rigid-body dynamics, computer algebra, computer animations.",
+      "prerequisites": "MATH 1114 and MATH 2224"
+    },
+    {
+      "code": "ESM 4154",
+      "name": "Nondestructive Evaluation of Materials",
+      "credits": "3",
+      "description": "Concepts and methods of nondestructive evaluation of materials.  Discussion of techniques and mathematical bases for methods involving mechanical, optical, thermal, and electromagnetic phenomena; design for inspectability; technique selection criteria; information processing and handling; materials response measurement and modeling; signal analysis.",
+      "prerequisites": "ESM 3054 and ( PHYS 2206 or PHYS 2306 )"
+    },
+    {
+      "code": "ESM 4194",
+      "name": "Sustainable Energy Solutions for a Global Society",
+      "credits": "3",
+      "description": "Addresses energy metrics, global and US energy supply and demand, transitional energy sources (natural gas, petroleum, coal, nuclear), sustainable/renewable source (solar, geothermal, hydro, tidal, wind, biofuels), and methods for increasing efficiencies (energy storage, batteries, green building, conservation).  Options for transportation, electricity, lighting and heating needs of industry, agriculture, community, and citizens.  Production, transmission, storage, and disposal issues considered in the context of global political, economic, and environmental impacts.",
+      "prerequisites": "( CHEM 1035 or CHEM 1055 ) and PHYS 2306"
+    },
+    {
+      "code": "ESM 4204",
+      "name": "Musculoskeletal Biomechanics",
+      "credits": "3",
+      "description": "Skeletal anatomy and mechanics.  Muscle anatomy and mechanics.  Theory and application of electromyography. Motion and force measuring equipment and techniques including force platforms. Inverse dynamics modeling of the human body.  Current topics in musculoskeletal biomechanics research.",
+      "prerequisites": "ESM 2304 and ( CS 1044 or CS 1064 or CS 1114 or AOE 2074 or ESM 2074 or ME 2004 )"
+    },
+    {
+      "code": "ESM 4224",
+      "name": "Biodynamics and Control",
+      "credits": "3",
+      "description": "Application of Lagrange mechanics to study of human movement dynamics and neuromuscular control of multi-degree-of-freedom systems.  Computational simulation of forward-dynamics and state-space linear control of human movement to investigate functional performance and neuromuscular pathology.",
+      "prerequisites": "ESM 2304 and ( CS 1044 or CS 1064 or CS 1114 or AOE 2074 or ESM 2074 or ME 2004 or BMES 2074 )"
+    },
+    {
+      "code": "ESM 4234",
+      "name": "Mechanics of Biological Systems",
+      "credits": "3",
+      "description": "Anatomy and physiology of biological systems such as cells, tissues, and organs. Experimental techniques and mechanical tests for determining the mechanical behavior of biological systems. Simplified mechanics-based mathematical models of biological systems. Specific biological systems include cells, tissues, and organs of the musculoskeletal, cardiovascular, integumentary system, and reproductive systems.",
+      "prerequisites": "ESM 2204 and MATH 2214 and MATH 2114"
+    },
+    {
+      "code": "ESM 4245",
+      "name": "Mechanics of Animal Locomotion",
+      "credits": "3",
+      "description": "4245: Mechanical and biological principles of terrestrial animal locomotion, including walking, running, jumping, climbing, burrowing, and crawling. Terrestrial locomotion- based bio-inspired design. 4246: Mechanical and biological principles of animal locomotion in fluids, including active and gliding flight, swimming, jetting, and running on water. Engineering design inspired by fluid based biological locomotion.",
+      "prerequisites": "ESM 3054"
+    },
+    {
+      "code": "ESM 4246",
+      "name": "Mechanics of Animal Locomotion",
+      "credits": "3",
+      "description": "Mechanical and biological principles of of animal locomotion in fluids, including active and gliding flight, swimming, jetting, and running on water. Enginneering desgn inspired by fluid-based biological locomotion.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4304",
+      "name": "Hemodynamics",
+      "credits": "3",
+      "description": "Study of the human cardiovascular system and blood flow. Anatomy and physiology of the human heart, vascular system, and its organization.  Blood physiology and rheology. Non-Newtonian blood flow models.  Steady and pulsatile blood flow in rigid and elastic arteries.  Pressure waves in elastic arteries.  Three-dimensional blood flow in the aortic arch and flow around heart valves.",
+      "prerequisites": "ESM 3334 or ME 3404 or ME 3414"
+    },
+    {
+      "code": "ESM 4404",
+      "name": "Fundamentals of Professional Engineering",
+      "credits": "2",
+      "description": "A refresher of basic principles and problem solving techniques involving twelve subject areas most common to all engineering curricula.  The topics include those tested by the National Council of Engineering Examiners on the EIT (Engineer in Training) examination, the first requirement, in all fifty states, toward P.E. (Professional Engineer) licensing.  Duplicates material of other engineering courses and impracticable for non-engineers, hence not usable for credit toward any degree.  Pre: Junior and senior standing in Engineering or in Building Construction or Graduate students in Engineering.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4444",
+      "name": "Stability of Structures",
+      "credits": "3",
+      "description": "Introduction to the methods of static structural stability analysis and their applications.  Buckling of columns and frames.  Energy method and approximate solutions.  Elastic and inelastic behavior.  Torsional and lateral buckling. Use of stability as a structural design criterion.",
+      "prerequisites": "AOE 3024 or CEE 3404"
+    },
+    {
+      "code": "ESM 4614",
+      "name": "Probability-Based Modeling, Analysis, and Assessment",
+      "credits": "3",
+      "description": "Uncertainty analysis of engineering data, parameters estimation, probability concepts, random variables, functions of random variables, probability-based performance functions and failure modes, risk and reliability functions, probability of failure and safety index, random sequences and stochastic processes, correlation functions and spectral densities, return period and extreme values, failure rates, performance monitoring and service life prediction.",
+      "prerequisites": "ESM 2204"
+    },
+    {
+      "code": "ESM 4734",
+      "name": "An Introduction to the Finite Element Method",
+      "credits": "3",
+      "description": "The finite element method is introduced as a numerical method of solving the ordinary and partial differential equations arising in fluid flow, heat transfer, and solid and structural mechanics.  The classes of problems considered include those described by the second-order and fourth-order ordinary differential equations and second-order partial differential equations.  Both theory and applications of the method to problems in various fields of engineering and applied sciences will be studied.",
+      "prerequisites": "( CS 3414 or MATH 3414 or AOE 2074 or ESM 2074) and (MATH 2224 or MATH 2224H or MATH 2204 or MATH 2204H )"
+    },
+    {
+      "code": "ESM 4904",
+      "name": "Project and Report",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4974H",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ESM 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "Honors",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

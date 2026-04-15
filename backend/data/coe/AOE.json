@@ -1,0 +1,558 @@
+{
+  "courses": [
+    {
+      "code": "AOE 2014",
+      "name": "Statics and Mechanics of Materials",
+      "credits": "3",
+      "description": "Vector mechanics of forces and moments, free-body diagrams, couples, resultants, equilibrium of rigid bodies in two and three dimensions for aerospace and ocean vehicles, forces in trusses and frames, centroids, centers of mass, first and second area moments, parallel axis theorem, distributed forces, internal axial and shear forces and bending moments in bars/beams, shear and moment diagrams, concepts of normal/shear stress and strain in bar/beams, material properties for structural performance.",
+      "prerequisites": "PHYS 2305 and MATH 1226"
+    },
+    {
+      "code": "AOE 2024",
+      "name": "Thin-Walled Structures",
+      "credits": "3",
+      "description": "Basic structural elements of stringer-stiffened thin-walled structures, forces, moments, stresses, and deformation of segmented bars/beams, flexure stress and deflection of beams principal plane, plane of bending and plane of loading for beams with asymmetric cross sections, stresses, and twist due to torsion, shear flow and shear center in open and closed stiffened thin-walled structures, stiffened multicell beams, materials properties and selection.",
+      "prerequisites": "( ESM 2104 and ESM 2204 ) or ESM 2114 or AOE 2014 and (MATH 2224 or MATH 2224H or MATH 2204 or MATH 2204H or MATH 2406H )"
+    },
+    {
+      "code": "AOE 2054",
+      "name": "Electronics for Aerospace and Ocean Engineers",
+      "credits": "3",
+      "description": "Electrical circuits.  Discrete passive and active electrical components.  Phasors and impedence.  AC power analysis. Digital electronics.  Electronics for autonomous and piloted aerospace and ocean systems.  Electronics for vehicle navigation, guidance, and control.  Instrumentation and data acquisition systems.",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 2074",
+      "name": "Computational Methods",
+      "credits": "2",
+      "description": "Solving engineering problems using numerical methods and software, truncation and round-off error, root finding, linear and polynomial regression, interpolation, splines, numerical integration, numerical differentiation, solution of linear simultaneous equations. A grade of C- or better is required in the prerequisite.",
+      "prerequisites": "( ENGE 1216 or ENGE 1434 or ENGE 1414 ) and ( CS 1044 or CS 1064 or CS 1114 )"
+    },
+    {
+      "code": "AOE 2104",
+      "name": "Introduction to Aerospace Engineering and Aircraft Performance",
+      "credits": "3",
+      "description": "Overview of aerospace engineering from a design perspective; introductory aerodynamics, lift, drag, and the standard atmosphere; aircraft performance, stability, and control; propulsion; structures; rocket and spacecraft trajectories and orbits.",
+      "prerequisites": "PHYS 2305"
+    },
+    {
+      "code": "AOE 2114",
+      "name": "Fundamentals of Flight Training AOE",
+      "credits": "3",
+      "description": "Foundational course to prepare students with knowledge of basic aeronautics to take the Federal Aviation Administration Knowledge Exam, a requirement for the award of a private pilots license.  Explores airplane systems and functions, flight operations, weather, aeronautical navigation, communications, human factors, and federal aviation regulations.",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 2204",
+      "name": "Introduction to Ocean Engineering",
+      "credits": "3",
+      "description": "Introduction to the design of ocean vehicles and offshore structures.  Buoyancy.  Hull geometry, body plan drawing, coefficients of form.  Hydrostatic calculations.  Intact and damaged stability of ocean vehicles and offshore structures. Large angle stability.  Stability criteria for design and related rules and regulations.  Marine economics.",
+      "prerequisites": "PHYS 2305"
+    },
+    {
+      "code": "AOE 2664",
+      "name": "Exploration of the Space Environment",
+      "credits": "3",
+      "description": "This introductory course covers a broad range of scientific, engineering, and societal aspects associated with the exploration and technological exploitation of space. Topics covered include: science of the space environment, space weather hazards and societal impacts, orbital mechanics and rocket propulsion, spacecraft subsystems, applications of space-based technologies.",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 2994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 3014",
+      "name": "Fluid Dynamics for Aerospace and Ocean Engineers",
+      "credits": "3",
+      "description": "Fundamentals of fluids:  stress, statics, viscosity, laminar and turbulent flow.  Conservation of mass and momentum. Vorticity, circulation, and lift.  Navier-Stokes equations. Ideal flow in two dimensions, streamlines, stream function, velocity potential, superposition. Thin airfoil theory. Physics of laminar and turbulent boundary layers and of transition.  Boundary layer equations and basic tools for boundary layer calculation.  Collaborative problem solving.",
+      "prerequisites": "( AOE 2104 or AOE 2204 ) and ( MATH 2214 or MATH 2214H or MATH 2406H ) and ESM 2304"
+    },
+    {
+      "code": "AOE 3034",
+      "name": "System Dynamics and Control",
+      "credits": "3",
+      "description": "Free and forced response of first, second, and higher order linear, time-invariant (LTI) systems in frequency and time domains.  Modeling of low-order mechanical systems. Transmission and absorption of vibrations.  Transient and steady state performance specifications.  Introduction to closed-loop control using proportional-integral-derivative (PID) feedback.  Closed-loop stability analysis using root locus method.",
+      "prerequisites": "ESM 2304 and ( MATH 2214 or MATH 2214H or MATH 2406H )"
+    },
+    {
+      "code": "AOE 3044",
+      "name": "Boundary Layer and Heat Transfer",
+      "credits": "3",
+      "description": "Concepts of viscous flows and physical properties equations of laminar motion with heat and mass transfer; exact and approximate solutions; finite-difference methods; transition to turbulence; analysis in turbulent flows.  Conduction and convective heat transfer.",
+      "prerequisites": "AOE 3014 and ( AOE 3164 or AOE 3264 or ME 2134 or ME 3134) and MATH 4564"
+    },
+    {
+      "code": "AOE 3054",
+      "name": "Experimental Methods",
+      "credits": "3",
+      "description": "Fundamental terminology of experimental work and testing in aerospace and ocean engineering. Flow quantities, displacement, and strain measurements of simple structures in both static and dynamic settings. Analog and digital instrumentation. Data acquisition systems and appropriate software. Through teamwork design, prepare, and conduct an experiment, and document its results and findings. Ethics of technical reporting, through proper external source citation and honestly describing procedures and reporting data. Statistical concepts.",
+      "prerequisites": "AOE 2024 and AOE 2054 and AOE 3014 and AOE 3034"
+    },
+    {
+      "code": "AOE 3114",
+      "name": "Aerodynamics & Compressibility",
+      "credits": "3",
+      "description": "Inviscid aerodynamics. Wings and wing theory for low speed flight. How and when compressibility becomes important. Integral form of the conservation equations and thermodynamics. One-dimensional steady compressible flow, nozzle flows. Compressible flow with heat addition. Oblique shock waves and Prandtl-Meyer expansions. Supersonic airfoils. Aerodynamics at subsonic and transonic speeds.",
+      "prerequisites": "AOE 3014"
+    },
+    {
+      "code": "AOE 3124",
+      "name": "Aerospace Structures",
+      "credits": "3",
+      "description": "Inertia loads on aerospace structures, introduction to 3D elasticity including strain-displacement relations, stress-strain relations, stress transformation, and equations of equilibrium, plane stress and plane strain elasticity, stress concentration factors, aerospace materials and failure criteria, margins of safety analysis, plate bending, structural stability.",
+      "prerequisites": "AOE 2024 or AOE 3024"
+    },
+    {
+      "code": "AOE 3134",
+      "name": "Air Vehicle Dynamics",
+      "credits": "3",
+      "description": "Nonlinear kinematic and dynamic equations of aircraft motion; estimation of stability derivatives from aircraft geometry; determination of steady motions; linearization; longitudinal and lateral-directional small perturbation equations; static and dynamic stability of equilibrium flight.",
+      "prerequisites": "AOE 3034"
+    },
+    {
+      "code": "AOE 3144",
+      "name": "Space Vehicle Dynamics",
+      "credits": "3",
+      "description": "Attitude representations and equations of rotational motion for rigid and multibody spacecraft; attitude determination; linearization and stability analysis of steady motions; effect of the gravity gradient; torque thrusters and momentum exchange devices.",
+      "prerequisites": "AOE 3034 and AOE 3154"
+    },
+    {
+      "code": "AOE 3154",
+      "name": "Astromechanics",
+      "credits": "3",
+      "description": "This course teaches the application of Newtons Laws to the dynamics of spaceflight. Topics include the two-body problem equations of motion, Keplers Laws, classical orbital elements, energy and time-of-flight relations, orbit specification and determination, orbital maneuvering and orbit transfers, patched conic approximations, and relative motion.",
+      "prerequisites": "ESM 2304"
+    },
+    {
+      "code": "AOE 3164",
+      "name": "Aerothermodynamics and Propulsion Systems",
+      "credits": "3",
+      "description": "The fundamental principles of aerothermodynamics applied to aerospace propulsion system performance analysis and design. Foundations of thermodynamics, heat transfer, compressible fluid mechanics, and combustion.  Applications of principles to air-breathing and rocket engines.",
+      "prerequisites": "AOE 3014"
+    },
+    {
+      "code": "AOE 3214",
+      "name": "Ocean Wave Mechanics",
+      "credits": "3",
+      "description": "Introduction to theory of wave in deep and shallow water, including wave generation and propagation.  Description of wave statistics and spectral representation for realistic ocean conditions.  Introduction to ocean acoustics.",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 3224",
+      "name": "Ocean Structures",
+      "credits": "3",
+      "description": "Overview of surface ship, submarine and offshore structural systems, materials and loadings.  Application of beam and plate bending and buckling theories.  Frame structural analysis. Fatigue analysis.",
+      "prerequisites": "AOE 2024"
+    },
+    {
+      "code": "AOE 3234",
+      "name": "Ocean Vehicle Dynamics",
+      "credits": "3",
+      "description": "Nonlinear kinematic and dynamic equations of rigid vessel motion in water; hydrostatic and hydrodynamic forces in calm water; motion response to regular and irregular waves; single, multiple and coupled motions degrees of freedom; spectral analysis of response of random seas; statistical analysis of extreme motion response; impact of seakeeping criteria on ocean vehicles design; principles of hydroelasticity; principles of maneuvering of surface and underwater vehicles.",
+      "prerequisites": "AOE 3014 and AOE 3034 and AOE 3214"
+    },
+    {
+      "code": "AOE 3264",
+      "name": "Thermodynamics and Marine Propulsion",
+      "credits": "3",
+      "description": "Fundamental thermodynamics and power cycles; marine propulsion plants and transmission systems; methods of estimating resistance of ocean vehicles; propulsion devices and their efficiencies; introduction to propeller theory; cavitation.",
+      "prerequisites": "AOE 2204 and AOE 3014"
+    },
+    {
+      "code": "AOE 3354",
+      "name": "Avionics Systems",
+      "credits": "3",
+      "description": "A systems approach to avionics architecture for both civil and military aircraft. Emphasis on system architecture, accepted development processes, sensors, navigation, and certification. Evolution of communications, data models, and sensors required to support autonomous flight as well as the exposures to physical cyber security threats faced by flight management, navigation, and data interchange systems.",
+      "prerequisites": "AOE 2054 or ECE 2054"
+    },
+    {
+      "code": "AOE 3564",
+      "name": "Principles of Project Design and Management",
+      "credits": "3",
+      "description": "Fundamental principles of model-based project design. Creation of plans for successful development of complex systems such as air, space, and ocean vehicles. Understanding of engineering project performance including emergent scope, cost, and schedule. Systems thinking and systems engineering methods applied to engineering projects as systems: stakeholders, scope, dependence and teamwork dynamics; cost and schedule tradespace; risk assessment and mitigation strategies; and choices in project architecture and organization. Basics of effective teamwork, team building, leadership, and management. Basic understanding of ethical reasoning and conflict management aspects. Oral presentations for design reviews. Pre: Junior standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 3804",
+      "name": "Special Topics in Aircraft Systems",
+      "credits": "3",
+      "description": "Advanced undergraduate topics in aircraft systems. Covers technical, environmental, and economic challenges and opportunities in contemporary and future aircraft. Function and integration of propulsion, airborne auxiliary power, navigation, flight controls, cargo, landing gear, cabin systems, fuel, and other subsystems. May be repeated with different content for a maximum of 9 credits.",
+      "prerequisites": "AOE 2104"
+    },
+    {
+      "code": "AOE 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 4004",
+      "name": "State-Space Control",
+      "credits": "3",
+      "description": "Control design and analysis for linear, state-space system models.  Properties of linear, time-invariant control systems: Input/output stability, internal stability, controllability, and observability.  Performance and robustness measures.  State feedback control design methods: pole placement, linear-quadratic control.  State observers and output feedback control.  Applications to control of mechanical systems including ocean, atmospheric, and space vehicles.",
+      "prerequisites": "AOE 3034"
+    },
+    {
+      "code": "AOE 4024",
+      "name": "An Introduction to the Finite Element Method",
+      "credits": "3",
+      "description": "The finite element method is introduced as a numerical method of solving the ordinary and partial differential equations arising in fluid flow, heat transfer, and solid and structural mechanics.  The classes of problems considered include those described by the second-order and fourth-order ordinary differential equations and second-order partial differential equations.  Both theory and applications of the method to problems in various fields of engineering and applied sciences will be studied.",
+      "prerequisites": "( CS 3414 or MATH 3414 or AOE 2074 or ESM 2074) and (MATH 2224 or MATH 2224H or MATH 2204 or MATH 2204H )"
+    },
+    {
+      "code": "AOE 4034",
+      "name": "Introduction to Mechanical and Structural Vibrations",
+      "credits": "3",
+      "description": "Free and forced vibrations of single-degree-of-freedom systems, multi-degree-of-freedom systems, and continuous systems. Natural frequencies and mode shapes. Proportional and nonproportional damping. Response to harmonic, periodic, and nonperiodic excitations. Boundary-value problem for continuous systems. Eigenvalue problem for rods, beams, and plates. Vibration response of system in modal coordinates. Approximate methods including Assumed Modes, the Rayleigh-Ritz method, and Method of Weighted Residuals.",
+      "prerequisites": "AOE 3034"
+    },
+    {
+      "code": "AOE 4054",
+      "name": "Stability of Structures",
+      "credits": "3",
+      "description": "Introduction to the methods of static structural stability analysis and their applications.  Buckling of columns and frames.  Energy method and approximate solutions.  Elastic and inelastic behavior.  Torsional and lateral buckling. Use of stability as a structural design criterion.",
+      "prerequisites": "AOE 2024 or AOE 3024 or CEE 3404"
+    },
+    {
+      "code": "AOE 4064",
+      "name": "Fluid Flows in Nature",
+      "credits": "3",
+      "description": "Course designed to build upon and broaden a basic traditional engineering knowledge of fluid flows into areas concerning a variety of natural occurrences and phenomena that involve fluid motions in important ways. Drag of sessile systems and motile animals, gliding and soaring, flying and swimming, internal flows in organisms, low Reynolds number flows, fluid-fluid interfaces, unsteady flows in nature and wind engineering.",
+      "prerequisites": "AOE 3014 or CEE 3304 or ESM 3024 or ME 3404 or ME 3414"
+    },
+    {
+      "code": "AOE 4065",
+      "name": "Air Vehicle Design",
+      "credits": "3",
+      "description": "Fundamental principles of innovative air vehicle design. Qualitative and quantitative decision-making tools. Multidisciplinary design teams with emphasis on ethics and professionalism. Project risks and mitigation plans. Oral presentations for design reviews. Written engineering design report. 4065: Proven conceptual design process. Tradeoff studies. Air vehicle weight estimation. Air vehicle concepts feasibility assessment; 4066: Preliminary design tools and processes. Efficient and light-weight air vehicles. Air vehicle design validation.",
+      "prerequisites": "AOE 2104 and AOE 3054 and AOE 3114 and AOE 3124 and AOE 3134 and AOE 3164"
+    },
+    {
+      "code": "AOE 4066",
+      "name": "Air Vehicle Design",
+      "credits": "3",
+      "description": "Fundamental principles of innovative air vehicle design. Qualitative and quantitative decision-making tools. Multidisciplinary design teams with emphasis on ethics and professionalism. Project risks and mitigation plans. Oral presentations for design reviews. Written engineering design report. 4065: Proven conceptual design process. Tradeoff studies. Air vehicle weight estimation. Air vehicle concepts feasibility assessment; 4066: Preliminary design tools and processes. Efficient and light-weight air vehicles. Air vehicle design validation.",
+      "prerequisites": "AOE 4065"
+    },
+    {
+      "code": "AOE 4084",
+      "name": "Engineering Design Optimization",
+      "credits": "3",
+      "description": "Use of mathematical programming methods for engineering design optimization including linear programming, penalty function methods, and gradient projection methods. Applications to minimum weight design, open-loop optimum control, machine design, and appropriate design problems from other engineering disciplines.",
+      "prerequisites": "MATH 2224 or MATH 2204 or MATH 2204H"
+    },
+    {
+      "code": "AOE 4105",
+      "name": "Experiments for Aerospace Design",
+      "credits": "1",
+      "description": "Methods for the planning, implementation, assessment and use of experiments in aerospace design problems. 4105: Experiment design, advanced sensor systems, additive manufacturing, uncertainty, data analysis and reporting. 4106: Application of experiments as an integral component of engineering design. Co: 4066 or 4166 for 4106.",
+      "prerequisites": "AOE 3054"
+    },
+    {
+      "code": "AOE 4106",
+      "name": "Experiments for Aerospace Design",
+      "credits": "1",
+      "description": "Methods for the planning, implementation, assessment and use of experiments in aerospace design problems. 4105: Experiment design, advanced sensor systems, additive manufacturing, uncertainty, data analysis and reporting. 4106: Application of experiments as an integral component of engineering design. Co: 4066 or 4166 for 4106.",
+      "prerequisites": "AOE 4105"
+    },
+    {
+      "code": "AOE 4114",
+      "name": "Applied Computational Aerodynamics",
+      "credits": "3",
+      "description": "Development of computational methods for application to wing aerodynamic problems.  Incompressible airfoil codes. Panel methods and vortex lattice methods.  Finite difference techniques.  Transonic and supersonic applications.",
+      "prerequisites": "AOE 3114"
+    },
+    {
+      "code": "AOE 4124",
+      "name": "Configuration Aerodynamics",
+      "credits": "3",
+      "description": "Aerodynamic design of flight vehicles, with emphasis on nonlinear flowfields and configuration concepts. Aerodynamic analysis and design for transonic, supersonic, hypersonic flows, and low speed high alpha flight. Includes case studies of classic configurations and aerodynamic design papers.",
+      "prerequisites": "AOE 3014 and AOE 3114"
+    },
+    {
+      "code": "AOE 4140",
+      "name": "Spacecraft Dynamics and Control",
+      "credits": "3",
+      "description": "Space missions and the way pointing requirements affect attitude control systems. Rotational kinematics and attitude determination algorithms. Modeling and analysis of the attitude dynamics of space vehicles. Rigid body dynamics, effects of energy dissipation. Gravity gradient, spin, and dual spin stabilization. Rotational maneuvers. Environmental torques. Impacts of attitude stabilization techniques on mission performance.",
+      "prerequisites": "AOE 3034 and (AOE 4134 or AOE 3154 )"
+    },
+    {
+      "code": "AOE 4165",
+      "name": "Space Vehicle Design",
+      "credits": "3",
+      "description": "Fundamental principles of innovative space vehicle design. Qualitative and quantitative decision-making tools. Multidisciplinary design teams with emphasis on ethics and professionalism. Project risks and mitigation plans. Oral presentations for design reviews. Written engineering design report. 4165: Proven conceptual design process. Parametric analyses. Space vehicle mass estimation. Space vehicle concepts feasibility assessment; 4166: Preliminary design tools and processes. Efficient and light-weight space vehicles. Space vehicle design validation.",
+      "prerequisites": "AOE 2104 and AOE 3054 and AOE 3114 and AOE 3124 and AOE 3144 and AOE 3154 and AOE 3164"
+    },
+    {
+      "code": "AOE 4166",
+      "name": "Space Vehicle Design",
+      "credits": "3",
+      "description": "Fundamental principles of innovative space vehicle design. Qualitative and quantitative decision-making tools. Multidisciplinary design teams with emphasis on ethics and professionalism. Project risks and mitigation plans. Oral presentations for design reviews. Written engineering design report. 4165: Proven conceptual design process. Parametric analyses. Space vehicle mass estimation. Space vehicle concepts feasibility assessment; 4166: Preliminary design tools and processes. Efficient and light-weight space vehicles. Space vehicle design validation.",
+      "prerequisites": "AOE 4165"
+    },
+    {
+      "code": "AOE 4174",
+      "name": "Spacecraft Propulsion",
+      "credits": "3",
+      "description": "Spacecraft propulsion systems and their applications in orbital, interplanetary, and interstellar flight.  Rocket propulsion fundamentals; advanced mission analysis; physics and engineering of chemical rockets, electrical thrusters, and propellantless systems (tethers and sails); spacecraft integration issues.",
+      "prerequisites": "AOE 3164 or AOE 4234 or ME 4234"
+    },
+    {
+      "code": "AOE 4205",
+      "name": "Experiments for Ocean Vehicle Design",
+      "credits": "1",
+      "description": "4205: Facilities, instrumentation, and experiments pertinent to ocean engineering in the field of flow measurements and resistance and propulsion tests of surface and underwater vehicles. Analysis and communication of experimental data through technical report writing. 4206: Assessment of ocean system design through experiments, data analysis, and technical report writing.",
+      "prerequisites": "AOE 3054"
+    },
+    {
+      "code": "AOE 4206",
+      "name": "Experiments for Ocean Vehicle Design",
+      "credits": "1",
+      "description": "4205: Facilities, instrumentation, and experiments pertinent to ocean engineering in the field of flow measurements and resistance and propulsion tests of surface and underwater vehicles. Analysis and communication of experimental data through technical report writing. 4206: Assessment of ocean system design through experiments, data analysis, and technical report writing.",
+      "prerequisites": "AOE 3054"
+    },
+    {
+      "code": "AOE 4224",
+      "name": "Atmospheric and Ocean Vehicle Model Identification",
+      "credits": "3",
+      "description": "Atmospheric and ocean vehicle dynamic modeling from experimental data including: experiment design; model structure determination; parameter and state estimation; and data analysis methods. Regression and maximum likelihood approaches. Time and frequency domain formulations. Applications to airplanes, rotorcraft, surface vessels, and undersea vehicles.",
+      "prerequisites": "AOE 3134 or AOE 3234"
+    },
+    {
+      "code": "AOE 4234",
+      "name": "Aerospace Propulsion Systems",
+      "credits": "3",
+      "description": "Design principles and performance analysis of atmospheric and space propulsion engines and systems.  Application of thermodynamics, compressible fluid flow and combustion fundamentals to the design of gas turbine and rocket engines and components, including inlets, turbomachines, combustors, and nozzles.  Matching of propulsion system to vehicle requirements.",
+      "prerequisites": "AOE 3114 and ( AOE 3164 or AOE 3264 ) or ME 3414 and ME 2134"
+    },
+    {
+      "code": "AOE 4244",
+      "name": "Naval and Marine Engineering Systems Design",
+      "credits": "3",
+      "description": "Concepts, theory and methods for the design, integration, and assessment of naval and marine engineering systems considering energy conservation, ship arrangements, system deactivation diagrams, reliability, maintenance, system power, shock and weapons effects, machinery sizing, and system vulnerability. Physics-based mechanical, electrical, thermal, sensor, control, weapon systems, hullform and engine (diesel and gas turbine) models are used to predict total system performance. Linear programming methods and flow-based models are used to optimize systems architecture and size components.",
+      "prerequisites": "AOE 3264"
+    },
+    {
+      "code": "AOE 4264",
+      "name": "Principles of Naval Engineering",
+      "credits": "3",
+      "description": "This course studies naval engineering systems and systems engineering processes with particular emphasis on: naval missions; combat system performance including radar; underwater acoustics and sonar; ballistics; weapon propulsion and architecture; weapons effects; ship survivability including underwater explosion and shock waves; surface ship and submarine balance and feasibility analysis; and total ship integration. Senior Standing required.",
+      "prerequisites": "(MATH 2224 or MATH 2204 or MATH 2204H ) and PHYS 2306"
+    },
+    {
+      "code": "AOE 4265",
+      "name": "Ocean Vehicle Design",
+      "credits": "3",
+      "description": "Study and application of systems engineering process and ocean engineering principles to the concept exploration, design and development of ocean vehicles including ships, submarines, surface and subsurface autonomous vehicles, boats and yachts. 4265: Emphasis on hullform, power and propulsion, synthesis, balance, metrics and design optimization. 4266: Emphasis on topside/external arrangements, internal arrangements, machinery arrangements, human systems, structural design, and final assessments of intact and damage stability, weights, space, seakeeping, cost, risk, overall balance and feasibility. Most of the work is done in teams.",
+      "prerequisites": "AOE 2204 and AOE 3214 and AOE 3224 and AOE 3234 and AOE 3264"
+    },
+    {
+      "code": "AOE 4266",
+      "name": "Ocean Vehicle Design",
+      "credits": "3",
+      "description": "Study and application of systems engineering process and ocean engineering principles to the concept exploration, design and development of ocean vehicles including ships, submarines, surface and subsurface autonomous vehicles, boats and yachts. 4265: Emphasis on hullform, power and propulsion, synthesis, balance, metrics and design optimization. 4266: Emphasis on topside/external arrangements, internal arrangements, machinery arrangements, human systems, structural design, and final assessments of intact and damage stability, weights, space, seakeeping, cost, risk, overall balance and feasibility. Most of the work is done in teams.",
+      "prerequisites": "AOE 4265"
+    },
+    {
+      "code": "AOE 4274",
+      "name": "Intermediate Ship Structural Analysis",
+      "credits": "3",
+      "description": "Analysis of plate bending, buckling, and ultimate strength using computational tools and methods. Calculation of elastic buckling of stiffened panels. Eigenvalue methods for buckling and vibration. Incremental plastic collapse; other progressive collapse. Ultimate strength of large structural modules due to combined loads. Introductory level finite element analysis.",
+      "prerequisites": "AOE 3224"
+    },
+    {
+      "code": "AOE 4324",
+      "name": "Energy Methods for Structures",
+      "credits": "3",
+      "description": "Work and energy relationships in structures, flexibility and stiffness influence coefficients, Maxwell and Betti-Rayleigh reciprocal theorems, strain energy and complementary strain energy for thin-walled structures, Castigliano\u2019s first and second theorems for trusses and frames, unit action and unit displacement states, direct stiffness method, principles of minimum total potential energy and total complementary energy for bars, beams, and plates, Ritz method, finite element method for bars and beams.",
+      "prerequisites": "AOE 2024 and ( AOE 3124 or AOE 3224 )"
+    },
+    {
+      "code": "AOE 4344",
+      "name": "Dynamics of High-Speed Marine Craft",
+      "credits": "3",
+      "description": "Introduction to the dynamics of high-speed craft, including surface effect ships, hydrofoil vessels, semi-displacement monohulls and catamarans, and planing vessels.",
+      "prerequisites": "AOE 3264"
+    },
+    {
+      "code": "AOE 4365",
+      "name": "Launch Vehicle Design",
+      "credits": "3",
+      "description": "Fundamental principles of innovative launch vehicle design. Qualitative and quantitative decision-making tools. Multidisciplinary (e.g., propulsion, structures, orbital mechanics, economics, or aerodynamics) design teams with emphasis on ethics and professionalism. Project risks and mitigation plans. Oral presentations for design reviews. Written engineering design report. 4365: Proven conceptual design process. Tradeoff studies. Launch vehicle weight estimation. Launch vehicle concepts feasibility assessment; 4366: Preliminary design tools and processes. Efficient and light-weight launch vehicles. Launch vehicle design validation. Launch vehicle operation.",
+      "prerequisites": "AOE 2104 and AOE 3054 and AOE 3114 and AOE 3124 and ( AOE 3134 or AOE 3144 ) and AOE 3164"
+    },
+    {
+      "code": "AOE 4366",
+      "name": "Launch Vehicle Design",
+      "credits": "3",
+      "description": "Fundamental principles of innovative launch vehicle design. Qualitative and quantitative decision-making tools. Multidisciplinary (e.g., propulsion, structures, orbital mechanics, economics, or aerodynamics) design teams with emphasis on ethics and professionalism. Project risks and mitigation plans. Oral presentations for design reviews. Written engineering design report. 4365: Proven conceptual design process. Tradeoff studies. Launch vehicle weight estimation. Launch vehicle concepts feasibility assessment; 4366: Preliminary design tools and processes. Efficient and light-weight launch vehicles. Launch vehicle design validation. Launch vehicle operation.",
+      "prerequisites": "AOE 4365"
+    },
+    {
+      "code": "AOE 4404",
+      "name": "Applied Numerical Methods",
+      "credits": "3",
+      "description": "Interpolation and approximation, numerical integration, solution of equations, matrices and eigenvalues, systems of equations, approximate solution of ordinary and partial differential equations.  Applications to physical problems. A student can earn credit for at most one of 3414 andMATH\u00a04404.",
+      "prerequisites": "MATH 4564 and (ESM 2074 or AOE 2074 )"
+    },
+    {
+      "code": "AOE 4414",
+      "name": "Computer Aided Space Mission Analysis",
+      "credits": "3",
+      "description": "Advanced space mission design, requirements development, and analysis. Analyses of current and future space systems and missions, space platform and payload concepts. Orbital mechanics; coverage; space-to-ground and space-to-space communications; remote sensing; disaggregation; infrastructure; terrain modeling; space vehicle and payload performance constraints, dynamics, and degradation; homogeneous and heterogeneous constellations; launch; the space environment; space mission environmental and economic impact; and mission modeling and simulation for Earth orbit, interplanetary, and CisLunar regimes.",
+      "prerequisites": "( AOE 2074 or ESM 2074 or ECE 2504) and ( AOE 2664 or ECE 2164 or AOE 3154 )"
+    },
+    {
+      "code": "AOE 4434",
+      "name": "Introduction to Computational Fluid Dynamics",
+      "credits": "3",
+      "description": "Euler and Navier-Stokes equations governing the flow of gases and liquids. Mathematical character of partial differential equations. Discretization approaches with a focus on the finite difference method. Explicit and implicit solution techniques and their numerical stability. Introduction to verification, validation, and uncertainty quantification for computational fluid dynamics predictions.",
+      "prerequisites": "MATH 2214"
+    },
+    {
+      "code": "AOE 4454",
+      "name": "Spacecraft Position/Navigation/Timing and Orbit Determination",
+      "credits": "3",
+      "description": "Position/Navigation/Timing (PNT) measurements and optimal batch filter estimation methods for spacecraft with emphasis on orbit determination; GPS position/velocity/time point solutions; linearized state transition matrices; batch least-squares filter Orbit Determination (OD) solutions from a time series of observations; precision and accuracy assessment using covariance and overlap statistics; one-way and two-way radio range and range-rate observations; optical bearings observations; non-Keplerian orbital effects.",
+      "prerequisites": "AOE 3154"
+    },
+    {
+      "code": "AOE 4464",
+      "name": "Introduction to Global Positioning System (GPS) Theory and Design",
+      "credits": "4",
+      "description": "Fundamental theory and applications of radio navigation with the Global Positioning System GPS. Satellite orbit theory, GPS signal structure and theory, point positioning with pseudoranges and carrier phases, selective availability, dilution of precision, differential GPS, atmospheric effects on GPS signals.",
+      "prerequisites": "ECE 3105 or AOE 3154"
+    },
+    {
+      "code": "AOE 4474",
+      "name": "Propellers and Turbines",
+      "credits": "3",
+      "description": "Theory, numerical methods, and experimental techniques for analysis and design of propellers and turbines. Geometry description and creation of computer models. Analysis of inflow from wakes and atmospheric boundary layers. Performance characteristics including open-water and multi-quadrant operation, scale effects, and standard series data. Theoretical analysis and selection of airfoil and hydrofoil sections. Theory and numerical methods for propellers and turbines, including computational fluid dynamics (CFD) simulation. Design of wake-adapted propellers. Design of wind-turbine rotors in steady wind. Structural analysis of propeller and turbine blades. Wind- and water-tunnel testing for thrust and torque.",
+      "prerequisites": "AOE 3014"
+    },
+    {
+      "code": "AOE 4514",
+      "name": "Nonlinear Dynamics and Chaos",
+      "credits": "3",
+      "description": "Motion of systems governed by differential equations: stability, geometry, phase planes, bifurcations, Poincare sections, point attractors, limit cycles, chaos and strange attractors, Lyapunov exponents. Forced, nonlinear oscillations: jump phenomena, harmonic resonances, Hopf bifurcations, averaging and multiple-scales analysis. Systems governed by discrete maps: return maps, cobweb plots, period-multiplying bifurcations, intermittency, delay coordinates, fractal dimensions.",
+      "prerequisites": "( ESM 2304 or PHYS 2504 ) and ( MATH 2214 or MATH 2214H )"
+    },
+    {
+      "code": "AOE 4604",
+      "name": "Booster Design, Fabrication, and Operation",
+      "credits": "3",
+      "description": "Theory, design, operations, and fabrication methodologies employed to manufacture boosters. The rocket equation, solid, liquid, and hybrid propellant systems, combustion chamber design, vehicle structures, telemetry, guidance and navigation, launch operations, and failure modalities.",
+      "prerequisites": "AOE 2074 and AOE 3124 and AOE 3154 and AOE 3164"
+    },
+    {
+      "code": "AOE 4614",
+      "name": "Aerospace Materials and Modeling Techniques",
+      "credits": "3",
+      "description": "Aircraft, spacecraft structural and engine materials. Mechanical, thermal properties and chemical stability of metallic materials. Aluminum, iron, nickel and titanium -based alloys. Atomistic structure, elastic properties, elastic anisotropy and microscopic origins. Plasticity, dislocations, and strengthening mechanism. Liquid-solid and solid-state phase transformation in alloys. Facture, creep and fatigue. Oxidation and corrosion. Simulating materials behaviors using molecular dynamics techniques.",
+      "prerequisites": "CHEM 1035 and PHYS 2305"
+    },
+    {
+      "code": "AOE 4624",
+      "name": "Foundations of Aero and Hydroacoustics",
+      "credits": "3",
+      "description": "Fundamental background to the field of aero/hydroacoustics. Quantifying sound levels, acoustic intensity, the acoustic wave equation, and linear acoustics. Fluid dynamics, turbulence, and thermodynamics in aeroacoustics. Lighthill\u2019s equation, and Curle\u2019s equation. Characterization and identification of aeroacoustic sources. Leading and trailing edge noise. Basics of aeroacoustic wind tunnel testing.",
+      "prerequisites": "AOE 3014 and AOE 3054"
+    },
+    {
+      "code": "AOE 4634",
+      "name": "Wind Turbine Technology and Aerodynamics",
+      "credits": "3",
+      "description": "Aerodynamics and elastic behavior of a modern wind turbine. Internal and aerodynamic loads of wind turbines. Locating wind turbines with respect to fatigue, annual power and noise productions. Aeroelastic behavior of wind turbine blades. Generators, transformers and power converters used in wind energy. Historical, economic, political, and innovation issues related to wind energy and power grid integration.",
+      "prerequisites": "AOE 3014 and ( AOE 3124 or AOE 3224 )"
+    },
+    {
+      "code": "AOE 4654",
+      "name": "Space Weather: The Solar Wind and Magnetosphere",
+      "credits": "3",
+      "description": "Solar-terrestrial interactions and space weather: the sun, solar wind, and interplanetary magnetic field; space plasma physics and magnetohydrodynamics; Earths magnetosphere and ionosphere; geomagnetic storms and auroral substorms; societal impacts of space weather; planetary magnetospheres; space science instrumentation.",
+      "prerequisites": "ECE 3105 or AOE 3014"
+    },
+    {
+      "code": "AOE 4674",
+      "name": "Upper Atmosphere/Ionosphere Space Weather",
+      "credits": "3",
+      "description": "Interaction of Earth\u2019s upper atmosphere and space environment with spacecraft: processes that affect atmospheric density relevant to spacecraft orbit decay; basic composition and structure; radiation and radiative transfer; atmospheric energy balance; atmospheric chemistry and ion production/loss mechanisms; fundamental concepts of Solar-terrestrial physics including ionospheric Chapman theory; atmospheric energy/mass transport; ionospheric electrodynamics; ionospheric storms; planetary atmospheres/ionospheres; instrumentation.",
+      "prerequisites": "AOE 3014 or ECE 3105"
+    },
+    {
+      "code": "AOE 4804",
+      "name": "Special Topics in Dynamics, Control, and Estimation",
+      "credits": "3",
+      "description": "Advanced undergraduate topics in dynamics, control, and estimation related to a particular class of aerospace and ocean engineering systems. Sample course topics include navigation and guidance, aircraft flight control, and ocean vessel motion control. May be repeated 2 times with different content for a maximum of 9 credits.",
+      "prerequisites": "AOE 4004"
+    },
+    {
+      "code": "AOE 4814",
+      "name": "Special Topics in Propulsion",
+      "credits": "3",
+      "description": "Advanced undergraduate topics in propulsion for aerospace and ocean vehicles. Covers technical, environmental, and economic challenges and opportunities in contemporary and future propulsion concepts. Comparative analyses of conventional and advanced propulsion systems and propulsion/vehicle integration concepts based upon first principles. Topics include distributed propulsion, green propulsion and propulsion/airframe integration. May be repeated with different content for a maximum of 6 credits.",
+      "prerequisites": "AOE 3164 or AOE 3264"
+    },
+    {
+      "code": "AOE 4864",
+      "name": "Special Topics in Space Engineering",
+      "credits": "3",
+      "description": "Advanced undergraduate topics in space engineering. Covers technical, environmental, and economic challenges and opportunities in contemporary and future space systems and space missions. Comparative analyses of current and future space systems and missions, and space platform and payload concepts. Topics may include remote sensing, disaggregation, infrastructure, and mission modeling and simulation. May be repeated with different content for a maximum of 6 credits.",
+      "prerequisites": "AOE 3154"
+    },
+    {
+      "code": "AOE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "AOE 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

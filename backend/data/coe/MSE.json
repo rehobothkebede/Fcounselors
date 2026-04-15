@@ -1,0 +1,467 @@
+{
+  "courses": [
+    {
+      "code": "MSE 1004",
+      "name": "Materials In Todays World",
+      "credits": "1",
+      "description": "An introductory course designed for the student with a basic high school science background who wishes to understand and learn about the exciting materials developments which are affecting us all in todays world.  The course will introduce the structures and properties of metals, ceramics, polymers (plastics), composites, and materials for electronic and optical applications. Students will also gain an appreciation for the processing and design limitations of materials used in everyday applications.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 1014",
+      "name": "The Science of Materials in Everyday Life",
+      "credits": "3",
+      "description": "Introduction to the science of materials using everyday applications in modern society from medicine, transportation, sports, art, music, infrastructure, and electronics. Discussion of metals, ceramics, plastics, biomaterials, and hybrid materials based on the fundamental science dictating their structure properties, and processing. Considerations of tradeoffs between environmental sustainability, ethical and societal issues, and economics for materials choices.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2014",
+      "name": "Materials Engineering Transition",
+      "credits": "1",
+      "description": "Supplemental coverage of introductory topics not included in courses delivered to non-MSE majors.",
+      "prerequisites": "MSE 2034 or MSE 3094 or AOE 3094"
+    },
+    {
+      "code": "MSE 2034",
+      "name": "Elements of Materials Engineering",
+      "credits": "3",
+      "description": "This course is designed to introduce the non-MSE student to the structures and properties of metals, ceramics, polymers, and composites.  In addition, students will gain an understanding of the processing and design limitations of these materials, as well as being introduced to new classes of materials being developed to meet the ever expanding range of material requirements.  Non-MSE majors only.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2044",
+      "name": "Fundamentals of Materials Engineering",
+      "credits": "4",
+      "description": "This course is designed to introduce the MSE major to the structures and properties of metals, ceramics, polymers, composites, and electronic materials.  Students will also gain an understanding of the processing and design limitations of materials.  Topics fundamental to the further study of materials, such as crystal structures, phase diagrams, and materials design and processing will be emphasized as foundations for future MSE courses.",
+      "prerequisites": "CHEM 1035"
+    },
+    {
+      "code": "MSE 2054",
+      "name": "Fundamentals of Materials Science",
+      "credits": "3",
+      "description": "Introduces MSE majors to fundamental underlying concepts governing phase equilibrium, microstructure, electronic properties of materials, and transport phenomena as a foundation to understanding materials behavior and processing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2114",
+      "name": "Math Programming MSE I",
+      "credits": "1",
+      "description": "Basic computational and graphical functions in mathematics oriented programming languages using data and engineering examples from the field of Materials Science. Students apply general methods to problems of their choice through mini- projects.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 2884",
+      "name": "Materials Engineering Professional Development I",
+      "credits": "1",
+      "description": "Topics on professional, communications, and leadership skills in entering the engineering workplace; building and presenting qualifications for professional development; expanding the professional network; and ethical, diversity, inclusion, and equity in the engineering workplace. Career gap analysis, team dynamics, resumes, job interviews, cover letters, scholarship essays, personal statements, professional development portfolios, case studies, poster presentations. Pre: Sophomore standing in the MSE major.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2974H",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2984D",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 2994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 3044",
+      "name": "Transport Phenomena in MSE",
+      "credits": "3",
+      "description": "Mass transport (continuum and atomistic diffusion), heat transport and fluid flow (momentum transport). Analytical and computer based methods for solving transport problems.",
+      "prerequisites": "MSE 2044 and MATH 2214"
+    },
+    {
+      "code": "MSE 3054",
+      "name": "Mechanical Behavior of Materials",
+      "credits": "3",
+      "description": "Mechanical properties and behavior of solid materials subjected to static, cyclic, and sustained loads resulting from stress states, environments, and stress histories typical of service conditions; multiaxial failure criteria; behavior of cracked bodies; fatigue of materials; creep of materials; microstructure-property relationships; design methodologies.",
+      "prerequisites": "ESM 2204 and ( MSE 2034 or MSE 2044 or MSE 3094 or AOE 3094 or CEE 3684 )"
+    },
+    {
+      "code": "MSE 3064",
+      "name": "Mechanical Behavior of Materials Laboratory",
+      "credits": "1",
+      "description": "Laboratory experiments on behavior and mechanical properties of solid materials. Tension, compression, bending, hardness, nano-indentation, and impact tests; behavior of cracked bodies; fatigue and crack growth tests; creep deformation; microstructure-property relationships; laboratory equipment, instrumentation, and computers.",
+      "prerequisites": "ESM 2204"
+    },
+    {
+      "code": "MSE 3104",
+      "name": "Mineralogy",
+      "credits": "3",
+      "description": "Principles of modern mineralogy, crystal chemistry, and crystallography, with emphasis on mineral atomic structure and physical property relationships, mineralogy in the context of geology, geochemistry, environmental science and geophysics, phase equilibria, mineral associations, and mineral identification, and industrial applications of minerals.  There are three required field trips during the semester.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 3114",
+      "name": "Mathematics Programming in Materials Science II",
+      "credits": "1",
+      "description": "Advanced computational and graphical methods in mathematics oriented programming languages. Students develop programs that solve and/or provide visualizations of solutions to materials science and engineering problems.",
+      "prerequisites": "MSE 2114"
+    },
+    {
+      "code": "MSE 3134",
+      "name": "Crystallography and Crystal Structures",
+      "credits": "3",
+      "description": "Provides a comprehensive foundation in crystallography including lattices, point groups, space groups, reciprocal lattices, properties of x-rays, and electron density maps, all leading to a formal description of structures and an interpretation of the published crystallographic data.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 3204",
+      "name": "Fundamentals of Electronic Materials",
+      "credits": "3",
+      "description": "Introduction to the electrical, magnetic, and optical properties of solid-state materials.  Development of atomic scale models for physical phenomena that are observable at the macroscopic scale.  Connection is made between basic materials properties and the operational characteristics of selected solid-state devices.",
+      "prerequisites": "MSE 2054 and PHYS 2306"
+    },
+    {
+      "code": "MSE 3304",
+      "name": "Physical Metallurgy",
+      "credits": "3",
+      "description": "Deformation of crystalline solids and its relationship to crystal structure and crystal defects: crystal structures of metals, dislocations and plastic deformation, vacancies, recovery, recrystallization, grain growth, deformation twinning and martensite.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 3314",
+      "name": "Materials Laboratory I",
+      "credits": "1",
+      "description": "Sample preparation for materials characterization techniques including various types of microscopy, spectroscopy, diffraction, and hardness testing.  Instruction in the use of heat treating equipment and polishing and chemical etching procedures.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 3324",
+      "name": "Elementary Metal Casting Laboratory",
+      "credits": "1",
+      "description": "Introduction to metal casting processes; gating, risering, molding and puring. Hands-on experience. Emphasis on safe foundry practices. Oral and written reports are required.",
+      "prerequisites": "( MSE 2034 or MSE 2044 ) and ISE 2214"
+    },
+    {
+      "code": "MSE 3354",
+      "name": "Foundry Safety",
+      "credits": "1",
+      "description": "Provides comprehensive training in foundry safety procedures and policies. (May register multiple times).",
+      "prerequisites": "( MSE 2034 or MSE 2044 ) and ISE 2214"
+    },
+    {
+      "code": "MSE 3884",
+      "name": "Materials Engineering Professional Development II",
+      "credits": "1",
+      "description": "Teamwork, ethical, professional, and communication practices in collaborative engineering environments; identification of areas of interest for potential senior design capstone projects; discipline-specific preliminary research in preparation for senior design projects: motivations and needs identification, broader impact (economic, social, environmental, and global), relevant theoretical concepts and methodologies, ethical engineering considerations, management logistic such identification of facilities and equipment, risk and safety analysis, critical paths and project timelines; basic project and time management; collaborative communications in written and oral form, personal professional development plans. Extends the basic treatment of these topics given inMSE\u00a02884. Pre: Junior standing in the MSE major.",
+      "prerequisites": "MSE 2884"
+    },
+    {
+      "code": "MSE 3954",
+      "name": "Study Abroad",
+      "credits": "1-6",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4034",
+      "name": "Thermodynamics of Materials Systems",
+      "credits": "3",
+      "description": "Topics in thermodynamics on the solution of materials selection and design related problems such as materials stability at high temperatures and in corrosive chemical environments. Thermodynamic principles important in controlling equilibrium in single component systems and multicomponent solid solutions and in establishing the thermodynamic driving force in kinetic processes which are important in materials processing unit operations. Estimation of thermodynamic properties and equilibrium calculations in multicomponent and multiphase systems.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 4044",
+      "name": "Powder Processing",
+      "credits": "3",
+      "description": "Processing methods associated with powder synthesis, characterization, colloidal processing, and forming of powder compacts. Theory of solid state and liquid phase sintering.",
+      "prerequisites": "MSE 3044"
+    },
+    {
+      "code": "MSE 4055",
+      "name": "Materials Selection and Design I and II",
+      "credits": "3",
+      "description": "4055: Selection of materials for engineering systems, based on constitutive analyses of functional requirements and material properties.  4056: The role and implications of processing on material selection.",
+      "prerequisites": "( MSE 3204 and MSE 3304 ) or ( MSE 3204 and MSE 4414 ) or ( MSE 3204 and MSE 4554 ) or ( MSE 3304 and MSE 4414 ) or ( MSE 3304 and MSE 4554 ) or ( MSE 4414 and MSE 4554 )"
+    },
+    {
+      "code": "MSE 4056",
+      "name": "Materials Selection and Design I and II",
+      "credits": "3",
+      "description": "4055: Selection of mateials for engineering systems, based on constitutive analyses of functional requirements and material properties.  4056: The role and implications of processing on material selection.",
+      "prerequisites": "MSE 4055"
+    },
+    {
+      "code": "MSE 4075",
+      "name": "Senior Design Laboratory",
+      "credits": "1",
+      "description": "A capstone design course centered around an open-ended, faculty-advised senior project involving the design of a process, material, or a technique for solving a technological problem.  Senior standing in MSE required.",
+      "prerequisites": "MSE 4644"
+    },
+    {
+      "code": "MSE 4076",
+      "name": "Senior Design Laboratory",
+      "credits": "2",
+      "description": "A capstone design course centered around an open-ended, faculty-advised senior project involving the design of a process, material, or a technique for solving a technological problem.  Senior standing in MSE required.",
+      "prerequisites": "MSE 4075"
+    },
+    {
+      "code": "MSE 4085",
+      "name": "Senior Capstone Recitation",
+      "credits": "2",
+      "description": "Topics in engineering professional practice, project planning and reporting, including discussion and presentation of proposals, interim and project reports. Instruction in environmental, social, and economic impacts of engineering; design theory and analysis; ethics, continuous learning, and global issues. Capstone course runs in parallel with faculty-advised Senior Design Laboratory. 4085: Emphasis on project planning and management techniques, teamwork strategies, literature research, and technical communication style. 4086: Continuing development of technical documents, with emphasis on professional communication to various audience formats. Additional focus on broader impacts of technical projects, including social, economic, environmental, ethical, and global contexts. Pre: Senior standing in MSE.",
+      "prerequisites": "MSE 3884"
+    },
+    {
+      "code": "MSE 4085H",
+      "name": "Senior Capstone Recitation",
+      "credits": "2",
+      "description": "Topics in engineering professional practice, project planning and reporting, including discussion and presentation of proposals, interim and project reports. Instruction in environmental, social, and economic impacts of engineering; design theory and analysis; ethics, continuous learning, and global issues. Capstone course runs in parallel with faculty-advised Senior Design Laboratory. 4085: Emphasis on project planning and management techniques, teamwork strategies, literature research, and technical communication style. 4086: Continuing development of technical documents, with emphasis on professional communication to various audience formats. Additional focus on broader impacts of technical projects, including social, economic, environmental, ethical, and global contexts. Pre: Senior standing in MSE.",
+      "prerequisites": "MSE 3884"
+    },
+    {
+      "code": "MSE 4086",
+      "name": "Senior Capstone Recitation",
+      "credits": "1",
+      "description": "Topics in engineering professional practice, project planning and reporting, including discussion and presentation of proposals, interim and project reports. Instruction in environmental, social, and economic impacts of engineering; design theory and analysis; ethics, continuous learning, and global issues. Capstone course runs in parallel with faculty-advised Senior Design Laboratory. 4085: Emphasis on project planning and management techniques, teamwork strategies, literature research, and technical communication style. 4086: Continuing development of technical documents, with emphasis on professional communication to various audience formats. Additional focus on broader impacts of technical projects, including social, economic, environmental, ethical, and global contexts. Pre: Senior standing in MSE.",
+      "prerequisites": "MSE 4085"
+    },
+    {
+      "code": "MSE 4086H",
+      "name": "Honors Senior Capstone Recitation",
+      "credits": "1",
+      "description": "Topics in engineering professional practice, project planning and reporting, including discussion and presentation of proposals, interim and project reports. Instruction in environmental, social, and economic impacts of engineering; design theory and analysis; ethics, continuous learning, and global issues. Capstone course runs in parallel with faculty-advised Senior Design Laboratory. 4085: Emphasis on project planning and management techniques, teamwork strategies, literature research, and technical communication style. 4086: Continuing development of technical documents, with emphasis on professional communication to various audience formats. Additional focus on broader impacts of technical projects, including social, economic, environmental, ethical, and global contexts. Pre: Senior standing in MSE.",
+      "prerequisites": "MSE 4085"
+    },
+    {
+      "code": "MSE 4095H",
+      "name": "Honors Senior Design-Laboratory",
+      "credits": "3",
+      "description": "Two-semester MSE capstone design course centered around an open-ended, faculty-advised senior honors project involving the design of a process, material, or a technique for solving a technological problem. Outcomes and work effort are consistent with that expected of honors students.MSE\u00a04095H: Literature search, planning and proof-of-concept studies of assigned project. Individual preparation and presentation of an original senior honors thesis related to a team project in which the students also participate. Presentation of detailed project plan to faculty.MSE\u00a04096H: Execution of proposed project, analysis of results and preparation of journal-quality presentation of results. Oral presentation of results to MSE faculty and students. Enrollment in University Honors and senior standing in MSE required.",
+      "prerequisites": "MSE 4644"
+    },
+    {
+      "code": "MSE 4096H",
+      "name": "Honors Senior Design Laboratory",
+      "credits": "3",
+      "description": "Two-semester MSE capstone design course centered around an open-ended, faculty-advised senior honors project involving the design of a process, material, or a technique for a solving a technological problem. Outcomes and work effort are consistent with that expected of honors students.MSE\u00a04096H: Execution of proposed project, anaylsis of results and preparation of journal-quality presentation of results. Oral presentation of results to MSE faculty and students. Enrollment in University Honors and senior standing in MSE required.",
+      "prerequisites": "UH 4095H"
+    },
+    {
+      "code": "MSE 4164",
+      "name": "Principles of Materials Corrosion",
+      "credits": "3",
+      "description": "Introduction to the scientific principles of materials corrosion and corrosion protection.  Topics include: thermodynamics of materials corrosion, including potential- PH (Pourbaix) diagrams, kinetics of corrosion reactions and mixed potential theory, types of corrosion (uniform, galvanic, crevice, pitting, fatigue, stress corrosion cracking, intergranular, and hydrogen embrittlement), material/environmental factors that promote or prevent the various types of corrosion, and methods and techniques of corrosion testing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4224",
+      "name": "Electronic, Magnetic, and Optical Properties of Materials Laboratory",
+      "credits": "1",
+      "description": "Introduction to experimental techniques used to study the electronic, magnetic, and optical properties of contemporary advanced materials systems; property variations made possible by composition and processing of engineered materials; and interaction of fields with materials \u2013 including effective communication of these results.",
+      "prerequisites": "MSE 3204 and MSE 3314 and MSE 4424"
+    },
+    {
+      "code": "MSE 4234",
+      "name": "Semiconductor Processing",
+      "credits": "3",
+      "description": "Manufacturing practices used in silicon integrated circuit fabrication and the underlying scientific basis for these process technologies. Physical models are developed to explain basic fabrication steps, such as substrate growth, thermal oxidation, dopant diffusion, ion implantation, thin film deposition, etching, and lithography. The overall CMOS integrated circuit process flow is described within the context of these physical models.",
+      "prerequisites": "ECE 2214"
+    },
+    {
+      "code": "MSE 4304",
+      "name": "Metals and Alloys",
+      "credits": "3",
+      "description": "This course covers the production, properties and uses of commercially important metals and alloys.  The influence of structure, chemistry, and processing upon the properties of metals is emphasized.  Alloy selection is discussed. Mechanical, electrical, thermal and chemical characteristics of ferrous and nonferrous alloys are studied.",
+      "prerequisites": "MSE 2034 or MSE 2044"
+    },
+    {
+      "code": "MSE 4305",
+      "name": "Physical Metallurgy and Modeling of Metal Casting",
+      "credits": "3",
+      "description": "4305: Casting processes; solidification and its influences on the structure and chemistry of castings; role of fluid flow and heat transfer in mold design; origin and control of casting defects. 4306: Design, layout, and modeling of metal components cast from aluminum, bronze, iron and steel; design of metal running systems; modeling of solidification process.",
+      "prerequisites": "MSE 3304"
+    },
+    {
+      "code": "MSE 4306",
+      "name": "Physical Metallurgy and Modeling of Metal Casting",
+      "credits": "3",
+      "description": "4305: Casting processes; solidification and its influence on the structure and chemistry of castings; role of fluid flow and heat transfer in mold design; origin and control of casting defects. 4306: Design, layout, and modeling of metal components cast from aluminum, bronze, iron and steel; design of metal running systems; modeling of solidification processes.",
+      "prerequisites": "( MSE 2034 or MSE 2044 ) and MSE 3324"
+    },
+    {
+      "code": "MSE 4314",
+      "name": "Bladesmithing",
+      "credits": "3",
+      "description": "Introduction to bladesmithing processes. Hands-on experience with heating metal, visual temperature measurement, manual hammer forging, forge welding, cooling metal, and heat treatment. Emphasis on safe forging and bladesmithing practices.",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4324",
+      "name": "Advanced Metal Casting Laboratory",
+      "credits": "2",
+      "description": "Advanced metal casting processes; no-bake sand molds; investment casting; rapid prototyping; melting and casting of aluminum, bronze, iron and steel. Casting finishing including shot and sand blasting. Hands-on experience. Emphasis on safe foundry practices. Oral and written reports are required.",
+      "prerequisites": "MSE 3324"
+    },
+    {
+      "code": "MSE 4334",
+      "name": "Applied Materials Analysis",
+      "credits": "3",
+      "description": "Fundamental materials theory applied to structure-property relationships in materials science and engineering through basic characterization techniques.  Demonstrations, lab exercises, and practical application of modern characterization techniques such as Scanning and Transmission Electron Microscopy (SEM, TEM), Focused Ion Beam (FIB), and Atomic Force Microscopy (AFM).",
+      "prerequisites": "MSE 2044 and ( MSE 3314 or MSE 4424 )"
+    },
+    {
+      "code": "MSE 4384",
+      "name": "Nuclear Materials",
+      "credits": "3",
+      "description": "An introduction to materials for nuclear applications with emphasis on fission reactors.  Fundamental radiation effects on materials; material properties relevant to structural, moderator, reflector, blanket, coolant, control shielding and safety systems; processes such as nuclear fuel cycles, fuel enrichment and reprocessing; and related structural systems.",
+      "prerequisites": "( MSE 3044 or ME 3304 ) and ( MSE 3054 or ESM 3054 or ME 3614 )"
+    },
+    {
+      "code": "MSE 4394",
+      "name": "Introduction to Molecular Dynamics Simulation",
+      "credits": "3",
+      "description": "Background of molecular dynamics simulation method. Fundamental molecular dynamics principles, algorithms and components (atomic structure, periodic boundary conditions, interatomic potentials, equations of motion of atoms, statistical ensembles, integration of equations of motion). Implementation of algorithms into codes. Simulations of the time evolution of atoms, particles, or molecules under static or varying thermodynamic conditions and external loads. Connection between atom trajectories and evolution of the physical property of the simulation system with statistical mechanics principles. Hands-on case studies using molecular dynamics simulation package, LAMMPS.  Prior knowledge of a programming language such as Fortran, C, C++, Matlab, Mathematica, Python, Java is highly recommended. Pre: Junior standing.",
+      "prerequisites": "MSE 2034 or MSE 2044"
+    },
+    {
+      "code": "MSE 4414",
+      "name": "Physical Ceramics",
+      "credits": "3",
+      "description": "Study of the relationships between the physical properties (thermal, optical, mechanical, electrical and magnetic) and the structure and composition of ceramics at the atomic and microscopic level as affected by processing and service environment. Emphasis will be placed on application and design using structural ceramics.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 4424",
+      "name": "Materials Laboratory II",
+      "credits": "1",
+      "description": "Processing and characterization of materials; exploration of the influence of processing parameters on physical and mechanical properties.  Emphasis on material synthesis.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 4434",
+      "name": "Ceramic  and  Glass Materials Processing Laboratory",
+      "credits": "1",
+      "description": "Introduction to experimental techniques used to synthesize, process, and analyze resulting properties of ceramic and glass materials.  Measurement of property variations made possible by changing composition and processing of engineered ceramic systems.",
+      "prerequisites": "MSE 4414 and MSE 3314 and MSE 4424"
+    },
+    {
+      "code": "MSE 4544",
+      "name": "Laboratory In Polymer Science",
+      "credits": "2",
+      "description": "Experimental techniques used in the synthesis of various linear polymers, copolymers, and crosslinked networks. Determination of polymer molecular weights and molecular weight distribution.  Methods used in the thermal, mechanical, and morphological characterization of polymeric systems.",
+      "prerequisites": "CHEM 3616 and CHEM 4534"
+    },
+    {
+      "code": "MSE 4554",
+      "name": "Polymer Engineering",
+      "credits": "3",
+      "description": "This course is designed to introduce the student to polymers from the MSE perspective.  The basics of polymer syntheses and polymerization will be outlined.  The relationship between processing, structure, and properties will be presented with respect to the performance and design requirements of typical polymer applications.",
+      "prerequisites": "MSE 2044"
+    },
+    {
+      "code": "MSE 4574",
+      "name": "Biomaterials",
+      "credits": "3",
+      "description": "Materials for biomedical applications. Basic material types and properties, functional uses of materials in medical applications, and tissue response mechanisms. Integrated design issues of multicomponent material design in prosthetic devices for hard and soft tissues, orthopedics , cardiovascular, and drug delivery applications.",
+      "prerequisites": "MSE 2034 or MSE 2044"
+    },
+    {
+      "code": "MSE 4604",
+      "name": "Composite Materials",
+      "credits": "3",
+      "description": "The application of the fundamental concepts of mechanics, elasticity, and plasticity to multiphase and composite materials.  Constitutive equations for the mechanical and physical properties of metal, ceramic, and polymeric matrix composites.  The role of processing and microstructure on properties.",
+      "prerequisites": "( MSE 2034 or MSE 2044 ) and ESM 2204"
+    },
+    {
+      "code": "MSE 4614",
+      "name": "Nanomaterials",
+      "credits": "3",
+      "description": "Synthesis methods of 0D nanoparticles, 1D nanotubes/nanowires/nanorods, 2D nanoribbons and nanofilms, and special nano-features on supports. Bottom-up and top-down approaches. Methods of characterization for nanomaterials. Processing of nanospecies into higher order dimensions; conventional processing techniques; techniques developed solely for nanomaterials. Chemical, physical, mechanical, and electrical properties of nanomaterials and applications of nanomaterials.",
+      "prerequisites": "MSE 4034"
+    },
+    {
+      "code": "MSE 4644",
+      "name": "Materials Optimization Through Designed Experiments",
+      "credits": "3",
+      "description": "Methods of analysis of variation in materials systems, manufacturing or R&D through the use of statistical methods including experimental design techniques. Instructional examples related to Materials Science and Engineering.",
+      "prerequisites": "MSE 3314 or MSE 4424"
+    },
+    {
+      "code": "MSE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4974H",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4984A",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "MSE 29844",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

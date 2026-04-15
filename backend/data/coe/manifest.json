@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "scraped_at": "2026-04-15T04:49:23.117569+00:00",
+    "term": "202601",
+    "subjects": [
+      "AOE",
+      "BSE",
+      "BMES",
+      "CEE",
+      "CHE",
+      "CS",
+      "ECE",
+      "ENGE",
+      "ENGR",
+      "ESM",
+      "ISE",
+      "ME",
+      "MINE",
+      "MSE"
+    ],
+    "failed": []
+  },
+  "subjects": {
+    "AOE": {
+      "file": "AOE.json",
+      "course_count": 79,
+      "has_requirements": false
+    },
+    "BSE": {
+      "file": "BSE.json",
+      "course_count": 36,
+      "has_requirements": false
+    },
+    "BMES": {
+      "file": "BMES.json",
+      "course_count": 43,
+      "has_requirements": false
+    },
+    "CEE": {
+      "file": "CEE.json",
+      "course_count": 69,
+      "has_requirements": false
+    },
+    "CHE": {
+      "file": "CHE.json",
+      "course_count": 35,
+      "has_requirements": false
+    },
+    "CS": {
+      "file": "CS.json",
+      "course_count": 73,
+      "has_requirements": true
+    },
+    "ECE": {
+      "file": "ECE.json",
+      "course_count": 96,
+      "has_requirements": true
+    },
+    "ENGE": {
+      "file": "ENGE.json",
+      "course_count": 31,
+      "has_requirements": false
+    },
+    "ENGR": {
+      "file": "ENGR.json",
+      "course_count": 25,
+      "has_requirements": false
+    },
+    "ESM": {
+      "file": "ESM.json",
+      "course_count": 54,
+      "has_requirements": false
+    },
+    "ISE": {
+      "file": "ISE.json",
+      "course_count": 40,
+      "has_requirements": false
+    },
+    "ME": {
+      "file": "ME.json",
+      "course_count": 70,
+      "has_requirements": true
+    },
+    "MINE": {
+      "file": "MINE.json",
+      "course_count": 40,
+      "has_requirements": false
+    },
+    "MSE": {
+      "file": "MSE.json",
+      "course_count": 66,
+      "has_requirements": false
+    }
+  }
+}

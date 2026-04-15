@@ -1,0 +1,257 @@
+{
+  "courses": [
+    {
+      "code": "BSE 1004",
+      "name": "Engineering Biological Systems for the Global Good",
+      "credits": "1",
+      "description": "Survey of global societal and technological issues that engage biological systems engineers in the areas of health, environment, food and energy. Application of systems-level approaches to meet engineering challenges that intersect with crucial societal issues, including sustainability and equity. Evaluation of key factors that affect the design, communication, and public acceptance of engineered solutions. Analysis of cultural intelligence, with a specific focus on personality and problem solving styles amongst individuals and teams and productive conflict resolution.",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 1984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 2004",
+      "name": "Introduction to Biological Systems Engineering",
+      "credits": "3",
+      "description": "Introduction to the fundamental concepts of Biological Systems Engineering, including statistics and material and energy balances, through applications in protein separation, hydrology, sediment/nutrient transport, and microbial metabolism. Engineering design process. Engineering problem-solving tools and techniques. Resolving ethical dilemmas. Development of oral and written communication skills; introduction to job searching resources; strategies for career development, and the importance of teamwork and ethics in Biological Systems Engineering.",
+      "prerequisites": "ENGE 1215 or ENGE 1414"
+    },
+    {
+      "code": "BSE 2304",
+      "name": "Landscape Measurements and Modeling",
+      "credits": "3",
+      "description": "Introduction to land surveying, computer-aided design, and drafting for land and water resources engineering. Representation of features in two and three dimensions for documentation and visualization of watershed engineering projects. Create plans, cross sections, detail drawings, and three dimensional visualizations using computer-aided design and drafting tools.",
+      "prerequisites": "MATH 1206 or MATH 1226"
+    },
+    {
+      "code": "BSE 2504",
+      "name": "Introduction to Fluid Mechanics",
+      "credits": "3",
+      "description": "Fluid properties. Hydrostatics. Bernoulli\u2019s equation. Derivation and application of the mass, momentum, and energy conservation equations for calculating flow rates, fluid forces, and head losses. Analyses of pipe flows and piping systems, and open channel flows. Pumps. Lift and drag. Application to biological and ecological systems.",
+      "prerequisites": "PHYS 2305 and ESM 2104"
+    },
+    {
+      "code": "BSE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 3144",
+      "name": "Engineering Analysis for Biological Systems using Numerical Methods",
+      "credits": "2",
+      "description": "Solving engineering problems related to biological systems using numerical analysis including root finding, numerical integration, differentiation, interpolation and numerical solution of ordinary differential equations.  Error analysis and programming with engineering software. Course requirements may be satisfied by takingMATH\u00a02214prior to or concurrent with course.",
+      "prerequisites": "MATH 1226"
+    },
+    {
+      "code": "BSE 3154",
+      "name": "Thermodynamics of Biological Systems",
+      "credits": "3",
+      "description": "Description of biological, chemical and mechanical mechanisms of energy storage and conversion to work. Derivation and use of the first and second laws of thermodynamics (energy and entropy) to analyze processes found in biotechnology, ecological engineering, and living systems. Analysis of thermodynamic cycles and their relevance to biological systems. Introduction of Gibbs energy, equilibrium at specified pH, and calorimetry of biological reactions.",
+      "prerequisites": "CHEM 1036 and PHYS 2305 and ( MATH 2204 or MATH 2204H )"
+    },
+    {
+      "code": "BSE 3324",
+      "name": "Small Watershed Hydrology",
+      "credits": "3",
+      "description": "Precipitation, soil physics, infiltration, evapotranspiration, groundwater hydrology, overland flow, open channel flow, flow routing, hydraulic analysis.",
+      "prerequisites": "PHYS 2305"
+    },
+    {
+      "code": "BSE 3334",
+      "name": "Nonpoint Source Pollution Assessment and Control",
+      "credits": "3",
+      "description": "Erosion prediction and control; transport and fate of sediment, nutrients, and microorganisms; design of nutrient management plans, wetlands, detention facilities and other management practices for rural and urban nonpoint source pollution control.",
+      "prerequisites": "BSE 3324"
+    },
+    {
+      "code": "BSE 3504",
+      "name": "Transport Processes in Biological Systems",
+      "credits": "3",
+      "description": "Introduction to material and energy balances in biological systems.  Fundamentals of heat and mass transfer in biological systems. One and two dimensional conduction, convection, and diffusion of thermal energy and mass.  Heat and mass transfer rates, steady and unsteady state conduction, convection, diffusion; design of simple heat exchangers.  Application of these topics and fluid mechanics to fluid handling, bacterial growth, plant nutrient uptake, enzymatic reactions.",
+      "prerequisites": "BSE 3154 and ESM 3024 and MATH 2214"
+    },
+    {
+      "code": "BSE 3524",
+      "name": "Unit Operations in Biological Systems Engineering",
+      "credits": "3",
+      "description": "Description of unit operations for processing biological materials including evaporation, drying, gas-liquid separations, adsorption, membrane separation, and mechanical separation.",
+      "prerequisites": "BSE 3154 and MATH 2214"
+    },
+    {
+      "code": "BSE 3534",
+      "name": "Bioprocess Engineering",
+      "credits": "3",
+      "description": "Engineering concepts for biological conversion of raw materials to food, pharmaceuticals, fuels, and chemicals. Metabolic pathways leading to products, enzyme kinetics, cell growth kinetics, and analysis of bioreactors and fermenters.",
+      "prerequisites": "BSE 3154"
+    },
+    {
+      "code": "BSE 3954",
+      "name": "Study Abroad",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 4014",
+      "name": "Engineering Biology Course-based Research Experience",
+      "credits": "2",
+      "description": "A hands-on introduction to the fundamental concepts of recombinant DNA technology and how it can be used to engineer molecular, cellular, and organismal systems to sustainably produce food, fuel, fibers, pharmaceuticals, and industrial chemicals through a course-based research and career development experience. Using engineering design cycles of learn->design->build->test->learn, we will construct DNA plasmids and explore and experience the fields of quantitative and synthetic biology, the current capabilities and limitations of engineering biology, and the application of lab automation.",
+      "prerequisites": "BIOL 1105"
+    },
+    {
+      "code": "BSE 4125",
+      "name": "Comprehensive Design Project",
+      "credits": "2",
+      "description": "4125: Identify and develop an engineering design project using the team approach; use of literature resources to define project objectives and approach; present project proposal in a professional written and oral manner; engineering ethics, professionalism and contemporary issues. Pre: Completion of 96 hours, overall GPA of 2.0 or better.",
+      "prerequisites": "( BSE 3534 and BSE 3524 ) or ( BSE 3324 and BSE 3334 )"
+    },
+    {
+      "code": "BSE 4126",
+      "name": "Comprehensive Design Project",
+      "credits": "3",
+      "description": "4125: Identify and develop an engineering design project using the team approach; use of literature resources to define project objectives and approach; present project proposal in a professional written and oral manner; engineering ethics, professionalism and contemporary issues.  Pre: Completion of 96 hours, overall GPA of 2.0 or better. 4126 Complete a comprehensive design project using the team approach, test prototype, and prepare and present a professional engineering design report.",
+      "prerequisites": "BSE 4125"
+    },
+    {
+      "code": "BSE 4224",
+      "name": "Field Methods in Hydrology",
+      "credits": "3",
+      "description": "Site characterization: surveying, channel and floodplain mapping, land use, electronic data acquisition. Techniques for measuring surface and subsurface hydrologic processes: water flow, hydrologic conductivity, precipitation, evaporation. Sampling techniques: surface water, groundwater, and soil pore water sampling. In-situ monitoring: automatic samplers, dataloggers, water quality sondes. Laboratory analyses: good laboratory practices, selection of analytical method, calibration, quality assurance/quality control.",
+      "prerequisites": "BSE 3324 or FREC 3104 or WATR 3104 or CEE 3314"
+    },
+    {
+      "code": "BSE 4304",
+      "name": "Introduction to Watershed Modeling",
+      "credits": "3",
+      "description": "Fundamental modeling principles used to quantifywatershed hydrology, energy budgets,and associated ecosystem functions, such asplant dynamics and biogeochemical processes, at scales ranging from soil poresto watersheds. Code development and model integration to simulate watershed hydrologyandnutrient and sediment transport.  Model calibration and performance assessment. Data discovery, acquisition, and processing of data relevant to hydrologic/watershed modeling.",
+      "prerequisites": "BSE 3334"
+    },
+    {
+      "code": "BSE 4324",
+      "name": "Applied Fluvial Geomorphology",
+      "credits": "3",
+      "description": "Introduction to landscape evolution. Influence of geology and climate on stream form and processes. Fundamental river mechanics and sediment transport. Stream surveying and classification. River system response to changes in hydrology and sediment supply. Interactions between ecosystems and fluvial systems. Human impacts on stream systems.",
+      "prerequisites": "BSE 3324 or CEE 3314 or FREC 3104 or WATR 3104"
+    },
+    {
+      "code": "BSE 4344",
+      "name": "Geographic Information Systems for Engineers",
+      "credits": "3",
+      "description": "Conceptual, technical, and operational aspects of geographic information systems (GIS) as a tool for storage, analysis, and presentation of spatial information. Focus on data and applications relevant to watershed and ecological engineering and analysis. Access public sources of spatial data including: hydrography, political boundaries, aerial photos, land cover, soil, and elevation (lidar). Digitize new data features from aerial photos. Delineate watersheds. Integrate Global Positioning System data into GIS to create topographic cross sections. Implement GIS to solve an independent watershed engineering problem.",
+      "prerequisites": "BSE 3324 or CEE 3314 or FREC 3104 or WATR 3104"
+    },
+    {
+      "code": "BSE 4394",
+      "name": "Water Supply and Sanitation in Developing Countries",
+      "credits": "3",
+      "description": "Social, economic and engineering principles of water supply and sanitation in developing countries as affected by climate, cultural and sociological factors, and material and financial resources. Pre: Junior or Senior standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 4524",
+      "name": "Biological Process Plant Design",
+      "credits": "3",
+      "description": "Engineering principles for design of systems for processing biological materials into primary and secondary products. Construction and analysis of process flow diagrams. Delivery, scheduling, storage requirements, and profitability and economic analysis. Process control and instrumentation of bioprocessing plants.",
+      "prerequisites": "BSE 3524"
+    },
+    {
+      "code": "BSE 4534",
+      "name": "Bioprocess Engineering Lab",
+      "credits": "1",
+      "description": "Unit operations commonly used in processing biological materials, including filtration, heat transfer, ultrafiltration, crystallization, and protein expression by fermentation, purification by chromatography, and characterization by gel electrophoresis.",
+      "prerequisites": "BSE 3524 and BSE 3534"
+    },
+    {
+      "code": "BSE 4544",
+      "name": "Protein Separation Engineering",
+      "credits": "3",
+      "description": "Concepts, principles and applications of various unit operations used in protein separations. Properties of biological materials, such as cells and proteins, and their influences on process design. Design of processes for protein purification based on the impurities to be eliminated. Concepts and principles of scale-up of unit operations. Case studies in practical protein recovery and purification issues, with a focus on enhanced protein purification by genetic engineering. Protein purification process simulation and optimization using process simulation software.",
+      "prerequisites": "BSE 3504 or CHE 3144"
+    },
+    {
+      "code": "BSE 4554",
+      "name": "Creating the Ecological City",
+      "credits": "3",
+      "description": "Multidisciplinary, team oriented, problem-solving approaches to creating cities that foster healthy interconnections between human and ecological systems. Analysis of problems from practical and ethical perspectives in the context of the diverse knowledge bases and values of decision-makers. Formation and utilization of integrated design teams to solve complex urban design and planning problems at a variety of scales. Senior standing.",
+      "prerequisites": "HORT 2134 or FREC 2134"
+    },
+    {
+      "code": "BSE 4564",
+      "name": "Metabolic Engineering",
+      "credits": "3",
+      "description": "Engineering concepts for analyzing, designing, and modifying metabolic pathways to convert raw materials to food, pharmaceuticals, fuels and chemicals. Cell metabolism, pathway design, bioenergetics, regulatory mechanisms, metabolic modeling, and genetic tools.",
+      "prerequisites": "BSE 3534 or BCHM 4115 or BIOL 3774"
+    },
+    {
+      "code": "BSE 4604",
+      "name": "Food Process Engineering",
+      "credits": "3",
+      "description": "Analysis and design of food processing operations including thermal pasteurization and sterilization, freezing, extrusion, texturization, and mechanical separation.",
+      "prerequisites": "BSE 3504 and BSE 3524"
+    },
+    {
+      "code": "BSE 4634",
+      "name": "Protein Engineering for Biotechnology",
+      "credits": "3",
+      "description": "Provides theoretical and practical training in protein engineering, emphasizing rational design, computational modeling, and applications in biotechnology. Topics include protein structure and folding, rational and de novo design, noncanonical amino acids, and computational structure prediction. Consideration of ethical and societal implications. Pre: Junior Standing",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 4964",
+      "name": "Field Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "BSE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {}
+}

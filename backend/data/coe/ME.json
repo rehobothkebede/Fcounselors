@@ -1,0 +1,528 @@
+{
+  "courses": [
+    {
+      "code": "ME 2004",
+      "name": "Engineering Analysis Using Numerical Methods",
+      "credits": "3",
+      "description": "Numerical methods applied to engineering analysis with a design/lab studio. Numerical techniques including root finding, linear algebra, integration, ordinary differential equations, curve fitting, discrete Fourier transforms, optimization. Structured programming and iterative problem-solving using a high-level environment such as Matlab. Design/Lab Studio.",
+      "prerequisites": "MATH 1226 and ( MATH 2114 or MATH 2114H or MATH 2405H or MATH 2214 or MATH 2214H or MATH 2406H )"
+    },
+    {
+      "code": "ME 2134",
+      "name": "Thermodynamics",
+      "credits": "4",
+      "description": "Classical (equilibrium) thermodynamics and its applications. Includes thermodynamic properties of pure substances: property diagrams, property tables, property software, equations of state; the first law of thermodynamics; the second law of thermodynamics; gas mixtures; combustion: atomic and energy balances; and power and refrigeration cycles.",
+      "prerequisites": "PHYS 2305 and ( MATH 2204 or MATH 2204H or MATH 2406H ) and CHEM 1035"
+    },
+    {
+      "code": "ME 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 2974H",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 2994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 3024",
+      "name": "Engineering Design and Economics",
+      "credits": "3",
+      "description": "Engineering design process; project management; product planning; customer needs, specifications, and Quality Function Deployment (QFD); benchmarking and intellectual property; concept generation, screening, scoring, and selection; design for assembly, product architecture, economic, and ethical considerations; concept testing. Written and oral communications of engineering design; computer aided design. Team-based term project with prototype fabrication of mechanical assembly manipulated by a microcontroller. For Pathways Advanced Discourse credit, must complete combination ofME\u00a03024,ME\u00a03034, andME\u00a04015-4016.",
+      "prerequisites": "ESM 2104 and ENGL 1106"
+    },
+    {
+      "code": "ME 3034",
+      "name": "Mechanical Engineering Discourse",
+      "credits": "1",
+      "description": "Principles and application of effective technical and professional communication in mechanical engineering; organizing, structuring, and developing effective written documents and oral presentations for a range of audiences, including technical reports, memorandums, laboratory reports, live and recorded presentations, and posters for public exhibition; use of effective language and style; development of effective visual aids; presentation delivery skills; acquiring new knowledge using appropriate learning strategies by finding, comprehending and evaluating information from a variety of sources; ethical and professional responsibilities in both identifying appropriate information and communicating technical results. For Pathways Advanced Discourse credit, must complete combination ofME\u00a03024,ME\u00a03034, andME\u00a04015-4016.",
+      "prerequisites": "ENGL 1106"
+    },
+    {
+      "code": "ME 3124",
+      "name": "Thermodynamics",
+      "credits": "3",
+      "description": "Classical thermodynamics and its applications. Thermodynamic properties of pure substances: property tables, property software, equations of state.  First law of thermodynamics.  Second law of thermodynamics.  Gas mixtures.  Combustion: atom and energy balances.  Power and refrigeration cycles.",
+      "prerequisites": "(ME 2124 and MATH 2214 and MATH 2204 ) or (ME 2124 and MATH 2214 and MATH 2204H ) or (ME 2124 and MATH 2214 and MATH 2224) or (ME 2124 and MATH 2214 and MATH 2224H) or (ME 2124 and MATH 2214H and MATH 2204 ) or (ME 2124 and MATH 2214H and MATH 2204H ) or (ME 2124 and MATH 2214H and MATH 2224) or (ME 2124 and MATH 2214H and MATH 2224H) or (ME 2124 and MATH 2405H and MATH 2406H )"
+    },
+    {
+      "code": "ME 3194",
+      "name": "Technology, Innovation and Humanistic Engineering for a Sustainable Future",
+      "credits": "3",
+      "description": "Foundational understanding of converging, emerging and disruptive technologies. Pedagogical aspects of innovation, team dynamics and effective communication. Leadership Cube\u2014Six principles of effective leadership. Humanistic engineering. Sustainable energy and sustainable water platforms. Smart device designs for disease diagnostics and mitigation. Pre: Junior standing.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 3304",
+      "name": "Heat and Mass Transfer",
+      "credits": "3",
+      "description": "Comprehensive basic course in heat and mass transfer for mechanical engineering students.  Principles of conduction, convection, and radiation with applications to heat exchangers and other engineering systems.",
+      "prerequisites": "ME 2134 and ME 3414 and ( MATH 2214 or MATH 2214H or MATH 2406H ) and ( MATH 2204 or MATH 2204H or MATH 2406H )"
+    },
+    {
+      "code": "ME 3404",
+      "name": "Fluid Mechanics",
+      "credits": "3",
+      "description": "Comprehensive first course in basic and applied fluid mechanics.  Fluid properties, statics, kinematics, and dynamics.  Eulers and Bernoullis equations. Hydrodynamics.  Dimensional analysis and similitude.  Real fluids, laminar and turbulent flows.  Boundary layer model and approximate analysis.  Compressible flow and propulsion devices.  Flow measurement.  Introduction to turbomachinery with applications.",
+      "prerequisites": "(ME 2124 and MATH 2214 and MATH 2204 ) or (ME 2124 and MATH 2214 and MATH 2204H ) or (ME 2124 and MATH 2214 and MATH 2224) or (ME 2124 and MATH 2214 and MATH 2224H) or (ME 2124 and MATH 2214H and MATH 2204 ) or (ME 2124 and MATH 2214H and MATH 2204H ) or (ME 2124 and MATH 2214H and MATH 2224) or (ME 2124 and MATH 2214H and MATH 2224H) or (ME 2124 and MATH 2405H and MATH 2406H )"
+    },
+    {
+      "code": "ME 3414",
+      "name": "Fluid Dynamics",
+      "credits": "4",
+      "description": "Comprehensive first course in fluid dynamics. Fluid properties. Hydrostatics. Mass, momentum,and energy conservation in control volumes. Elementary dynamics and Bernoullis equation.Dimensional analysis and similitude. Laminar and turbulent flows. Introduction to Eulers and Navier-Stokes equations. Pipe flows. External flows and boundary layers. Introduction to compressible flows. Includes laboratory experiments.",
+      "prerequisites": "ME 2004 and ( MATH 2114 or MATH 2114H or MATH 2405H ) and ( MATH 2204 or MATH 2204H or MATH 2406H ) and ( MATH 2214 or MATH 2214H or MATH 2406H )"
+    },
+    {
+      "code": "ME 3504",
+      "name": "Dynamic Systems - Vibrations",
+      "credits": "3",
+      "description": "Principles of dynamic system modeling with emphasis on second order mechanical systems.  Harmonic and nonharmonic vibrations of single and multi-degree of freedom systems. Applications of computer simulation and analysis techniques in vibrations.",
+      "prerequisites": "(ME 3514 and MATH 2214 ) or (ME 3514 and MATH 2214H ) or (ME 3514 and MATH 2405H and MATH 2406H )"
+    },
+    {
+      "code": "ME 3524",
+      "name": "Mechanical Vibrations",
+      "credits": "4",
+      "description": "Development and application of mathematical methods, physical understanding, and computational tools for modeling, analysis, and design of vibrating systems. Free and forced vibration of single and multiple degree-of-freedom systems, particularly systems experiencing sinusoidal excitation. Distributed parameter systems. Practical engineering applications.",
+      "prerequisites": "ESM 2304 and ( MATH 2114 or MATH 2114H or MATH 2405H ) and ( MATH 2214 or MATH 2214H or MATH 2406H ) and ME 2004"
+    },
+    {
+      "code": "ME 3534",
+      "name": "Controls Engineering I",
+      "credits": "4",
+      "description": "Fundamentals of feedback control theory, time-domain and frequency-domain analysis, automatic control system design synthesis to meet performance and stability requirements, numerical simulation and discrete real-time implementation on microcontrollers.",
+      "prerequisites": "ME 2004 and ( MATH 2114 or MATH 2114H or MATH 2405H ) and ( MATH 2214 or MATH 2214H or MATH 2406H ) and ( MATH 2204 or MATH 2204H or MATH 2406H ) and ESM 2104 and ESM 2304"
+    },
+    {
+      "code": "ME 3604",
+      "name": "Kinematics and Dynamics of Machinery",
+      "credits": "3",
+      "description": "Kinematic analysis and design of cams, gears, and linkages, velocity, acceleration and force analysis, kinematic synthesis, balancing, kinematic and force analysis by complex numbers, computer-aided analysis, and synthesis of linkages.",
+      "prerequisites": "ESM 2304"
+    },
+    {
+      "code": "ME 3614",
+      "name": "Mechanical Design I",
+      "credits": "3",
+      "description": "Design of mechanical components subject to static and fatigue loads.  Design using screws, fasteners, springs and bearings.  Computer-aided design using transfer matrix and finite element methods.",
+      "prerequisites": "ESM 2204 and ( MATH 2214 or MATH 2214H ) and ( MATH 2114 or MATH 2114H )"
+    },
+    {
+      "code": "ME 3624",
+      "name": "Mechanical Design",
+      "credits": "4",
+      "description": "Comprehensive first course in mechanical design. Extension of the use of free body diagrams, combined stresses, and failure theories. Development of failure theories for static, buckling, and fatigue applied to mechanical design. Fundamentals of designing mechanical components subjected to static and cyclic loading. Design elements for screws, fasteners, springs, and welds. Hands-on laboratory learning of concepts discussed in class. Course credit will not be awarded for bothME\u00a03614andME\u00a03624. Design lab studio.",
+      "prerequisites": "ME 2004 and ESM 2204 and ( MATH 2214 or MATH 2214H or MATH 2406H )"
+    },
+    {
+      "code": "ME 3704",
+      "name": "Introduction to Mechatronics",
+      "credits": "3",
+      "description": "Introduction to electromechanical design. Fundamentals of electronics, including transistors, operational amplifiers, and digital signal processing; theory, analysis, design, and building of electronic circuits including interfaces and controllers; sensors and actuators; software development, microcontroller technology, and applications.",
+      "prerequisites": "ME 2004 and ( ECE 2054 or ECE 2024 or ECE 3054 )"
+    },
+    {
+      "code": "ME 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4005",
+      "name": "Mechanical Engineering Lab",
+      "credits": "3",
+      "description": "Principles of measurement, measurement standards and accuracy, detectors and transducers, digital data acquisition principles, signal conditioning systems and readout devices statistical concepts in measurement, experimental investigation of engineering systems, technical report writing.",
+      "prerequisites": "( STAT 3704 or STAT 4604 or STAT 4705 or STAT 4714 ) and ME 3524 and ECE 2054"
+    },
+    {
+      "code": "ME 4006",
+      "name": "Mechanical Engineering Lab",
+      "credits": "3",
+      "description": "Principles of measurement, measurement standards and accuracy, detectors and transducers, digital data acquisition principles, signal conditioning systems and readout devices statistical concepts in measurement, experimental investigation of engineering systems, technical report writing.",
+      "prerequisites": "ME 4005 and ECE 3254"
+    },
+    {
+      "code": "ME 4015",
+      "name": "Engineering Design and Project",
+      "credits": "3",
+      "description": "Team oriented, open-ended, multi-disciplinary design projects focused on industrially relevant problems. A specific, complex engineering design problem taken from problem definition to product realization and testing. Emphasis on documenting and reporting technical work. Making informed judgments which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts. 4015: Problem identification, including consideration of public health and welfare, as well as global, cultural, social, environmental, and economic factors and constraints; idea generation and concept selection; application of design, test, and analysis tools developed in previous courses; ethical and professional responsibilities; verification and validation; communication and working in teams. 4016: Project management; working on teams, analysis and optimization, fabrication and testing, and communicating technical ideas. For Pathways Advanced Discourse credit, must completeME\u00a04015-4016.",
+      "prerequisites": "ME 3024 and ME 3524 and ME 3534 and ME 3624 and ME 4005 and ( ME 3304 or MSE 2034 ) and ME 3414 and ME 2134"
+    },
+    {
+      "code": "ME 4016",
+      "name": "Engineering Design and Project",
+      "credits": "3",
+      "description": "Team oriented, open-ended, multi-disciplinary design projects focused on industrially relevant problems. A specific, complex engineering design problem taken from problem definition to product realization and testing. Emphasis on documenting and reporting technical work. Making informed judgments which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts. 4015: Problem identification, including consideration of public health and welfare, as well as global, cultural, social, environmental, and economic factors and constraints; idea generation and concept selection; application of design, test, and analysis tools developed in previous courses; ethical and professional responsibilities; verification and validation; communication and working in teams. 4016: Project management; working on teams, analysis and optimization, fabrication and testing, and communicating technical ideas. For Pathways Advanced Discourse credit, must completeME\u00a04015-4016.",
+      "prerequisites": "ME 4015"
+    },
+    {
+      "code": "ME 4034",
+      "name": "Bio-Inspired Technology",
+      "credits": "3",
+      "description": "Introduction to engineering solutions inspired by biological systems. Overview over the approach of bio-inspired technology and the state of the art. Exploration of the relationship between engineered and natural biological systems. Explanation of concepts of biological systems, such as evolutionary optimization, sensing, actuation, control, system integration, assembly and materials in engineering terms. Practice of interdisciplinary analysis skills in technical report writing projects where man-made and biological systems are evaluated for parallels to engineering and their technological potential.",
+      "prerequisites": "( PHYS 2205 and PHYS 2206 ) or ( PHYS 2305 and PHYS 2306 )"
+    },
+    {
+      "code": "ME 4044",
+      "name": "Soft Robotics",
+      "credits": "3",
+      "description": "Introduction to robots made of soft materials with a low elastic modulus and high strain before failure. Assessment of soft actuation strategies including tendons and flexible pneumatics. Evaluation of responsive materials across different physical domains. Stiffening mechanism designs. Introduction to soft sensing and control. Fabrication and evaluation of soft robot prototypes for sophisticated manipulation or locomotion tasks.",
+      "prerequisites": "ESM 2204 and ME 3704"
+    },
+    {
+      "code": "ME 4124",
+      "name": "Computer Aided Design of Fluid-Thermal Systems",
+      "credits": "3",
+      "description": "Review of physical laws and engineering concepts introduced in thermodynamics, fluid mechanics, and heat transfer with applications. Emphasis on analysis, modeling, and design of engineering systems, components, and physical phenomena with state-of-the-art computer software such as Ansys CFX, Star CCM, Aspen Plus, and ProSimPlus.",
+      "prerequisites": "( ME 3124 or ME 2134 ) and ( ME 3404 or ME 3414 ) and ME 3304"
+    },
+    {
+      "code": "ME 4134",
+      "name": "Cell Mechanobiology",
+      "credits": "3",
+      "description": "Plant and mammalian cellular mechanobiology, extracellular matrices, motor proteins, forces, cytoskeleton, focal adhesions, tissue engineering approaches, membrane trafficking, biochemistry, rules of life, ion channels, osmotic forces, nuclear dynamics.",
+      "prerequisites": "ESM 2204 and ( ME 2134 or ME 3414 or ESM 3024 or ESM 3234 )"
+    },
+    {
+      "code": "ME 4164",
+      "name": "Energy Systems for Buildings",
+      "credits": "3",
+      "description": "Application of the fundamental principles of thermodynamics, heat transfer, and fluid flow to analyze energy use for building environmental control. Exploration of approaches for configuring basic thermal-fluid engineering components (e.g. pumps, piping, fans, heat exchangers, refrigeration cycles, etc.) to yield systems that provide heating, cooling, and ventilation. Introduction to techniques and software tools for estimating energy use by these systems and the associated economic and environment impact. Examination of alternate technologies for meeting building energy needs including small scale combined heat and power systems and renewable energy systems.",
+      "prerequisites": "ME 2134"
+    },
+    {
+      "code": "ME 4174",
+      "name": "Spacecraft Propulsion",
+      "credits": "3",
+      "description": "Spacecraft propulsion systems and their applications in orbital, interplanetary, and interstellar flight.  Rocket propulsion fundamentals; advanced mission analysis; physics and engineering of chemical rockets, electrical thrusters, and propellantless systems (tethers and sails); spacecraft integration issues.",
+      "prerequisites": "AOE 3164 or AOE 4234 or ME 4234"
+    },
+    {
+      "code": "ME 4184",
+      "name": "Drone Technology and Flight Operations",
+      "credits": "3",
+      "description": "Basic aviation science, skills training in uncrewed flight operations, and knowledge of the regulatory environment that governs drone flight. Aerodynamics, propulsion, aircraft performance, sensing and control, meteorology, the Federal Aviation Regulations, safety and risk management. Flight management tools for conducting preflight inspections  and approving flight missions. Pre: Students in Mechanical Engineering will be given preference, other programs and students eligible with permission.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4194",
+      "name": "Sustainable Energy Solutions for a Global Society",
+      "credits": "3",
+      "description": "Addresses energy metrics, global and US energy supply and demand, transitional energy sources (natural gas, petroleum, coal, nuclear), sustainable/renewable source (solar, geothermal, hydro, tidal, wind, biofuels), and methods for increasing efficiencies (energy storage, batteries, green building, conservation).  Options for transportation, electricity, lighting and heating needs of industry, agriculture, community, and citizens.  Production, transmission, storage, and disposal issues considered in the context of global political, economic, and environmental impacts.",
+      "prerequisites": "( CHEM 1035 or CHEM 1055 ) and PHYS 2306"
+    },
+    {
+      "code": "ME 4204",
+      "name": "Internal Combustion Engines",
+      "credits": "3",
+      "description": "Analysis and design of gasoline and diesel engines. Fundamental processes and their application in current technology. Thermodynamics: air standard and air-fuel cycles. Combustion: stoichiometry, fuels, chemical equilibrium, chemical kinetics, flame propagation, knock, pollutant formation and control. Flow processes: volumetric efficiency, intake and exhaust tuning, two-stroke scavenging, carburetion, fuel injection, super- and turbo-charging.",
+      "prerequisites": "ME 2134 and ME 3414"
+    },
+    {
+      "code": "ME 4224",
+      "name": "Gas Turbines for Power and Propulsion",
+      "credits": "3",
+      "description": "Introduction to various applications of gas turbines for land, sea and air. Aero-thermo-mechanical aspects of component performance and reliability. Operational characteristics, limitations and component matching. Industrial standards, development and certification requirements. Design of gas turbine engines and comparison of the predicted performance (specific fuel consumption) against the in-service operation.",
+      "prerequisites": "ME 2134 and ME 3414"
+    },
+    {
+      "code": "ME 4234",
+      "name": "Aerospace Propulsion Systems",
+      "credits": "3",
+      "description": "Design principles and performance analysis of atmospheric and space propulsion engines and systems.  Application of thermodynamics, compressible fluid flow and combustion fundamentals to the design of gas turbine and rocket engines and components, including inlets, turbomachines, combustors, and nozzles.  Matching of propulsion system to vehicle requirements.  Must have a C- or better in pre-requisitesME\u00a03404andME\u00a03124orAOE\u00a03114andAOE\u00a03134.",
+      "prerequisites": "AOE 3114 and ( AOE 3164 or AOE 3264 ) or ME 3414 and ME 2134"
+    },
+    {
+      "code": "ME 4324",
+      "name": "Energy Systems: Theory and Applications",
+      "credits": "3",
+      "description": "Theory and applications of thermodynamic and fluid mechanics principles as applied to energy systems. Fundamental concepts on exergy, mixtures, psychrometry and thermochemistry. Analyses and applications include vapor and gas power systems, refrigeration, air conditioning, combustion processes and one-dimensional compressible flow.",
+      "prerequisites": "ME 2134 and ME 3414"
+    },
+    {
+      "code": "ME 4344",
+      "name": "Biological Transport Phenomena",
+      "credits": "3",
+      "description": "Engineering analysis and predictive modeling of heat and mass transport in biological systems (e.g., tissues, organs, organisms, and biomedical devices). Examination of processes that involve conduction, convection, diffusion, generation/consumption. Application of analytical and computational methods to solve differential equations that describe unsteady and/or multi-dimensional transport. Topics include oxygen transport, pharmacokinetic analysis, kidney function, blood perfusion, burns, and cryopreservation.",
+      "prerequisites": "( CHE 3114 and CHE 3154 and CHE 3144 ) or ( ME 3304 and ME 3414 )"
+    },
+    {
+      "code": "ME 4454",
+      "name": "Engineering Leadership in Practice Managing the Technical Design Process",
+      "credits": "3",
+      "description": "Introduction to management and mentoring skills associated with the application of the engineering design process. Course covers skills necessary for leading diverse teams of people through a technical design project.  Managing teams of local high school students through an authentic technical design experience associated with design competitions. Course addresses the practical applications of science, math and engineering, while building and managing teams of people to meet technical project goals. Prerequisite:ME\u00a04015or similar team-based design experience, or by permission of instructor.",
+      "prerequisites": "ME 4015"
+    },
+    {
+      "code": "ME 4464",
+      "name": "Introduction to Compressible Flows",
+      "credits": "3",
+      "description": "Derivation of mass, momentum, and energy conservation equations for one dimensional (1-D), steady, inviscid, compressible gas flows of calorically perfect gases. Departure from incompressible flow theory. Importance of Mach number. Isentropic flows. Steady and unsteady 1-D normal shock flows. Oblique shock flows (with surface reflections) and/or Prandtl-Meyer expansion waves. Converging and converging-diverging quasi-1-D nozzle flows. Inviscid flows in straight ducts with heat addition; adiabatic flows in straight ducts with friction. Introduction to Newtonian hypersonic flow theory, high temperature effects, and rarefied gas principles.",
+      "prerequisites": "ME 2134 and ME 3414"
+    },
+    {
+      "code": "ME 4504",
+      "name": "Dynamic Systems - Controls Engineering I",
+      "credits": "3",
+      "description": "Fundamentals of feedback control theory, classical analysis and design techniques for automatic controls, introduction to modern control theory.",
+      "prerequisites": "(ME 3514 and MATH 2214 ) or (ME 3514 and MATH 2214H ) or (ME 3514 and MATH 2405H and MATH 2406H )"
+    },
+    {
+      "code": "ME 4524",
+      "name": "Introduction to Robotics and Automation",
+      "credits": "3",
+      "description": "Automation, robot technology, kinematics, dynamics, trajectory planning, and control of two-dimensional and spatial robots; robot programming; design and simulation of robotic devices.",
+      "prerequisites": "ME 2004 and ME 3524 and ME 3534"
+    },
+    {
+      "code": "ME 4534",
+      "name": "Land Vehicle Dynamics",
+      "credits": "3",
+      "description": "Analytical methods for land vehicle dynamics.  Mechanics of pneumatic tires on pavement and steel wheels on rails. Vehicle stability, handling, response to random guideway and roadway irregularities, ride quality computation methods and standards, suspension design.",
+      "prerequisites": "ME 3524"
+    },
+    {
+      "code": "ME 4544",
+      "name": "Automotive Engineering",
+      "credits": "3",
+      "description": "Vehicle performance, drive train, suspension, steering, and brake systems.  Steady state and transient conditions. Senior standing in Mechanical Engineering required.",
+      "prerequisites": "ME 3524"
+    },
+    {
+      "code": "ME 4554",
+      "name": "Advanced Technology for Motor Vehicles",
+      "credits": "3",
+      "description": "Energy use and environmental issues for motor vehicles: Emissions standards, fleet requirements, dynamometer testing, fuel economy, and vehicle performance. Alternative fuel vehicles: Characteristics and infrastructure of fuels, batteries, electric vehicles, and hybrid electric vehicles. Vehicle design: Modeling and simulation of vehicle energy use and performance, component sizing. Fuel cells for transportation. Heavy-duty vehicles and busses. Low mass vehicles and future vehicle technology.",
+      "prerequisites": "ME 2134"
+    },
+    {
+      "code": "ME 4564",
+      "name": "Vehicle Control",
+      "credits": "3",
+      "description": "Overview of vehicle control systems and control algorithms for anti-lock braking, stability, road holding, lane departure, traction control, and tire pressure monitoring. Advanced driver assist systems and intelligent tire technology. Hands-on experience with hardware-in-the- loop systems. Mathematical modeling and simulation of vehicle control.",
+      "prerequisites": "ME 3524 and ME 3534"
+    },
+    {
+      "code": "ME 4584",
+      "name": "Robotics Laboratory",
+      "credits": "1",
+      "description": "Develop, compile, and test algorithms for serial and mobile robots. Robot forward and inverse kinematics, task planning, velocity kinematics, force rendering, control, haptics, mapping and localization, computer vision and path planning.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4614",
+      "name": "Mechanical Design II",
+      "credits": "3",
+      "description": "Design of mechanical elements such as welded joints hydrodynamic bearings, spur gears, shafts, brakes. Alternative fatigue design methods, cumulative fatigue, mechanical design computer software.",
+      "prerequisites": "ME 3624"
+    },
+    {
+      "code": "ME 4624",
+      "name": "Finite Element Practice in Mechanical Design",
+      "credits": "3",
+      "description": "Application of the finite element method to stress analysis problems in mechanical design.  Modeling techniques, proper use of existing computer programs, interpreting of results, application to design modification.",
+      "prerequisites": "ME 3624"
+    },
+    {
+      "code": "ME 4634",
+      "name": "Introduction to Computer-aided Design and Manufacturing",
+      "credits": "3",
+      "description": "Participants will study the computer-aided design and manufacturing of mechanical systems.  A mechanical system will be designed including preliminary design, analysis, detail design, numerical control programming, and documentation.  Applications programs will be written and interfaced to the CAD/CAM database.  All assignments will be carried out on a CAD/CAM system.",
+      "prerequisites": "ME 3024"
+    },
+    {
+      "code": "ME 4644",
+      "name": "Introduction to Rapid Prototyping",
+      "credits": "3",
+      "description": "Participants will study topics fundamental to rapid prototyping and automated fabrication, including the generation of suitable CAD models, current rapid prototyping fabrication technologies, their underlying material science, the use of secondary processing, and the impact of these technologies on society.  The rapid prototyping process will be illustrated by the actual design and fabrication of a part.  Programming skills required.",
+      "prerequisites": "ME 3024"
+    },
+    {
+      "code": "ME 4654",
+      "name": "Optimization Techniques in Engineering",
+      "credits": "3",
+      "description": "Fundamental mathematical concepts for optimization and optimality conditions. Classification of optimization techniques/problems in engineering. Concepts of forward and inverse design. Linear programming. Step-size calculation methods. Search direction calculation methods. 1st and 2nd order gradient-based algorithms. Evolutionary strategies for optimization. Pattern search/genetic algorithm. Sensitivity analysis. Reliability-based and robustness-based optimization.",
+      "prerequisites": "ME 2004 or ( AOE 2074 and CS 1044 and CS 1054 and CS 1064 and CS 1114 and CS 1124 and ECE 1574)"
+    },
+    {
+      "code": "ME 4664",
+      "name": "Introduction to Global Collegiate Engineering Design",
+      "credits": "3",
+      "description": "Participants will study topics fundamental to global collaborative engineering design, product data management, and collaborative product data management.  These topics will be applied during a team project with team members located overseas, utilizing state-of-the-art collaborative engineering and product data management software and hardware technologies.  Partially duplicates 5664.  Credit may only be received for one course.",
+      "prerequisites": "ME 3024"
+    },
+    {
+      "code": "ME 4674",
+      "name": "Materials Selection in Mechanical Design",
+      "credits": "3",
+      "description": "Systematic approach to materials selection accounting for market need, functional requirements, shape, safety, cost and environmental issues. Overview of design process, material property charts, material indices, selection of materials with multiple constraints and/or conflicting objectives, shape factors, design considerations in hybrid materials, environmental issues as well as several case studies.",
+      "prerequisites": "ESM 2204 and MSE 2034"
+    },
+    {
+      "code": "ME 4684",
+      "name": "Industrial Internet of Things",
+      "credits": "3",
+      "description": "Theory and applications of Industrial Internet of Things (IIoT). Industrial data flow, devices and network in manufacturing. Basics for IIoT architecture and implementation of IIoT solutions with cloud computing platforms and OEM IIoT platforms. Device connection, data transfer and application of diagnostics, maintenance, and predictive data analytics on IIoT platforms.",
+      "prerequisites": "ME 3534 or ( CS 1044 or CS 1054 or CS 1064 or CS 1114 )"
+    },
+    {
+      "code": "ME 4724",
+      "name": "Engineering Acoustics",
+      "credits": "3",
+      "description": "Basic acoustical theory and practice, acoustic terminology, measurement, transmission, and perception of sound, muffler design, noise control techniques.",
+      "prerequisites": "ME 3524"
+    },
+    {
+      "code": "ME 4734",
+      "name": "Robotics  and  Mechatronics Seminar",
+      "credits": "1",
+      "description": "Topics in robotics and mechatronics. Invited lectures from industry, government organizations and universities. Recent research results, developments and challenges, providing a global and social context for the topics.",
+      "prerequisites": "ME 3534 and ECE 3254"
+    },
+    {
+      "code": "ME 4744",
+      "name": "Mechatronics: Theory and Application",
+      "credits": "4",
+      "description": "Electromechanical design and control applications. Theory, modeling, simulation, analysis, design and building of electronic interfaces and controllers; sensors and actuators; software development, micro-controller technology, and applications. Design Lab/Studio.",
+      "prerequisites": "ME 3534 and ME 3704"
+    },
+    {
+      "code": "ME 4754",
+      "name": "Mechatronics: Advanced Topics and Application",
+      "credits": "3",
+      "description": "Electromechanical design and control applications. Design and building of electronic interfaces and controllers including sensors, actuators, signal acquisition, filtering, and conditioning for applications. Systems integration with wireless communication; image processing; embedded programs for data acquisition and feedback control applications.",
+      "prerequisites": "ME 4744"
+    },
+    {
+      "code": "ME 4764",
+      "name": "Audio Engineering Technology",
+      "credits": "3",
+      "description": "Principles and design in the field of audio engineering. Loudspeaker design and construction, microphone technology, digital audio acquisition, signal processing in audio engineering, human perception, technical acoustics, binuaral hearing, surround sound processing and production, theory, measurement, and reproduction of 3D surround sound, virtual instrument theory and practice, room acoustics and simulation, principles of audio effects (e.g., compression, reverberation, equalization), and acoustic materials engineering.",
+      "prerequisites": "ME 3524 and ME 3534"
+    },
+    {
+      "code": "ME 4824",
+      "name": "Introduction to Human-Robot Interaction",
+      "credits": "3",
+      "description": "Formalizing interaction between robots and humans. Developing learning and control algorithms that enable robots to seamlessly and intelligently collaborate with humans. Mathematical approaches to human-robot interaction, learning from demonstration, Bayesian inference, intent detection, safe and optimal control, assistive autonomy, and user study design. Review and present existing literature.",
+      "prerequisites": "ME 4524"
+    },
+    {
+      "code": "ME 4854",
+      "name": "Nano and Micromechanics of Materials",
+      "credits": "3",
+      "description": "Analysis of microstructural mechanics, crystal structures, defects, and dislocations. Mechanical behavior of crystalline materials at the microscale.  Computational modeling of mechanical behavior in discrete atomistic and molecular systems, including molecular dynamics.  Application of these methods to polymers and other soft materials, biological materials, carbon-based materials, and metallic alloys.",
+      "prerequisites": "ESM 2204"
+    },
+    {
+      "code": "ME 4864",
+      "name": "Micro/Nano-Robotics",
+      "credits": "3",
+      "description": "Overview of Micro/Nano-robotic systems. Physics of reduced length scales (scaling effects in the physical parameters, surface forces, contact mechanics, and Micro/Nano-scale dynamical phenomena), Basics of Micro/Nano-manufacturing, microfabrication and soft lithography, Biomimetic design strategies for mobile micro-robots, Principle of transduction, material properties and characteristics of Micro/Nano-actuators (piezoelectric, shape-memory alloy, and a variety of MEMS and polymer actuators), Control requirements and challenges of Micro/Nano-actuators, Micro/Nano sensors for mobile microrobotic applications, Micro/Nano-manipulation (scanning probe microscopy, operation principles, designing experiments for nanoscale mechanical characterization of desired samples).",
+      "prerequisites": "ME 3414 and ME 3624 and ME 3534"
+    },
+    {
+      "code": "ME 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4974H",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "Honors",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4984A",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ME 4994H",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {
+    "major": "Mechanical Engineering",
+    "required_courses": [
+      "ME 2004",
+      "ME 2024",
+      "ME 2134",
+      "ME 3134",
+      "ME 3404",
+      "ME 3504",
+      "ME 3514",
+      "ME 3524",
+      "ME 4024",
+      "ME 4154",
+      "ME 4974",
+      "MATH 1225",
+      "MATH 1226",
+      "MATH 2114",
+      "MATH 2214",
+      "PHYS 2305",
+      "PHYS 2306",
+      "CHEM 1035",
+      "CHEM 1045"
+    ],
+    "electives": [
+      "ME 4214",
+      "ME 4234",
+      "ME 4244",
+      "ME 4314",
+      "ME 4324",
+      "ME 4334",
+      "ME 4344"
+    ],
+    "notes": "Senior Capstone Design is two semesters (ME 4024 + ME 4974)."
+  }
+}

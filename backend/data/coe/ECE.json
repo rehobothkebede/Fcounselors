@@ -1,0 +1,710 @@
+{
+  "courses": [
+    {
+      "code": "ECE 1004",
+      "name": "Introduction to ECE Concepts",
+      "credits": "3",
+      "description": "Introduction to topics that span the field of electrical and computer engineering (ECE). Content is presented through the lens of application with accompanying hands-on exercises. Basics of circuits, op-amps, computer logic, and computer programming are covered. Engineering ethics and its societal challenges are considered.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 2024",
+      "name": "Circuits and Devices",
+      "credits": "3",
+      "description": "Analysis and design of passive and active circuits under Direct Current (DC), Alternating Current (AC), and switched excitation. Linear circuit analysis techniques for various circuit topologies. Expressing the transient response of first- and second-order linear circuits using time-domain methods. Calculating the AC steady-state response of linear circuits using phasors. Characterizing the frequency response of linear circuits. Determining operating point and small signal response of non-linear circuits containing diodes and bipolar transistors.",
+      "prerequisites": "ECE 1004 and ( MATH 2114 or MATH 2114H or MATH 2405H )"
+    },
+    {
+      "code": "ECE 2054",
+      "name": "Applied Electrical Theory",
+      "credits": "3",
+      "description": "For students in the Mechanical Engineering program or by permission of the ECE Department.  Fundamentals of electric circuits; circuit laws and network theorems, operational amplifiers, energy storage elements, response of first and second order systems, AC steady state analysis. Construction, analysis, and characterization of circuits with student-owned Lab-in-a-Box system.",
+      "prerequisites": "PHYS 2306"
+    },
+    {
+      "code": "ECE 2164",
+      "name": "Exploration of the Space Environment",
+      "credits": "3",
+      "description": "This introductory course covers a broad range of scientific, engineering, and societal aspects associated with the exploration and technological exploitation of space. Topics covered include: science of the space environment; space weather hazards and societal impacts; orbital mechanics and rocket propulsion; spacecraft subsystems; applications of space-based technologies.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 2214",
+      "name": "Physical Electronics",
+      "credits": "3",
+      "description": "Fundamentals of electrostatics, magnetostatics, and transmission lines, including impedance matching networks. Introduction to electromagnetic (EM) waves, with calculation of phase velocity using Maxwell's equations. Examination of semiconductor physics, including carrier concentrations, drift, and diffusion currents. Analysis of PN diode circuits and metal-oxide-semiconductor field-effect transistors (MOSFET) amplifiers. Exploration of Faraday's Law in transformer and generator performance. Design of MOSFET biasing and amplifier circuits. Introduction to CMOS devices and digital inverters. Emphasis on ethical and professional practices in electronic circuit design.",
+      "prerequisites": "ECE 2024"
+    },
+    {
+      "code": "ECE 2274",
+      "name": "Electronic Networks Laboratory I",
+      "credits": "1",
+      "description": "Principles of operation of electrical and electronic test equipment and applications to measurement of circuit parameters. Transient and steady state response of RLC networks.  Applications of laws and theories of circuits. Design, prototyping, and testing of electronic devices and circuits. Must have C- or better in prerequisite.",
+      "prerequisites": "ECE 2074"
+    },
+    {
+      "code": "ECE 2514",
+      "name": "Computational Engineering",
+      "credits": "3",
+      "description": "Software development processes for electrical and computer engineering applications. Modeling, simulation, data analysis, and visualization. Computing abstractions and the use of application programming interfaces. Software design and implementation using a procedural, class-based language. Integrated code development and testing. Team-based development of autonomous system\napplications reinforcing course topics.",
+      "prerequisites": "ECE 1004"
+    },
+    {
+      "code": "ECE 2544",
+      "name": "Fundamentals of Digital Systems",
+      "credits": "3",
+      "description": "Design and analysis of digital systems. Information representations and computer arithmetic. Switch and gate design within digital logic. Combinational logic analysis and synthesis, Hardware Description Languages (HDL), and hierarchical design. Finite-state machines, synchronous sequential logic analysis and design. Hardware specification and documentation. Register transfer level architectures, computer organization, memories, and digital interfacing. Instruction set architecture and assembly language\nprogramming. Emphasis on the relationship between software and hardware.",
+      "prerequisites": "ECE 1004"
+    },
+    {
+      "code": "ECE 2564",
+      "name": "Embedded Systems",
+      "credits": "3",
+      "description": "Use of microcontroller-based embedded systems as a tool to address digital control and sensing in engineering applications. Modern\nmethodologies for programming microcontrollers including programming under real-time and resource design constraints. Finite-state machine modeling and software implementation. Event-driven programming including polling-based and interrupt-driven input/output. Integration of sensors and actuators, use of standard digital and analog interfaces, and use of hardware peripherals in microcontroller architectures. Design of hardware abstraction layers and software architectures for embedded systems. Integration of hardware peripherals into real-time, software applications. Software toolchains for embedded systems, use of debugger and development and testing methodologies. Professional project management and version control.",
+      "prerequisites": "ECE 2514 and ECE 2544"
+    },
+    {
+      "code": "ECE 2714",
+      "name": "Signals and Systems",
+      "credits": "3",
+      "description": "Mathematical methods for the analysis and design of continuous and discrete linear, time-invariant systems. Representation of signals using time-domain and frequency-domain methods and the application of Fourier transforms to linear system design and analysis. Descriptions of systems as signal transformations using block diagrams, differential equations, difference equations, convolution, and transfer functions. Applications to signal filtering, measurement, and control of the physical devices. Formal project documentation adhering to professional practices.",
+      "prerequisites": "ECE 2024 and ( MATH 2214 or MATH 2214H or MATH 2406H )"
+    },
+    {
+      "code": "ECE 2804",
+      "name": "Integrated Design Project",
+      "credits": "2",
+      "description": "Review of circuit design and measurement techniques. Design, implementation, testing, and validation of a hardware and software solution to an open-ended engineering problem integrating both analog and digital components. Technical documentation and oral presentation of the design process and solution. Introduction to topics in engineering professionalism, career development, and industrial perspectives.",
+      "prerequisites": "ECE 2024 and ECE 2514 and ECE 2544"
+    },
+    {
+      "code": "ECE 2964",
+      "name": "Field Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 2974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "A minimum GPA of 2.0 in all ECE courses is required for enrollment.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 2984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 2994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 3004",
+      "name": "AC Circuit Analysis",
+      "credits": "3",
+      "description": "Application of the basic laws and techniques of circuit analysis to AC circuits.  Complex numbers and algebra with an emphasis on phasor representation of circuits. Calculation of the frequency response of circuits with R, L, and C components, independent sources, controlled sources, and operational amplifiers.  Analysis of AC steady-state circuits and determination of average power. Magnetically coupled circuits.  Laplace and Fourier transforms.  Representation of circuits by two-port models. C- or better in prerequisites.",
+      "prerequisites": "ECE 2714"
+    },
+    {
+      "code": "ECE 3054",
+      "name": "Electrical Theory",
+      "credits": "3",
+      "description": "For students in curricula other than ECE or ME. Fundamentals of electric circuits and electronic devices. Fundamentals of electric circuits: circuit laws and network theorems, operational amplifiers, energy storage elements, response of first (Resistive-Inductive RL, and Resistive Capacitive RC) and second order (Resistive-Inductive-Capacitive RLC) systems, Alternating Current (AC) steady state analysis. Basic electronic devices: Diodes and Transistors.",
+      "prerequisites": "PHYS 2306"
+    },
+    {
+      "code": "ECE 3074",
+      "name": "AC Circuit Design Laboratory",
+      "credits": "1",
+      "description": "Design, simulation, construction, measurement, and troubleshooting of AC circuits. Basic AC measurement techniques will be introduced, including using a digital multimeter, oscilloscope, function generator, network analyzer, and impedance analyzer. Circuit simulation will be used to test designs prior to construction. Laboratory experiments will introduce some of the key aspects of AC circuits, such as phasor measurements, oscillators, reactance compensation, impedance matching, passive and active filter design, and applications.",
+      "prerequisites": "ECE 2804"
+    },
+    {
+      "code": "ECE 3104",
+      "name": "Introduction to Space Systems and Technologies",
+      "credits": "3",
+      "description": "Introduction to technologies and computational tools used in space-based applications, including techniques for exploring the planets and the near-Earth geospace environment. Overview of orbits, spacecraft, control of spacecraft, electromechanical system requirements for space-based applications, and space environment interactions with spacecraft systems.  Understanding the space environment and the engineering approaches required to operate it. A C- or better is required in prerequisites.",
+      "prerequisites": "ECE 3105"
+    },
+    {
+      "code": "ECE 3105",
+      "name": "Electromagnetic Fields",
+      "credits": "3",
+      "description": "Maxwells equations and their application to engineering problems.ECE\u00a03105: transmission lines, introductory electrostatics, introductory magnetostatics, Faradays Law, properties of uniform plane waves.ECE\u00a03106: electrostatics and magnetostatics, Maxwells Equations, wave propagation in uniform media, the reflection and transmission of plane waves, guided waves, radiation. A C- or better is required in the prerequisites.",
+      "prerequisites": "ECE 2214 and ( MATH 2204 or MATH 2204H or MATH 2406H ) and PHYS 2306"
+    },
+    {
+      "code": "ECE 3106",
+      "name": "Electromagnetic Fields",
+      "credits": "3",
+      "description": "Maxwells equations and their application to engineering problems.ECE\u00a03105: transmission lines, introductory electrostatics, introductory magnetostatics, Faradays Law, properties of uniform plane waves.ECE\u00a03106: electrostatics and magnetostatics, Maxwells Equations, wave propagation in uniform media, the reflection and transmission of plane waves, guided waves, radiation. A C- or better is required in the prerequisites.",
+      "prerequisites": "ECE 3105"
+    },
+    {
+      "code": "ECE 3134",
+      "name": "Introduction to Optoelectronics",
+      "credits": "3",
+      "description": "Fundamental principles of optoelectronics.  The concept of photons, spontaneous emission, and simulated emission.  Rate equation analysis of light emitting diodes and lasers. Operation principles and device characteristics of photodetectors and solar cells.  Advanced topics such as quantum well and emerging materials.",
+      "prerequisites": "ECE 2214"
+    },
+    {
+      "code": "ECE 3154",
+      "name": "Space Systems - Design and Validation",
+      "credits": "2",
+      "description": "Introduction to systems and techniques used in electrical engineering design for space-based applications. Students design, fabricate, and test an electronic system following accepted NASA and industry standards, including functional bench-top tests, thermal testing, vibration testing, and long-duration operational testing. Periodic formal reports will document design approaches and test results.",
+      "prerequisites": "ECE 3105"
+    },
+    {
+      "code": "ECE 3174",
+      "name": "Optoelectronics Laboratory",
+      "credits": "1",
+      "description": "Characterization of optoelectronic devices such as light emitting diodes, semiconductor lasers, and photodetectors. Characterization and analysis of optical interference, wave propogation in optical fibers, and optical diffraction. Construction of simple optical imaging systems using lenses and bulk optics.",
+      "prerequisites": "ECE 2804"
+    },
+    {
+      "code": "ECE 3204",
+      "name": "Analog Electronics",
+      "credits": "3",
+      "description": "Modeling, analysis and design of bipolar-junction and field-effect transistor amplifiers. Architecture and functionality of single stage linear amplifiers, multi-stage amplifiers, current mirrors, active loads, and differential amplifiers. Frequency response of single stage and multistage amplifiers.",
+      "prerequisites": "ECE 2214 and ECE 2714"
+    },
+    {
+      "code": "ECE 3214",
+      "name": "Semiconductor Device Fundamentals",
+      "credits": "3",
+      "description": "Fundamental semiconductor device physics associated with intrinsic and doped semiconductor materials, drift-diffusion of charge carriers, and devices with an in-depth coverage of p-n and Schottky diodes, bipolar junction transistors, and metal-oxide semiconductor and junction field effect transistors.",
+      "prerequisites": "ECE 2214 or MSE 3204"
+    },
+    {
+      "code": "ECE 3254",
+      "name": "Industrial Electronics",
+      "credits": "3",
+      "description": "Fundamentals of electronics, including basic device principles. Include digital, operational amplifier, and analog analysis for industrial applications and magnetic circuits. For students in the Mechanical Engineering program or by permission of the ECE Department.",
+      "prerequisites": "ECE 2054"
+    },
+    {
+      "code": "ECE 3274",
+      "name": "Analog Electronics Laboratory",
+      "credits": "1",
+      "description": "Design, simulate, build, test and debug analog electronic circuits.  Basic building blocks such as current mirrors, active loads, small signal amplifiers,  differential amplifiers and power amplifiers will be explored.  Measurement techniques to test key amplifier specifications will be introduced.  The culminating experience will be the integration of the basic building blocks into a sophisticated electronic circuit such as an operational amplifier",
+      "prerequisites": "ECE 2804"
+    },
+    {
+      "code": "ECE 3304",
+      "name": "Introduction to Power Systems",
+      "credits": "3",
+      "description": "Basic concepts of AC systems, single-phase and three-phase networks, electric power generation, transformers, transmission lines, electric machinery and the use of power.  Pre-requisite 3004 with C- or better.",
+      "prerequisites": "ECE 3004"
+    },
+    {
+      "code": "ECE 3354",
+      "name": "Electric Power Engineering Laboratory",
+      "credits": "1",
+      "description": "Laboratory experiments based on principles of electric power engineering.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 3504",
+      "name": "Principles of Computer Architecture",
+      "credits": "3",
+      "description": "Instruction formats and construction. Addressing modes. Memory hierarchy (cache, main memory and secondary memory) operation and performance. Simple pipelines. Basic performance analysis. Simple Operating System (OS) functions, particularly as they relate to hardware. Virtual memory. Computer Input/Output (I/O) concepts, including interrupt and Direct Memory Access (DMA) mechanisms. Intercomputer communication concepts. Processor design.",
+      "prerequisites": "ECE 2544"
+    },
+    {
+      "code": "ECE 3514",
+      "name": "Data Structures & Algorithms",
+      "credits": "3",
+      "description": "Introduction of fundamental data structures, algorithms, and abstract data types. Data structures, arrays, linked lists, stacks, queues, and trees. Algorithms for manipulation, sorting, searching. Tree traversals. Implementation of data structures and algorithms in C++ using good design practices.",
+      "prerequisites": "ECE 2514"
+    },
+    {
+      "code": "ECE 3524",
+      "name": "Introduction to Unix for ECE",
+      "credits": "2",
+      "description": "Fundamental concepts of operating systems, emphasizing a hands-on introduction to Unix. User interfaces, Unix shell commands, the Unix file system, task management, common system utilities, the Unix programming environment. Students gain experience with system installation and administration.",
+      "prerequisites": "ECE 2804"
+    },
+    {
+      "code": "ECE 3544",
+      "name": "Digital Design I",
+      "credits": "4",
+      "description": "Design techniques for combinational and sequential logic. Design of digital circuits using standard integrated circuit chips and programmable logic devices. Computer simulation will be used to validate designs. Prototypes will be constructed to demonstrate design functionality.",
+      "prerequisites": "ECE 2544"
+    },
+    {
+      "code": "ECE 3564",
+      "name": "Introduction to Computer Networking",
+      "credits": "3",
+      "description": "Introduction to computer networking featuring the Internet. Internet architecture and layering. Application layer service models and protocols. Transport layer protocols and congestion control. Internet addressing, routing algorithms and protocols. Multiple access and link layer addressing, wireless local area networks (LANs) and cellular networks.",
+      "prerequisites": "ECE 2544 and ECE 2714"
+    },
+    {
+      "code": "ECE 3574",
+      "name": "Applied Software Design",
+      "credits": "3",
+      "description": "An introduction to applied software design methods for use in the writing of efficient, reusable, and modular C++ programs. Introduces the use of the following: classes, inheritance, and polymorphism; design patterns; high-level programming techniques using libraries, generics, and containers; widgets, models, and views; software frameworks for embedded systems; and advanced techniques ranging from multi-threading to reflective programming.",
+      "prerequisites": "ECE 3514"
+    },
+    {
+      "code": "ECE 3604",
+      "name": "Introduction to RF  and  Microwave Engineering",
+      "credits": "3",
+      "description": "Introduction to circuits, devices, and systems for radio frequency (RF) and microwave applications.  Fundamentals of antennas, propagation, small signal and power amplifiers, frequency conversion, and frequency synthesis.  Tools and concepts including s-parameters, design impedance matching, dynamic range, noise figure, and link budget.",
+      "prerequisites": "ECE 3105"
+    },
+    {
+      "code": "ECE 3614",
+      "name": "Introduction to Communication Systems",
+      "credits": "3",
+      "description": "Analysis and design of communication systems with an emphasis on digital communications based on time and frequency domain analysis. Fourier transform techniques, linear systems, and filtering are reviewed. Power and energy spectral density of communication signals. Sampling and quantization of analog signals. Baseband and binary bandpass digital modulation including line coding, pulse shaping, and both pulse and carrier modulation techniques. Wireless communication system concepts including link budgets and multiple access. Transmitter and receiver design concepts. Signal-to-noise ratio, bit error rate, and their relationship. Analog techniques such as Amplitude Modulation (AM) and Frequency Modulation (FM) radio will be reviewed for conceptual and comparative purposes.",
+      "prerequisites": "ECE 2714 and STAT 4714"
+    },
+    {
+      "code": "ECE 3704",
+      "name": "Continuous and Discrete System Theory",
+      "credits": "3",
+      "description": "Continuous- and discrete-time system theory. Block diagrams, feedback, and stability theory. Continuous-time stability,\ndifferential equations, Laplace-transforms, transfer functions. Discrete-time stability, difference equations, Z-transforms.\nTransfer functions and frequency response. Sampling of continuous systems and an introduction to control\nand filter design. Hands-on projects to illustrate and integrate the various continuous- and discrete-time concepts and\ntools.",
+      "prerequisites": "ECE 2714"
+    },
+    {
+      "code": "ECE 3714",
+      "name": "Introduction to Control Systems",
+      "credits": "3",
+      "description": "Introduction to the design of feedback compensation to improve the transient and steady-state performance of systems. Emphasis is on modeling, analysis and analog compensator design for single-input single-output systems. Modeling techniques, root locus analysis and design, the Nyquist criterion, and frequency domain compensation.",
+      "prerequisites": "ECE 3704"
+    },
+    {
+      "code": "ECE 3964",
+      "name": "Field Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 3974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 3984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4104",
+      "name": "Microwave and RF Engineering",
+      "credits": "4",
+      "description": "Passive and active Radio Frequency and microwave components and circuits for wireless communications; transmission-line theory; planar transmission-lines and waveguides; S-parameters; resonators; power dividers and couplers; microwave filters; sources, detectors, and active devices; modern RF & microwave CAD; measurement techniques. C- or better in prerequisites.",
+      "prerequisites": "ECE 3106 and ECE 3204"
+    },
+    {
+      "code": "ECE 4110",
+      "name": "Quantum Engineering Laboratory",
+      "credits": "3",
+      "description": "Introduction to fundamental science concepts and laboratory implementation of quantum engineering applications. Science concepts include wave-particle duality, quantum erasure, quantum entanglement and engineering applications include quantum communication, Bennett-Brassard 1984 (BB84) and Ekert 1991 (Ekert91) Quantum Key Distribution (QKD) protocols for quantum cryptography, quantum sensing, quantum interferometry, and quantum state tomography.",
+      "prerequisites": "MATH 2114 and PHYS 2306"
+    },
+    {
+      "code": "ECE 4114",
+      "name": "Antennas",
+      "credits": "3",
+      "description": "Antenna fundamentals, analysis and design principles, and a survey of antenna types including:  arrays, wire antennas, broadband antennas, and aperture antennas.",
+      "prerequisites": "ECE 3106"
+    },
+    {
+      "code": "ECE 4120",
+      "name": "Fundamentals of Quantum Engineering",
+      "credits": "3",
+      "description": "Introduction to fundamental concepts and engineering principles of quantum physics, quantum computing, quantum communication, and quantum sensing. The quantum physics section includes quantum states, superposition, entanglement, quantum measurements. The quantum computing section includes quantum bits, gates, circuits, algorithms, and quantum error correction. The quantum communication section includes toy models for quantum key distribution and quantum teleportation. The quantum sensing section includes solid-state quantum defect sensors and single photon detection. Software quantum simulators will also be introduced, providing hands-on experience with quantum gates, measurements, and algorithms. Pre: Junior Standing",
+      "prerequisites": "MATH 2114 and MATH 2204"
+    },
+    {
+      "code": "ECE 4124",
+      "name": "Radio Wave Propagation",
+      "credits": "3",
+      "description": "Behavior of radiated electromagnetic waves in terrestrial, atmosphere, space, and urban environments; path, frequency and antenna selection for practical communication systems; propagation prediction.",
+      "prerequisites": "ECE 3106"
+    },
+    {
+      "code": "ECE 4134",
+      "name": "Photonics",
+      "credits": "3",
+      "description": "Fundamental concepts in photonics technology. Basic principles of optical fibers and components such as Bragg gratings, amplifiers, couplers and modulators used in optical communications and sensing. Propagation, dispersion, bandwidth and nonlinear properties of optical signals in optical waveguides and fibers.",
+      "prerequisites": "ECE 3105"
+    },
+    {
+      "code": "ECE 4144",
+      "name": "Optical Systems",
+      "credits": "3",
+      "description": "Fundamental concepts in optical information processing. Ray optics. Optical diffraction. Basic principles and applications of optical imaging using wave optics. Properties of Gaussian Beam. Introduction to Fourier optics, optical spatial filtering, 3D image reconstruction and holography.",
+      "prerequisites": "ECE 3106"
+    },
+    {
+      "code": "ECE 4154",
+      "name": "Space Weather: The Solar Wind and Magnetosphere",
+      "credits": "3",
+      "description": "Solar-terrestrial interactions and space weather: the sun, solar wind, and interplanetary magnetic field; space plasma physics and magnetohydrodynamics; Earths magnetosphere and ionosphere; geomagnetic storms and auroral substorms; societal impacts of space weather; planetary magnetospheres; space science instrumentation.",
+      "prerequisites": "ECE 3105 or AOE 3014"
+    },
+    {
+      "code": "ECE 4164",
+      "name": "Introduction to Global Positioning System (GPS) Theory and Design",
+      "credits": "4",
+      "description": "Fundamental theory and applications of radio navigation with the Global Positioning System GPS. Satellite orbit theory, GPS signal structure and theory, point positioning with pseudoranges and carrier phases, selective availability, dilution of precision, differential GPS, atmospheric effects on GPS signals.",
+      "prerequisites": "ECE 3105 or AOE 3154"
+    },
+    {
+      "code": "ECE 4174",
+      "name": "Upper Atmosphere/Ionosphere Space Weather",
+      "credits": "3",
+      "description": "Interaction of Earth\u2019s upper atmosphere and space environment with spacecraft: processes that affect atmospheric density relevant to spacecraft orbit decay; basic composition and structure; radiation and radiative transfer; atmospheric energy balance; atmospheric chemistry and ion production/loss mechanisms; fundamental concepts of Solar-terrestrial physics including ionospheric Chapman theory; atmospheric energy/mass transport; ionospheric electrodynamics; ionospheric storms; planetary atmospheres/ionospheres; instrumentation.",
+      "prerequisites": "AOE 3014 or ECE 3105"
+    },
+    {
+      "code": "ECE 4184",
+      "name": "Applied Quantum Mechanics for Engineers",
+      "credits": "3",
+      "description": "Review of classical mechanics, the simple harmonic oscillator. Schrodinger equation, barrier tunneling, resonant tunneling, and quantum wells. Mathematical foundation of quantum mechanics, Dirac notation and representations, observables, eigenstates and diagonalization. Quantum postulates and its application to two-level systems, harmonic oscillators, creation and annihilation operators. Time evolution of a Hamiltonian. Dynamics of spin and two-level atoms. No cloning theorem and the concept of entanglement.",
+      "prerequisites": "ECE 2714"
+    },
+    {
+      "code": "ECE 4194",
+      "name": "Engineering Principles of Remote Sensing",
+      "credits": "3",
+      "description": "Physical principles involved in remote sensing of Earths environment and their implementation in engineering systems: fundamentals of electromagnetic wave propagation, scattering by matter, effects of propagation media, passive and active systems, remote sensing platforms, data processing, systems integration, and introductory concepts important for the design and analysis of remote sensing engineering systems.",
+      "prerequisites": "ECE 3106"
+    },
+    {
+      "code": "ECE 4205",
+      "name": "Electronic Circuit Design",
+      "credits": "3",
+      "description": "Stability and response of feedback amplifier, wideband amplifiers, operational amplifier characteristics, waveform generators and wave shaping, nonlinear circuit applications, signal generators, and photolithography. Design of analog electronic circuits, circuit simulation, response characterization, and printed circuit construction. C- or better in prerequisites.",
+      "prerequisites": "ECE 2214"
+    },
+    {
+      "code": "ECE 4220",
+      "name": "Analog Integrated Circuit Design",
+      "credits": "3",
+      "description": "Integrated circuit design in silicon bipolar, MOS (Metal-Oxide-Semiconductor), and BiCMOS (Bipolar Complementary Metal-Oxide-Semiconductor) technologies for communications, sensor, instrumentation, data conversion, and power management applications.  Models for active devices in bipolar and MOS technologies; transistor-level amplifiers and output stages (amplifier classifications); transistor-level current mirrors and voltage reference generators, transistor-level operational amplifiers; transistor-level feedback circuits; noise and linearity; layout and simulation of analog integrated circuits with modern VLSI CAD (Very Large Scale Integration- Computer Aided Design) software.",
+      "prerequisites": "ECE 3204"
+    },
+    {
+      "code": "ECE 4224",
+      "name": "Power Electronics",
+      "credits": "3",
+      "description": "Switching power converter operation and design; modeling of power converters; power components including power semiconductor devices, inductors, and transformers; control of power converters; select power converter topology for applications such as renewable energy, electric transportation, and telecommunications.",
+      "prerequisites": "ECE 3204 and ECE 3304"
+    },
+    {
+      "code": "ECE 4234",
+      "name": "Semiconductor Processing",
+      "credits": "3",
+      "description": "Manufacturing practices used in silicon integrated circuit fabrication and the underlying scientific basis for these process technologies.  Physical models are developed to explain basic fabrication steps, such as substrate growth, thermal oxidation, dopant diffusion, ion implantation, thin film deposition, etching, and lithography.  The overall CMOS integrated circuit process flow is described within the context of these physical models.",
+      "prerequisites": "ECE 2214"
+    },
+    {
+      "code": "ECE 4254",
+      "name": "Principles of Electronics Packaging",
+      "credits": "3",
+      "description": "Electrical and thermal design of electronics packaging using finite element analysis software. Materials and process selection guidelines for the fabrication of single- and multi-chip electronics packages. Methods for characterization and testing of electronics packages. Failure mechanisms and design for reliability. Hands-on project experience on electronics packaging.",
+      "prerequisites": "ECE 2214 or ECE 2054 or ECE 3054"
+    },
+    {
+      "code": "ECE 4284",
+      "name": "Power Electronics Laboratory",
+      "credits": "1",
+      "description": "Design and testing of electronic power processing systems for commercial and aerospace applications.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4314",
+      "name": "Electric Energy Distribution Systems",
+      "credits": "3",
+      "description": "Fundamentals of electric power distribution systems. Load characteristics. Modeling of distribution system components (line segments, voltage regulators, and transformers). Distribution flow analysis. Capacitor placement. Symmetrical components and calculation of fault currents. Protection of distribution feeders. Automation/control technologies to enhance reliability, resilience, and security.",
+      "prerequisites": "ECE 3004"
+    },
+    {
+      "code": "ECE 4324",
+      "name": "Microgrids",
+      "credits": "3",
+      "description": "Microgrid: definitions, components, and modes of operation; steady-state analysis and power quality; control modes and hierarchy; renewable resources and their inverter grid-forming and grid-following modes; protection strategies; emerging topics e.g., DC microgrids and datacenters; cybersecurity.",
+      "prerequisites": "ECE 3004"
+    },
+    {
+      "code": "ECE 4334",
+      "name": "Power System Analysis and Control",
+      "credits": "3",
+      "description": "Development of methods for power analysis and control. An analysis and design of systems for steady state, transient, and dynamic conditions. Digital solutions emphasized.",
+      "prerequisites": "ECE 3304"
+    },
+    {
+      "code": "ECE 4354",
+      "name": "Power System Protection",
+      "credits": "3",
+      "description": "Protection of power apparatus and systems.  Fuses.  Voltage and current transducers.  Relays.  Coordination of relays. Pilot channels.  Grounding practices.  Surge phenomena. Insulation coordination.",
+      "prerequisites": "ECE 4334"
+    },
+    {
+      "code": "ECE 4364",
+      "name": "Alternate Energy for Climate Sustainability",
+      "credits": "3",
+      "description": "Electric energy from alternative energy sources including solar, wind, hydro, biomass, geothermal, ocean, and advanced nuclear reactors. Characteristics of direct conversion, electromechanical conversion, and storage devices used in alternative energy systems. Power system issues associated with integration of small-scale energy sources into the electricity grid. Carbon dioxide emission reduction from energy transition.",
+      "prerequisites": "STAT 3704 or STAT 4604 or STAT 4705 or STAT 4714"
+    },
+    {
+      "code": "ECE 4414",
+      "name": "Linux Kernel Programming",
+      "credits": "3",
+      "description": "Design and internal organization of the Linux operating system kernel. Kernel subsystems, boot process, memory management, process and thread model, scheduling, interrupt and exception handling, virtual file system and the concrete file system, block I/O and I/O scheduler, network stack, and device drivers. Modification of existing kernel code. Design, implementation, test and evaluation of new kernel modules. Kernel and full software stack debugging techniques, and virtualization as an aid for operating system development and debug. Software engineering techniques to analyze, modify and run a large, complex open-source code base.",
+      "prerequisites": "ECE 3574 or CS 3114"
+    },
+    {
+      "code": "ECE 4424",
+      "name": "Machine Learning",
+      "credits": "3",
+      "description": "Algorithms and principles involved in machine learning; focus on perception problems arising in computer vision, natural language processing and robotics; fundamentals of representing uncertainty, learning from data, supervised learning, ensemble methods, unsupervised learning, structured models, learning theory and reinforcement learning; design and analysis of machine perception systems; design and implementation of a technical project applied to real-world datasets (images, text, robotics). A grade of C- or better in prerequisites.",
+      "prerequisites": "( ECE 3514 or CS 2114 ) and ( STAT 3704 or STAT 4105 or STAT 4604 or STAT 4705 or STAT 4714 or CMDA 2006 )"
+    },
+    {
+      "code": "ECE 4504",
+      "name": "Computer Organization",
+      "credits": "3",
+      "description": "Overview of the structure, elements and analysis of modern enterprise computers. Performance evaluation of commercial computing. Past and emerging technology trends. Impact of parallelism at multiple levels of computer architecture. Memory and storage. Fundamental computer system descriptions, Amdahls Law, Flynns Taxonomy. A grade of C or better required in prerequisites.",
+      "prerequisites": "ECE 3504 or CS 3214"
+    },
+    {
+      "code": "ECE 4514",
+      "name": "Digital Design II",
+      "credits": "4",
+      "description": "Advanced digital design techniques for developing complex digital circuits. Emphasis on system-level concepts and high-level design representations while meeting design constraints such as performance, power, and area. Methods presented that are appropriate for use with automated synthesis systems. Commercial hardware description language simulation and synthesis tools used for designing a series of increasingly complex digital systems, and implementing those systems using Field Programmable Gate Arrays (FPGAs).",
+      "prerequisites": "ECE 3544"
+    },
+    {
+      "code": "ECE 4520",
+      "name": "Digital and Mixed-Signal System Testing and Testable Design",
+      "credits": "3",
+      "description": "Various topics on testing and testable design for digital and mixed-signal systems are studied:  fault modeling, logic and fault simulation, fault modeling, automatic test pattern generation, deterministic ATPG, simulation-based ATPG, delay fault testing, design for testability, built-in-self-test and fault diagnosis.",
+      "prerequisites": "ECE 3514 and ( ECE 3504 or ECE 3544 )"
+    },
+    {
+      "code": "ECE 4524",
+      "name": "Artificial Intelligence and Engineering Applications",
+      "credits": "4",
+      "description": "Problem solving methods; problem spaces; search techniques; knowledge representation; programming languages for AI; games; predicate logic; knowledge-based systems; machine learning; planning techniques; reactive systems; artificial neural networks; natural language understanding; computer vision; robotics.",
+      "prerequisites": "ECE 3514 and STAT 4714"
+    },
+    {
+      "code": "ECE 4525",
+      "name": "Video Game Design and Engineering",
+      "credits": "3",
+      "description": "4525:  Fundamental concepts in the development and engineering of modern 2-D and 3-D real-time interactive computer video games.  Game design and engineering principles, game architecture, game mechanics and interaction, computer graphics, strategy, artificial intelligence (AI), optimization, play testing and fuzzy logic are included. 4526:  Advanced concepts in the development and engineering of modern 2-D and 3-D real-time interactive computer video systems.  Topics include non-player character (NPC) behavior learning, search and planning, player modeling, procedural content generation, AI-assisted game design.",
+      "prerequisites": "ECE 3574"
+    },
+    {
+      "code": "ECE 4534",
+      "name": "Embedded System Design",
+      "credits": "4",
+      "description": "Team-based major design experience. Design and implement embedded computer systems that incorporate appropriate engineering standards to solve complex problems that include multiple realistic constraints. Writing design documents and making oral presentations as part of the design process. C- or better required in prerequisites.",
+      "prerequisites": "(ECE 2014 and ECE 2534 and ECE 3574 ) or ( ECE 2564 and ECE 2804 and ECE 3574 )"
+    },
+    {
+      "code": "ECE 4540",
+      "name": "VLSI Circuit Design",
+      "credits": "3",
+      "description": "Introduction to the design and layout of Very Large Scale Integrated Circuits (VLSI). Emphasis is placed on digital CMOS circuits. Static and dynamic properties of MOSFET devices, along with integrated circuit fabrication are examined. Computer-aided design tools are used to produce working integrated circuit designs.",
+      "prerequisites": "ECE 2214 and ECE 2544"
+    },
+    {
+      "code": "ECE 4550",
+      "name": "Real-Time Systems",
+      "credits": "3",
+      "description": "Theory, algorithmic and protocol concepts, mechanisms, and implementations of real-time computer systems. Introduction to real-time systems, real-time scheduling, real-time synchronization, real-time operating system kernels, and real-time resource management algorithms (e.g., scheduling, synchronization), their implementations in production operating system kernels, experimental studies of those implementations, and real-time application development.",
+      "prerequisites": "ECE 3574 or CS 3214"
+    },
+    {
+      "code": "ECE 4554",
+      "name": "Introduction to Computer Vision",
+      "credits": "3",
+      "description": "Techniques for automated analysis of images and videos. Image formation, detecting features in images, segmenting or grouping image regions and image features, multiple view geometry, object instance and category recognition in images and video processing.",
+      "prerequisites": "ECE 3574 and ( STAT 4705 or STAT 4714 )"
+    },
+    {
+      "code": "ECE 4560",
+      "name": "Computer and Network Security Fundamentals",
+      "credits": "3",
+      "description": "This course introduces fundamental security principles and real-world applications of Internet and computer security.  Topics covered in the course include legal and privacy issues, risk analysis, attack and intrusion detection concepts, system log analysis, intrusion detection and packet filtering techniques, computer security models, computer forensics, and distributed denial-of-service (DDoS) attacks.  Must have C- or better inECE\u00a04564orCS\u00a03214.",
+      "prerequisites": "ECE 3564 or CS 3214"
+    },
+    {
+      "code": "ECE 4564",
+      "name": "Network Application Design",
+      "credits": "3",
+      "description": "Application program interface and network transport services including User Datagram Protocol and Transmission Control Protocol from the Internet Protocol suite.  Client-server organization and design of synchronous, asynchronous, and multithreaded client and server applications.  Design, implementation, and testing techniques to improve robustness and performance.  Partially duplicatesCS\u00a04254and credit will not be allowed for both.",
+      "prerequisites": "ECE 3564 and ECE 3514"
+    },
+    {
+      "code": "ECE 4574",
+      "name": "Large-Scale Software Development for Engineering Systems",
+      "credits": "3",
+      "description": "Large-scale software implementations of the hierarchy of engineering analysis, design, and decision evaluation. Computer-aided engineering programs with state-of-the-art computer tools and methods.  Operator overloading, dynamic polymorphism, graphical user interfaces, generic programming, dynamic link libraries, and multiple threads.",
+      "prerequisites": "ECE 3574"
+    },
+    {
+      "code": "ECE 4580",
+      "name": "Digital Image Processing",
+      "credits": "3",
+      "description": "This course provides an introduction to basic concepts, methodologies and algorithms of digital image processing focusing on the two major problems concerned with digital images: (1) image analysis and object restoration for easier interpretation of images, and (2) image analysis and object recognition. Some advanced image processing techniques (e.g., wavelet and multiresolution processing) will also be studied in this course. The primary goal of this course is to lay a solid foundation for students to study advanced image analysis topics such as computer vision systems, biomedical image analysis, and multimedia processing & retrieval.",
+      "prerequisites": "ECE 2714"
+    },
+    {
+      "code": "ECE 4584",
+      "name": "Robotics Laboratory",
+      "credits": "1",
+      "description": "Develop, compile, and test algorithms for serial and mobile robots. Robot forward and inverse kinematics, task planning, velocity kinematics, force rendering, control, haptics, mapping and localization, computer vision and path planning.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4624",
+      "name": "Digital Signal Processing And Filter Design",
+      "credits": "3",
+      "description": "Analysis, design, and realization of digital filters. Discrete Fourier Transform algorithms, digital filter design procedures, coefficient quantization. Pre:  C or better in 3704",
+      "prerequisites": "ECE 3704"
+    },
+    {
+      "code": "ECE 4634",
+      "name": "Digital Communications",
+      "credits": "3",
+      "description": "System and signal level analysis and design for digital communications systems. Review of analog-to-digital conversion and digital baseband communications. Detailed analysis of digital carrier modulation formats including assessment of signal-to-noise ratio, bit error rate, and power and bandwidth efficiency for amplitude-shift keying (ASK), phase-shift keying (PSK), frequency-shift keying (FSK), and Quadrature-Amplitude Modulation (QAM). Matched filter receivers and receiver design, link budgets, and multiple access. Additive-white-noise Gaussian channels. A detailed discussion of random variables will be included to supplement prerequisite material. A C- or better is required in prerequisites.",
+      "prerequisites": "ECE 3614"
+    },
+    {
+      "code": "ECE 4644",
+      "name": "Satellite Communications",
+      "credits": "3",
+      "description": "Theory and practice of satellite communications.  Orbits and launchers, spacecraft, link budgets, modulation, coding, multiple access techniques, propagation effects, and earth terminals.",
+      "prerequisites": "ECE 3614"
+    },
+    {
+      "code": "ECE 4664",
+      "name": "Analog  and  Digital Communications Laboratory",
+      "credits": "1",
+      "description": "Laboratory experiments which deal with the design and measurement of analog and digital communication systems. Concepts include SNR, Modulation Index, PCM, and spread spectrum.",
+      "prerequisites": "ECE 3614"
+    },
+    {
+      "code": "ECE 4684",
+      "name": "Network Science",
+      "credits": "3",
+      "description": "Introduction to modern-day networked technologies such as wireless, social, and economic networks. Analysis of networked technologies using analytical and engineering techniques such as optimization, game/auction theory, graph analysis, and learning as applied to networked technologies. Introduction to the basics of these techniques and their applications in networked systems. Development of a network science for solving practical problems pertaining to various networked systems such as smartphones, Wiki, Facebook, recommendation systems, economic network, or online video/music streaming software.",
+      "prerequisites": "ECE 2714"
+    },
+    {
+      "code": "ECE 4704",
+      "name": "Principles of Robotics Systems",
+      "credits": "3",
+      "description": "Introduction to the design, analysis, control, and operation of robotic mechanisms.  Introduction to the use of homogeneous coordinates for kinematics, dynamics, and camera orientation; sensors and actuators, control, task planning, vision, and intelligence. II",
+      "prerequisites": "ECE 2714"
+    },
+    {
+      "code": "ECE 4805",
+      "name": "Senior Design Project",
+      "credits": "3",
+      "description": "Industry-like two-semester, team-based major design experience applying knowledge and skills acquired in previous coursework. Design and implement solutions to meet multiple realistic constraints; design to incorporate appropriate engineering standards. A specific, complex engineering design problem is taken from problem definition to product realization and testing. Within the design process, topics include written/oral communication, discourse, ethical reasoning, professional development, project management, and working within a team. 4805: Identify, formulate, and define engineering problem. Generate and select design alternatives. Apply design and analysis methods, from previous courses, to develop, evaluate, and communicate detailed project design. 4806: Implement and refine project design fromECE\u00a04805. Test, analyze, document, and deliver the resulting project outcomes. Pre: 2804 (C-), (12 credit hours of C- or better within their declared disciplinary major) or (9 credit hours of C- or better within their declared disciplinary major and 3 credit hours of C- or better within their secondary focus) for 4805; 4805 (C-) for 4806.",
+      "prerequisites": "ECE 2214 and ECE 2564 and ECE 2714 and ECE 2804 and ( ECE 3004 or ECE 3504 ) and ( ECE 3105 or ECE 3514 ) and ( ECE 3106 or ECE 3134 or ECE 3204 or ECE 3214 or ECE 3304 or ECE 3544 or ECE 3564 or ECE 3574 or ECE 3614 or ECE 3704 or ECE 4205 or ECE 4234 or ECE 4254 or ECE 4424 or ECE 4524 or ECE 4540 or ECE 4580 or ECE 4704 )"
+    },
+    {
+      "code": "ECE 4806",
+      "name": "Senior Design Project",
+      "credits": "3",
+      "description": "Industry-like two-semester, team-based major design experience applying knowledge and skills acquired in previous coursework. Design and implement solutions to meet multiple realistic constraints; design to incorporate appropriate engineering standards. A specific, complex engineering design problem is taken from problem definition to product realization and testing. Within the design process, topics include written/oral communication, discourse, ethical reasoning, professional development, project management, and working within a team. 4805: Identify, formulate, and define engineering problem. Generate and select design alternatives. Apply design and analysis methods, from previous courses, to develop, evaluate, and communicate detailed project design. 4806: Implement and refine project design fromECE\u00a04805. Test, analyze, document, and deliver the resulting project outcomes. Pre: 2804 (C-), (12 credit hours of C- or better within their declared disciplinary major) or (9 credit hours of C- or better within their declared disciplinary major and 3 credit hours of C- or better within their secondary focus) for 4805; 4805 (C-) for 4806.",
+      "prerequisites": "ECE 4805"
+    },
+    {
+      "code": "ECE 4944",
+      "name": "Cybersecurity Seminar",
+      "credits": "1",
+      "description": "Theory and practice of cybersecurity problems and solutions for building secure computing hardware, software, and networks. Technical, social and legal aspects of secure systems. Historical and ongoing attacks that spawn real-world responses. Ongoing research in cybersecurity defenses. Senior standing.",
+      "prerequisites": "ECE 2544 or CS 2505"
+    },
+    {
+      "code": "ECE 4964",
+      "name": "Field Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4974",
+      "name": "Independent Study",
+      "credits": "1-19",
+      "description": "A minimum in-major GPA of 2.0 is required for enrollment.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4984",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "A minimum in-major GPA of 2.5 is required for enrollment.",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4984A",
+      "name": "Special Study",
+      "credits": "1-19",
+      "description": "",
+      "prerequisites": ""
+    },
+    {
+      "code": "ECE 4994",
+      "name": "Undergraduate Research",
+      "credits": "1-19",
+      "description": "A minimum GPA of 2.0 in all ECE courses is required for enrollment.",
+      "prerequisites": ""
+    }
+  ],
+  "requirements": {
+    "major": "ECE",
+    "required_courses": [
+      "ECE 2004",
+      "ECE 2014",
+      "ECE 2024",
+      "ECE 2034",
+      "ECE 2074",
+      "ECE 2564",
+      "ECE 2574",
+      "ECE 3004",
+      "ECE 3054",
+      "ECE 3074",
+      "ECE 4524",
+      "ECE 4534",
+      "MATH 1225",
+      "MATH 1226",
+      "MATH 2114",
+      "MATH 2214",
+      "PHYS 2305",
+      "PHYS 2306"
+    ],
+    "electives": [
+      "ECE 4104",
+      "ECE 4154",
+      "ECE 4214",
+      "ECE 4264",
+      "ECE 4404",
+      "ECE 4414",
+      "ECE 4424",
+      "ECE 4444"
+    ],
+    "notes": "Senior design is a two-semester sequence (ECE 4524/4534). Four technical elective credits required at 4000-level."
+  }
+}
