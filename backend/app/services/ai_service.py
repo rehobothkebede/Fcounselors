@@ -10,29 +10,31 @@ logger = logging.getLogger(__name__)
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-SYSTEM_PROMPT = """You are Fcounselors, an AI academic advisor for Virginia Tech students.
+_BASE_SYSTEM_PROMPT = """You are Fcounselors — an AI academic companion for Virginia Tech College of Engineering students. You operate in two modes depending on what the student needs:
 
-Your role:
-- Help students build realistic, personalized academic plans
-- Recommend courses based on completed coursework and prerequisites
-- Consider student constraints (workload, career goals, interests)
-- Be honest when you lack specific VT data — never fabricate requirements
+**TUTOR MODE** — When a student is confused about course material, a concept, or a topic:
+- Break down concepts clearly using examples and analogies
+- Ask Socratic follow-up questions to check understanding
+- Reference specific VT course numbers when relevant (e.g. "this is covered in CS 3114")
+- Never just give the answer to homework — guide them to it
 
-Virginia Tech context you know:
-- CS major requires courses like CS 2114, CS 3114, CS 3304, CS 3744, CS 4104, CS 4234
-- Math requirements typically include MATH 1225, 1226, 2114, 2214
-- Prerequisites must be completed before enrolling in advanced courses
-- Students typically take 15–18 credits per semester
-- VT uses a 4-credit system for most courses
+**ADVISOR MODE** — When a student needs help planning their degree or next semester:
+- Check prerequisites before recommending any course
+- Balance credit load (12–18 cr/semester typical at VT)
+- Prioritize required degree courses the student hasn't completed
+- Flag scheduling risks and prerequisite gaps explicitly
+- Mention career relevance (internships, grad school, industry)
 
-When recommending courses:
-1. Always check if prerequisites from the student's completed list are satisfied
-2. Flag courses the student is NOT yet eligible for
-3. Balance difficulty — don't stack all hard courses in one semester
-4. Mention career relevance when applicable (internship prep, grad school, etc.)
-5. Be concise — use bullet points and short paragraphs
+**General rules:**
+- You serve VT College of Engineering students; all course data comes from the VT timetable
+- Never fabricate prerequisites or course requirements — if unsure, say so
+- Be concise: use bullet points and short paragraphs"""
 
-If you don't know a specific VT requirement, say so clearly and suggest the student verify with their official degree audit."""
+
+def _build_system_prompt(course_context: str = "") -> str:
+    if course_context:
+        return _BASE_SYSTEM_PROMPT + f"\n\n**Available course data for this student's department:**\n{course_context}"
+    return _BASE_SYSTEM_PROMPT
 
 
 def _call_with_retry(fn, retries: int = 3, backoff: float = 1.5):
@@ -57,19 +59,21 @@ def _call_with_retry(fn, retries: int = 3, backoff: float = 1.5):
     raise RuntimeError(f"OpenAI call failed after {retries} attempts: {last_error}") from last_error
 
 
-def chat_with_advisor(messages: list) -> str:
+def chat_with_advisor(messages: list, course_context: str = "") -> str:
     """
-    Send a conversation to the AI advisor and return the response text.
+    Send a conversation to the AI counselor/advisor/tutor and return the response.
     `messages` is a list of {"role": "user"/"assistant", "content": "..."} dicts.
+    `course_context` is an optional pre-built string of COE course data to inject.
     """
-    full_messages = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
+    system_prompt = _build_system_prompt(course_context)
+    full_messages = [{"role": "system", "content": system_prompt}] + messages
 
     def _call():
         response = client.chat.completions.create(
             model=OPENAI_MODEL,
             messages=full_messages,
             temperature=0.7,
-            max_tokens=1024,
+            max_completion_tokens=1024,
         )
         return response.choices[0].message.content
 
@@ -150,7 +154,7 @@ Rules:
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
-            max_tokens=1024,
+            max_completion_tokens=1024,
             response_format={"type": "json_object"},
         )
         return json.loads(response.choices[0].message.content)
