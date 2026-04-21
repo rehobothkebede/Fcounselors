@@ -32,12 +32,6 @@ uvicorn app.main:app --reload
 Server starts at `http://localhost:8000`  
 Interactive docs at `http://localhost:8000/docs`
 
-### 4. Run the test script
-
-```bash
-python test_api.py
-```
-
 ---
 
 ## API Endpoints
@@ -45,6 +39,7 @@ python test_api.py
 ### Health
 ```
 GET /health
+GET /
 ```
 Returns `{"status": "ok"}`
 
@@ -58,9 +53,13 @@ POST /chat
 {
   "messages": [
     {"role": "user", "content": "What CS courses should I take sophomore year?"}
-  ]
+  ],
+  "major": "Computer Science"
 }
 ```
+- `messages`: full conversation history (supports multi-turn)
+- `major` *(optional)*: injects the department's course catalog into the AI's context (e.g. `"CS"`, `"ECE"`, `"Computer Science"`)
+
 Returns:
 ```json
 {"reply": "..."}
@@ -108,6 +107,50 @@ Lists all locally cached subjects.
 
 ---
 
+### Admin — COE course catalog
+
+```
+POST /admin/seed-coe
+```
+Writes a COE subject JSON file to disk (`data/coe/{SUBJECT}.json`). Used by deployment scripts to push scraped catalog data to the server.
+
+```json
+{
+  "subject": "CS",
+  "data": {"courses": [...]}
+}
+```
+
+```
+GET /admin/seed-coe/status
+```
+Returns which COE subjects are currently on disk and their course counts.
+
+---
+
+## Supported COE Majors
+
+The `/chat` endpoint accepts a `major` field to inject department course data. Supported majors/aliases:
+
+| Alias | Full Name |
+|---|---|
+| `CS`, `Computer Science` | Computer Science |
+| `ECE`, `Electrical Engineering` | Electrical and Computer Engineering |
+| `ME`, `Mechanical Engineering` | Mechanical Engineering |
+| `AOE`, `Aerospace Engineering` | Aerospace Engineering |
+| `ISE`, `Industrial Engineering` | Industrial and Systems Engineering |
+| `BMES`, `BME`, `Biomedical Engineering` | Biomedical Engineering |
+| `CEE`, `Civil Engineering` | Civil and Environmental Engineering |
+| `CHE`, `Chemical Engineering` | Chemical Engineering |
+| `ESM`, `Engineering Science` | Engineering Science and Mechanics |
+| `ENGE`, `Engineering Education` | Engineering Education |
+| `ENGR`, `General Engineering` | General Engineering |
+| `MINE`, `Mining Engineering` | Mining Engineering |
+| `MSE`, `Materials Science` | Materials Science and Engineering |
+| `BSE`, `Biosystems Engineering` | Biosystems Engineering |
+
+---
+
 ## Project Structure
 
 ```
@@ -116,18 +159,31 @@ backend/
 │   ├── main.py            # FastAPI app, routers, CORS
 │   ├── config.py          # Central config (model, API key, paths)
 │   ├── routes/
-│   │   ├── chat.py        # POST /chat
-│   │   ├── advisor.py     # POST /advisor/plan
-│   │   └── courses.py     # GET /courses/*
+│   │   ├── chat.py        # POST /chat — AI advisor with optional COE context
+│   │   ├── advisor.py     # POST /advisor/plan — personalized course plan
+│   │   ├── courses.py     # GET /courses/* — VT Timetable scraper
+│   │   └── admin.py       # POST /admin/seed-coe — COE catalog management
 │   └── services/
-│       ├── ai_service.py  # OpenAI integration with retry logic
+│       ├── ai_service.py       # OpenAI integration with retry logic
+│       ├── coe_service.py      # COE course catalog loader + major name resolver
 │       └── scraper_service.py  # VT Timetable API + caching
-├── data/courses/          # Cached course JSON files
+├── data/
+│   ├── courses/           # Cached VT Timetable course JSON files
+│   └── coe/               # COE department course catalog JSON files
 ├── requirements.txt
 ├── .env                   # Your secrets (not committed)
 ├── .env.example           # Template
-├── run.py                 # Alternative: python run.py
-└── test_api.py            # Integration test script
+└── run.py                 # Alternative: python run.py
+
+ios/Fcounselors/
+└── Fcounselors/
+    ├── FcounselorsApp.swift   # App entry point
+    ├── ContentView.swift      # Root view + navigation
+    ├── ChatView.swift         # AI advisor chat UI
+    ├── ChatViewModel.swift    # Chat state + API calls
+    ├── PlanViewModel.swift    # Course plan state
+    ├── APIService.swift       # Backend API client
+    └── Models.swift           # Shared data models
 ```
 
 ---
@@ -138,7 +194,7 @@ All model and environment settings live in `backend/.env`:
 
 ```
 OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-5.4-nano   # Change model here — affects the entire app
+OPENAI_MODEL=gpt-4o-mini   # Change model here — affects the entire app
 APP_ENV=development
 ```
 
@@ -156,8 +212,10 @@ Fcounselors aims to build an intelligent advising companion that helps students 
 
 ## Status
 
-Active development — backend API layer complete.  
-Next: iOS app integration via Swift/Xcode.
+Active development — backend API and iOS app in progress.
+
+- Backend: FastAPI with OpenAI integration, VT course scraper, COE catalog context injection
+- iOS: SwiftUI chat interface connected to the backend
 
 ---
 

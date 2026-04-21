@@ -48,6 +48,24 @@ MAJOR_TO_COE: dict[str, str] = {
     "bse": "BSE",
 }
 
+# Canonical full names for each subject code
+COE_FULL_NAMES: dict[str, str] = {
+    "CS": "Computer Science",
+    "ECE": "Electrical and Computer Engineering",
+    "ME": "Mechanical Engineering",
+    "AOE": "Aerospace Engineering",
+    "ISE": "Industrial and Systems Engineering",
+    "BMES": "Biomedical Engineering",
+    "CEE": "Civil and Environmental Engineering",
+    "CHE": "Chemical Engineering",
+    "ESM": "Engineering Science and Mechanics",
+    "ENGE": "Engineering Education",
+    "ENGR": "General Engineering",
+    "MINE": "Mining Engineering",
+    "MSE": "Materials Science and Engineering",
+    "BSE": "Biosystems Engineering",
+}
+
 
 @lru_cache(maxsize=20)
 def load_coe_courses(subject: str) -> list[dict]:
@@ -78,9 +96,19 @@ def load_all_coe_courses() -> dict[str, list[dict]]:
 
 
 def resolve_coe_subject(major: str) -> Optional[str]:
-    """Return a COE subject code for a given major name, or None if unknown."""
+    """Return a COE subject code for a given major name/abbreviation, or None if unknown."""
     key = major.lower().strip()
     return MAJOR_TO_COE.get(key)
+
+
+def resolve_full_major_name(major: str) -> str:
+    """Return the full human-readable major name for any alias/abbreviation.
+    Falls back to the original input if no mapping exists."""
+    subject = resolve_coe_subject(major)
+    if subject:
+        return COE_FULL_NAMES.get(subject, major)
+    first = major.strip().split()[0].upper()
+    return COE_FULL_NAMES.get(first, major)
 
 
 def get_coe_context_for_major(major: str, max_courses: int = 40) -> str:
@@ -100,7 +128,8 @@ def get_coe_context_for_major(major: str, max_courses: int = 40) -> str:
     if not courses:
         return ""
 
-    lines = [f"=== {subject} Course Catalog ({len(courses)} courses) ==="]
+    full_name = COE_FULL_NAMES.get(subject, subject)
+    lines = [f"=== {full_name} ({subject}) Course Catalog ({len(courses)} courses) ==="]
     for c in courses[:max_courses]:
         prereq = c.get("prerequisites", "").strip()
         prereq_str = f" | Prereqs: {prereq}" if prereq else ""

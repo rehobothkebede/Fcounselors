@@ -1,14 +1,32 @@
 import SwiftUI
 
-// MARK: - Root View
+// MARK: - Root View (Tab Container)
 
 struct ContentView: View {
+    var body: some View {
+        TabView {
+            PlanView()
+                .tabItem {
+                    Label("Plan", systemImage: "calendar.badge.plus")
+                }
+            ChatView()
+                .tabItem {
+                    Label("Advisor", systemImage: "bubble.left.and.bubble.right.fill")
+                }
+        }
+        .tint(.orange)
+    }
+}
+
+// MARK: - Plan View
+
+struct PlanView: View {
     @StateObject private var vm: PlanViewModel
-    
+
     nonisolated init(vm: PlanViewModel) {
         _vm = StateObject(wrappedValue: vm)
     }
-    
+
     @MainActor
     init() {
         _vm = StateObject(wrappedValue: PlanViewModel())
@@ -354,44 +372,36 @@ struct WarningCard: View {
 
 // MARK: - Previews
 
-#Preview("Empty State") {
+#Preview("Tabs") {
     ContentView()
 }
 
-#Preview("With Results") {
+#Preview("Plan — Empty") {
+    PlanView()
+}
+
+#Preview("Plan — Results") {
     let vm = PlanViewModel()
     vm.plan = PlanResponse(
         recommended_courses: [
-            RecommendedCourse(
-                code: "CS 2114",
-                name: "Software Design and Data Structures",
-                reason: "Core requirement building on CS 1114"
-            ),
-            RecommendedCourse(
-                code: "MATH 2214",
-                name: "Introduction to Differential Equations",
-                reason: "Required math course for CS major"
-            ),
-            RecommendedCourse(
-                code: "CS 2505",
-                name: "Computer Organization I",
-                reason: "Fundamental understanding of computer architecture"
-            )
+            RecommendedCourse(code: "CS 2114", name: "Software Design and Data Structures", reason: "Core requirement building on CS 1114"),
+            RecommendedCourse(code: "MATH 2214", name: "Introduction to Differential Equations", reason: "Required math course for CS major"),
+            RecommendedCourse(code: "CS 2505", name: "Computer Organization I", reason: "Fundamental understanding of computer architecture")
         ],
-        reasoning: "Based on completing CS 1114 and MATH 1225, you're ready for the next core CS courses. This balanced load includes programming, math, and systems courses.",
+        reasoning: "Based on completing CS 1114 and MATH 1225, you're ready for the next core CS courses.",
         warnings: ["CS 2114 has high demand — register early"]
     )
-    return ContentView(vm: vm)
+    return PlanView(vm: vm)
 }
 
-#Preview("Loading State") {
+#Preview("Plan — Loading") {
     let vm = PlanViewModel()
     vm.isLoading = true
-    return ContentView(vm: vm)
+    return PlanView(vm: vm)
 }
 
-#Preview("Error State") {
+#Preview("Plan — Error") {
     let vm = PlanViewModel()
     vm.errorMessage = "Network connection failed"
-    return ContentView(vm: vm)
+    return PlanView(vm: vm)
 }

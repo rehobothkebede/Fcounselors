@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.ai_service import chat_with_advisor
-from app.services.coe_service import get_coe_context_for_major
+from app.services.coe_service import get_coe_context_for_major, resolve_full_major_name
 
 router = APIRouter(prefix="/chat", tags=["AI Advisor"])
 
@@ -41,7 +41,10 @@ def chat(request: ChatRequest):
         raise HTTPException(status_code=400, detail="messages cannot be empty")
 
     messages = [m.model_dump() for m in request.messages]
-    course_context = get_coe_context_for_major(request.major) if request.major else ""
+    course_context = ""
+    if request.major:
+        full_name = resolve_full_major_name(request.major)
+        course_context = f"Student's major: {full_name}\n\n" + get_coe_context_for_major(request.major)
 
     try:
         reply = chat_with_advisor(messages, course_context=course_context)
