@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import chat, courses, advisor, admin
+from app.routes import chat, courses, advisor, admin, transcript
 from app.config import OPENAI_API_KEY, OPENAI_MODEL
 
 
@@ -33,6 +33,7 @@ app.include_router(chat.router)
 app.include_router(courses.router)
 app.include_router(advisor.router)
 app.include_router(admin.router)
+app.include_router(transcript.router)
 
 
 @app.get("/", tags=["Health"])
