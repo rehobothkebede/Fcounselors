@@ -1,17 +1,14 @@
-//
-//  FcounselorsApp.swift
-//  Fcounselors
-//
-//  Created by Rehoboth Kebede on 4/3/26.
-//
-
 import SwiftUI
 
 @main
 struct FcounselorsApp: App {
+    @StateObject private var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appState)
+                .preferredColorScheme(appState.preferredColorScheme)
         }
     }
 }

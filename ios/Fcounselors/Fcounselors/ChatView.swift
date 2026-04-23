@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 
 struct ChatView: View {
+    @EnvironmentObject var appState: AppState
     @StateObject private var vm = ChatViewModel()
     @Namespace private var bottomID
 
@@ -15,6 +16,14 @@ struct ChatView: View {
         }
         .background(Color(.systemGroupedBackground))
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear {
+            if vm.major.isEmpty && !appState.major.isEmpty {
+                vm.major = appState.major
+            }
+        }
+        .onChange(of: appState.major) { major in
+            if !major.isEmpty { vm.major = major }
+        }
     }
 
     // MARK: - Header
@@ -62,13 +71,7 @@ struct ChatView: View {
         .padding(.horizontal, 20)
         .padding(.top, 60)
         .padding(.bottom, 20)
-        .background(
-            LinearGradient(
-                colors: [Color(red: 0.72, green: 0.1, blue: 0.1), Color.orange],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(LinearGradient.vtHeader)
     }
 
     // MARK: - Message List
@@ -110,11 +113,17 @@ struct ChatView: View {
         VStack(spacing: 20) {
             Image(systemName: "bubble.left.and.bubble.right.fill")
                 .font(.system(size: 52))
-                .foregroundStyle(.orange.opacity(0.6))
+                .foregroundStyle(Color.vtBurgundy.opacity(0.6))
             Text("Start a conversation")
                 .font(.headline)
                 .foregroundStyle(.secondary)
             VStack(spacing: 10) {
+                if appState.needsTutoringSupport {
+                    SuggestionChip(
+                        text: "I'm struggling with \(appState.strugglingCourses.first ?? "my classes"). What should I do?",
+                        vm: vm
+                    )
+                }
                 SuggestionChip(text: "What courses should I take next semester?", vm: vm)
                 SuggestionChip(text: "Explain recursion to me", vm: vm)
                 SuggestionChip(text: "What are the prerequisites for CS 3114?", vm: vm)
@@ -174,10 +183,7 @@ struct MessageBubble: View {
                     .font(.caption)
                     .foregroundStyle(.white)
                     .frame(width: 28, height: 28)
-                    .background(
-                        LinearGradient(colors: [Color(red: 0.72, green: 0.1, blue: 0.1), .orange],
-                                       startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
+                    .background(LinearGradient.vtHeader)
                     .clipShape(Circle())
             }
 
@@ -186,7 +192,7 @@ struct MessageBubble: View {
                 .foregroundStyle(isUser ? .white : .primary)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(isUser ? Color.orange : Color(.systemBackground))
+                .background(isUser ? Color.vtBurgundy : Color(.systemBackground))
                 .clipShape(BubbleShape(isUser: isUser))
                 .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
 
@@ -232,10 +238,7 @@ struct TypingIndicator: View {
                 .font(.caption)
                 .foregroundStyle(.white)
                 .frame(width: 28, height: 28)
-                .background(
-                    LinearGradient(colors: [Color(red: 0.72, green: 0.1, blue: 0.1), .orange],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing)
-                )
+                .background(LinearGradient.vtHeader)
                 .clipShape(Circle())
 
             HStack(spacing: 5) {
@@ -292,13 +295,13 @@ struct SuggestionChip: View {
         } label: {
             Text(text)
                 .font(.subheadline)
-                .foregroundStyle(.orange)
+                .foregroundStyle(Color.vtBurgundy)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.orange.opacity(0.08))
+                .background(Color.vtBurgundyMuted)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.orange.opacity(0.25)))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.25)))
         }
     }
 }
@@ -315,4 +318,5 @@ extension View {
 
 #Preview {
     ChatView()
+        .environmentObject(AppState())
 }

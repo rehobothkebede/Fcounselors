@@ -48,3 +48,42 @@ struct ChatPayload: Encodable {
 struct ChatResponse: Decodable {
     let reply: String
 }
+
+// MARK: - Transcript
+
+struct TranscriptCourse: Decodable, Identifiable, Equatable {
+    var id: String { "\(code)-\(semester ?? "")-\(grade ?? "")" }
+    let code: String
+    let name: String
+    let credits: Double?
+    let grade: String?
+    let semester: String?
+}
+
+struct TranscriptResponse: Decodable, Equatable {
+    let courses: [TranscriptCourse]
+    let course_count: Int
+    let warnings: [String]
+}
+
+// MARK: - Tutoring
+
+struct TutoringRequest: Encodable {
+    let struggling_courses: [String]
+    let completed_courses: [String]
+    let major: String
+}
+
+struct TutoringResource: Decodable, Identifiable {
+    var id: String { name }
+    let name: String
+    let type: String
+    let description: String
+    let link: String?
+}
+
+struct TutoringResponse: Decodable {
+    let resources: [TutoringResource]
+    let tips: [String]
+    let encouragement: String
+}

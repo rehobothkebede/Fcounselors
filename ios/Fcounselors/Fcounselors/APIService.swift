@@ -19,7 +19,7 @@ enum APIError: LocalizedError {
 final class APIService {
     // Change this to your Mac's local IP when running on a physical device.
     // For the iOS Simulator, http://localhost:8000 works fine.
-    static let baseURL = "http://localhost:8000"
+    static let baseURL = "http://127.0.0.1:8000"
 
     static func fetchPlan(request: PlanRequest) async throws -> PlanResponse {
         try await post(path: "/advisor/plan", body: request)
@@ -27,6 +27,40 @@ final class APIService {
 
     static func sendChat(request: ChatRequest) async throws -> ChatResponse {
         try await post(path: "/chat", body: request)
+    }
+
+    static func fetchTutoring(request: TutoringRequest) async throws -> TutoringResponse {
+        try await post(path: "/tutoring/recommend", body: request)
+    }
+
+    static func uploadTranscript(fileData: Data, mimeType: String, fileName: String) async throws -> TranscriptResponse {
+        guard let url = URL(string: "\(baseURL)/transcript/upload") else { throw APIError.invalidURL }
+        let boundary = UUID().uuidString
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        var body = Data()
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+        body.append(fileData)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        req.httpBody = body
+
+        let session = URLSession(configuration: {
+            let c = URLSessionConfiguration.default
+            c.timeoutIntervalForRequest = 120
+            c.timeoutIntervalForResource = 120
+            return c
+        }())
+        let data: Data
+        let response: URLResponse
+        do { (data, response) = try await session.data(for: req) } catch { throw APIError.networkError(error) }
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            throw APIError.serverError(http.statusCode)
+        }
+        do { return try JSONDecoder().decode(TranscriptResponse.self, from: data) } catch { throw APIError.decodingError(error) }
     }
 
     // MARK: - Private

@@ -1,3 +1,4 @@
+import asyncio
 from typing import List, Optional
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
@@ -43,7 +44,7 @@ async def upload_transcript(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
     try:
-        result = parse_transcript(file_bytes, content_type)
+        result = await asyncio.to_thread(parse_transcript, file_bytes, content_type)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
     except RuntimeError as e:

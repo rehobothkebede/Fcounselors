@@ -168,6 +168,74 @@ Rules:
     return result
 
 
+def recommend_tutoring(
+    struggling_courses: list[str],
+    completed_courses: list[str] | None = None,
+    major: str = "",
+) -> dict:
+    """
+    Generate tutoring and academic support recommendations for a struggling student.
+
+    Returns a dict with:
+      - resources: list of {name, type, description, link}
+      - tips: list of study strategy strings
+      - encouragement: short motivational string
+    """
+    struggling_str = ", ".join(struggling_courses)
+    major_str = major or "Engineering"
+
+    prompt = f"""You are an academic support advisor at Virginia Tech.
+
+A student is struggling with: {struggling_str}
+Their major: {major_str}
+
+Recommend specific tutoring and academic support resources available at VT.
+
+Return ONLY valid JSON:
+{{
+  "resources": [
+    {{
+      "name": "VT Math Emporium",
+      "type": "tutoring",
+      "description": "Free drop-in tutoring for math courses at the Math Emporium in Squires Student Center.",
+      "link": null
+    }}
+  ],
+  "tips": [
+    "Visit office hours at least once a week — professors remember students who show up.",
+    "Break each struggling topic into 20-minute focused review blocks."
+  ],
+  "encouragement": "A 1-2 sentence personalized motivational note for this student."
+}}
+
+Resource types (use exactly): "tutoring", "study_group", "office_hours", "online", "writing_center", "ai_tutor"
+
+Include resources for each struggling course. Cover at minimum:
+- VT tutoring centers relevant to the subject (Math Emporium for math, CWTS for writing, CEED/Engineering Academic Success for CS/ECE/engineering)
+- Department-specific office hours reminder
+- Online resources (Khan Academy, YouTube, official textbooks) where applicable
+- Peer study group suggestion
+- AI tutoring reminder (Wolfram Alpha for math, etc.)
+
+Keep descriptions concise (1-2 sentences each). Include 3-5 practical study tips."""
+
+    def _call():
+        response = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.4,
+            max_completion_tokens=1024,
+            response_format={"type": "json_object"},
+        )
+        return json.loads(response.choices[0].message.content)
+
+    result = _call_with_retry(_call)
+    result.setdefault("resources", [])
+    result.setdefault("tips", [])
+    result.setdefault("encouragement", "")
+    return result
+
+
 def summarize_course_data(raw_text: str) -> dict:
     """
     Given raw scraped course text, extract structured course info.

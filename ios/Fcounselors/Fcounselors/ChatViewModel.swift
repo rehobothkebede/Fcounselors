@@ -1,9 +1,8 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class ChatViewModel: ObservableObject {
-
     @Published var messages: [ChatMessage] = []
     @Published var inputText: String = ""
     @Published var major: String = ""

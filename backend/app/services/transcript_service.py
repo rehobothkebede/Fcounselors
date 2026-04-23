@@ -15,7 +15,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 _EXTRACT_PROMPT = """You are parsing a Virginia Tech student academic transcript.
 
-Extract every course the student has COMPLETED (has a final grade — ignore in-progress or withdrawn courses).
+Extract every course the student has COMPLETED that should count toward their degree.
 
 Return ONLY valid JSON in this exact structure:
 {
@@ -31,13 +31,39 @@ Return ONLY valid JSON in this exact structure:
   "warnings": ["list any ambiguous entries or data quality issues here"]
 }
 
-Rules:
-- Use the VT course code format: "SUBJECT NNNN" (e.g. "CS 2114", "MATH 2114")
+GRADE RULES — what counts as completed credit:
+- Standard letter grades (A, A+, A-, B+, B, B-, C+, C, C-, D+, D, D-): INCLUDE
+- P or PASS: INCLUDE as completed credit — use grade "P"
+- CR or CREDIT: INCLUDE as completed credit — use grade "CR"
+- T, TR, or TRANSFER (transfer credit): INCLUDE as completed credit — use grade "TR"
+- W (Withdrawal): EXCLUDE — course was dropped
+- I (Incomplete): EXCLUDE — course not finished
+- CD (Credit Disallowed): EXCLUDE — duplicate credit that was disallowed
+- IN PROGRESS / no final grade: EXCLUDE
+- Do NOT use quality points to decide if a course counts — use the grade code only
+
+DUPLICATE CREDIT HANDLING:
+- If the same course credit appears from multiple sources (e.g. AP exam AND transfer), include only the valid entry
+- If one entry is marked CD (Credit Disallowed), exclude it and keep the other
+- Never include the same credit twice
+
+COURSE CODE RULES:
+- Use VT format: "SUBJECT NNNN" (e.g. "CS 2114", "MATH 2114")
+- Transfer credits without a specific VT course number: use placeholder format "SUBJ 1XXX" (e.g. "CS 1XXX", "MATH 1XXX")
+  — add a warning that these count as electives only, not toward core requirements
+- Special pathway/bridge codes (e.g. "CS 1XXP", "MATH 1XXP"): INCLUDE — these are valid pathway credits
 - credits must be a number
-- grade should be the letter grade as shown (A, A-, B+, etc.) or "CR" for credit/no-credit
+- grade should be as shown on the transcript (A, B+, P, CR, TR, etc.)
 - semester format: "Season YYYY" (e.g. "Fall 2023", "Spring 2024")
-- If semester is unclear, omit the field rather than guess
-- Do NOT include courses with grades of W, I, or any in-progress marker"""
+- If semester is unclear, omit the semester field rather than guess
+
+COURSE NAME RULES:
+- Strip any institution prefix from course names (e.g. "Blacksburg UG", "Blacksburg GR") — use only the actual course title
+- Example: "Blacksburg UG Softw Des & Data Structures" → "Software Design and Data Structures"
+
+SEMESTER RULES FOR TRANSFER / AP CREDIT:
+- If a course came in as transfer credit, AP credit, or dual enrollment and has no specific VT semester, use semester "Transfer"
+- Never use date ranges (e.g. "FS23-SS25") or bare years (e.g. "2025") as semester values"""
 
 
 def _extract_from_text(text: str) -> dict:

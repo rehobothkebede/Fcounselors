@@ -172,7 +172,6 @@ backend/
 │   └── coe/               # COE department course catalog JSON files
 ├── requirements.txt
 ├── .env                   # Your secrets (not committed)
-├── .env.example           # Template
 └── run.py                 # Alternative: python run.py
 
 ios/Fcounselors/

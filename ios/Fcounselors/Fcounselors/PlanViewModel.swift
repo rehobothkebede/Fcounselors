@@ -1,12 +1,9 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class PlanViewModel: ObservableObject {
-
-    // MARK: - Inputs
-    @Published var major: String = ""
-    @Published var completedCoursesText: String = ""   // comma-separated
+    // MARK: - Input (from AppState via PlanView)
     @Published var preferences: String = ""
 
     // MARK: - Outputs
@@ -14,35 +11,23 @@ final class PlanViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
 
-    // MARK: - Computed
-
-    var completedCourses: [String] {
-        completedCoursesText
-            .split(separator: ",")
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-    }
-
-    var constraints: [String] {
-        preferences.isEmpty ? [] : [preferences]
-    }
-
-    var canSubmit: Bool {
-        !major.trimmingCharacters(in: .whitespaces).isEmpty && !isLoading
-    }
-
     // MARK: - Actions
 
-    func generatePlan() async {
-        guard canSubmit else { return }
+    func generatePlan(completedCourses: [String], major: String, constraints: [String] = []) async {
+        guard !major.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         isLoading = true
         errorMessage = nil
         plan = nil
 
+        var allConstraints = constraints
+        if !preferences.trimmingCharacters(in: .whitespaces).isEmpty {
+            allConstraints.append(preferences.trimmingCharacters(in: .whitespaces))
+        }
+
         let body = PlanRequest(
             completed_courses: completedCourses,
             major: major.trimmingCharacters(in: .whitespaces),
-            constraints: constraints
+            constraints: allConstraints
         )
 
         do {
@@ -52,17 +37,5 @@ final class PlanViewModel: ObservableObject {
         }
 
         isLoading = false
-        
-        if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
-            // Fake data for preview
-            self.plan = PlanResponse(
-                recommended_courses: [
-                    RecommendedCourse(code: "CS 1114", name: "Intro to Software Design", reason: "Starter course"),
-                ],
-                reasoning: "Preview mode data",
-                warnings: []
-            )
-            return
-        }
     }
 }
