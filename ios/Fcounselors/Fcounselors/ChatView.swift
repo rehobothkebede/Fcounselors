@@ -187,14 +187,20 @@ struct MessageBubble: View {
                     .clipShape(Circle())
             }
 
-            Text(message.content)
-                .font(.subheadline)
-                .foregroundStyle(isUser ? .white : .primary)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(isUser ? Color.vtBurgundy : Color(.systemBackground))
-                .clipShape(BubbleShape(isUser: isUser))
-                .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+            Group {
+                if isUser {
+                    Text(message.content)
+                        .font(.subheadline)
+                        .foregroundStyle(Color.white)
+                } else {
+                    MarkdownBody(text: message.content, baseColor: .primary)
+                }
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(isUser ? Color.vtBurgundy : Color(.systemBackground))
+            .clipShape(BubbleShape(isUser: isUser))
+            .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
 
             if !isUser { Spacer(minLength: 48) }
         }

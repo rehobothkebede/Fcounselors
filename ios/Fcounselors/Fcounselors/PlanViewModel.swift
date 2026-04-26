@@ -13,7 +13,7 @@ final class PlanViewModel: ObservableObject {
 
     // MARK: - Actions
 
-    func generatePlan(completedCourses: [String], major: String, constraints: [String] = []) async {
+    func generatePlan(completedCourses: [String], major: String, constraints: [String] = [], inProgressCourses: [String] = []) async {
         guard !major.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         isLoading = true
         errorMessage = nil
@@ -27,7 +27,8 @@ final class PlanViewModel: ObservableObject {
         let body = PlanRequest(
             completed_courses: completedCourses,
             major: major.trimmingCharacters(in: .whitespaces),
-            constraints: allConstraints
+            constraints: allConstraints,
+            in_progress_courses: inProgressCourses
         )
 
         do {

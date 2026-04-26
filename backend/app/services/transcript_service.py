@@ -15,7 +15,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 _EXTRACT_PROMPT = """You are parsing a Virginia Tech student academic transcript.
 
-Extract every course the student has COMPLETED that should count toward their degree.
+Extract every course from this transcript into two lists: completed courses and in-progress courses.
 
 Return ONLY valid JSON in this exact structure:
 {
@@ -28,19 +28,26 @@ Return ONLY valid JSON in this exact structure:
       "semester": "Fall 2023"
     }
   ],
+  "in_progress_courses": [
+    {
+      "code": "CS 2104",
+      "name": "Problem Solving in Science",
+      "credits": 3
+    }
+  ],
   "warnings": ["list any ambiguous entries or data quality issues here"]
 }
 
-GRADE RULES — what counts as completed credit:
-- Standard letter grades (A, A+, A-, B+, B, B-, C+, C, C-, D+, D, D-): INCLUDE
-- P or PASS: INCLUDE as completed credit — use grade "P"
-- CR or CREDIT: INCLUDE as completed credit — use grade "CR"
-- T, TR, or TRANSFER (transfer credit): INCLUDE as completed credit — use grade "TR"
-- W (Withdrawal): EXCLUDE — course was dropped
-- I (Incomplete): EXCLUDE — course not finished
-- CD (Credit Disallowed): EXCLUDE — duplicate credit that was disallowed
-- IN PROGRESS / no final grade: EXCLUDE
-- Do NOT use quality points to decide if a course counts — use the grade code only
+GRADE RULES — what goes where:
+- Standard letter grades (A, A+, A-, B+, B, B-, C+, C, C-, D+, D, D-): → courses (COMPLETED)
+- P or PASS: → courses, use grade "P"
+- CR or CREDIT: → courses, use grade "CR"
+- T, TR, or TRANSFER (transfer credit): → courses, use grade "TR"
+- W (Withdrawal): EXCLUDE entirely — course was dropped
+- I (Incomplete): EXCLUDE entirely — course not finished
+- CD (Credit Disallowed): EXCLUDE entirely
+- IN PROGRESS / no final grade / currently enrolled: → in_progress_courses (no grade field)
+- Do NOT use quality points to decide — use the grade code only
 
 DUPLICATE CREDIT HANDLING:
 - If the same course credit appears from multiple sources (e.g. AP exam AND transfer), include only the valid entry
@@ -125,6 +132,7 @@ def parse_transcript(file_bytes: bytes, content_type: str) -> dict:
         raise ValueError(f"Unsupported file type: {content_type}. Upload a PDF, PNG, or JPG.")
 
     result.setdefault("courses", [])
+    result.setdefault("in_progress_courses", [])
     result.setdefault("warnings", [])
     return result
 

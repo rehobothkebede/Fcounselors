@@ -21,6 +21,9 @@ struct TranscriptView: View {
                             uploadButton
                         } else if appState.hasTranscript {
                             successBanner
+                            if !appState.inProgressCourses.isEmpty {
+                                inProgressSection
+                            }
                             semesterStatusSection
                             courseListSection
                             reuploadButton
@@ -43,6 +46,8 @@ struct TranscriptView: View {
         .onChange(of: vm.result) { result in
             guard let result = result else { return }
             appState.transcriptCourses = result.courses
+            appState.inProgressCourses = result.in_progress_courses
+            appState.inProgressGrades = [:]
             appState.hasTranscript = true
             appState.passingAllClasses = nil
             appState.strugglingCourses = []
@@ -210,6 +215,69 @@ struct TranscriptView: View {
         .background(Color.green.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.green.opacity(0.2), lineWidth: 1))
+    }
+
+    // MARK: - In-Progress Courses Section
+
+    private var inProgressSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            SectionHeader(title: "Currently Enrolled", icon: "clock.badge.fill", color: .orange)
+
+            Text("We found \(appState.inProgressCourses.count) in-progress course\(appState.inProgressCourses.count == 1 ? "" : "s"). How are they going?")
+                .font(.subheadline).foregroundStyle(.secondary)
+
+            ForEach(appState.inProgressCourses) { course in
+                inProgressCourseRow(course: course)
+            }
+
+            Text("Your current grades help the advisor decide which prereqs you'll have completed by next semester.")
+                .font(.caption).foregroundStyle(.tertiary)
+                .padding(.top, 2)
+        }
+        .padding(16)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+    }
+
+    private func inProgressCourseRow(course: InProgressCourse) -> some View {
+        let grades = ["A", "B", "C", "D", "F"]
+        let selected = appState.inProgressGrades[course.code]
+
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Text(course.code)
+                    .font(.caption).fontWeight(.bold)
+                    .foregroundStyle(Color.vtBurgundy)
+                    .padding(.horizontal, 8).padding(.vertical, 3)
+                    .background(Color.vtBurgundyMuted)
+                    .clipShape(Capsule())
+                Text(course.name)
+                    .font(.subheadline).fontWeight(.medium)
+                    .lineLimit(1)
+            }
+
+            HStack(spacing: 8) {
+                ForEach(grades, id: \.self) { grade in
+                    let isSelected = selected == grade
+                    let color: Color = grade == "D" || grade == "F" ? .red : (grade == "C" ? .orange : .green)
+                    Button {
+                        appState.inProgressGrades[course.code] = isSelected ? nil : grade
+                    } label: {
+                        Text(grade)
+                            .font(.subheadline).fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(isSelected ? color : color.opacity(0.1))
+                            .foregroundStyle(isSelected ? .white : color)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(Color(.systemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     // MARK: - Semester Status Section

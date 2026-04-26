@@ -6,6 +6,7 @@ struct PlanRequest: Encodable {
     let completed_courses: [String]
     let major: String
     let constraints: [String]
+    let in_progress_courses: [String]
 }
 
 struct PlanResponse: Decodable {
@@ -60,9 +61,17 @@ struct TranscriptCourse: Decodable, Identifiable, Equatable {
     let semester: String?
 }
 
+struct InProgressCourse: Decodable, Identifiable, Equatable {
+    var id: String { code }
+    let code: String
+    let name: String
+    let credits: Double?
+}
+
 struct TranscriptResponse: Decodable, Equatable {
     let courses: [TranscriptCourse]
-    let course_count: Int
+    let in_progress_courses: [InProgressCourse]
+    let course_count: Int?
     let warnings: [String]
 }
 

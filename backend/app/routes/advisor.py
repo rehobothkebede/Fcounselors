@@ -13,6 +13,7 @@ class PlanRequest(BaseModel):
     completed_courses: list[str]
     major: str
     constraints: list[str] = []
+    in_progress_courses: list[str] = []
 
 
 class RecommendedCourse(BaseModel):
@@ -68,6 +69,7 @@ def get_plan(request: PlanRequest):
             completed_courses=request.completed_courses,
             major=request.major,
             constraints=request.constraints,
+            in_progress_courses=request.in_progress_courses,
             available_courses=available_courses,
             major_requirements=major_requirements,
         )

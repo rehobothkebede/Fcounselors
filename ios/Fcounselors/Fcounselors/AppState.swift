@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Combine
 
 struct SemesterGroup: Identifiable {
     var id: String { semester }
@@ -10,6 +11,8 @@ struct SemesterGroup: Identifiable {
 @MainActor
 final class AppState: ObservableObject {
     @Published var transcriptCourses: [TranscriptCourse] = []
+    @Published var inProgressCourses: [InProgressCourse] = []
+    @Published var inProgressGrades: [String: String] = [:]
     @Published var major: String = ""
     @Published var hasTranscript: Bool = false
     @Published var passingAllClasses: Bool? = nil
@@ -18,6 +21,15 @@ final class AppState: ObservableObject {
 
     var completedCourseCodes: [String] {
         transcriptCourses.map { $0.code }
+    }
+
+    var inProgressSummary: [String] {
+        inProgressCourses.compactMap { course in
+            guard let grade = inProgressGrades[course.code] else {
+                return "\(course.code) (currently enrolled, no grade reported)"
+            }
+            return "\(course.code) (currently enrolled, grade: \(grade))"
+        }
     }
 
     var totalCredits: Double {

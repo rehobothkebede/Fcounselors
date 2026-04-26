@@ -84,6 +84,7 @@ def recommend_courses(
     completed_courses: list[str],
     major: str,
     constraints: list[str],
+    in_progress_courses: list[str] | None = None,
     available_courses: list[dict] | None = None,
     major_requirements: dict | None = None,
 ) -> dict:
@@ -97,6 +98,7 @@ def recommend_courses(
     """
     completed_str = ", ".join(completed_courses) if completed_courses else "None"
     constraints_str = ", ".join(constraints) if constraints else "None"
+    in_progress_str = ", ".join(in_progress_courses) if in_progress_courses else "None"
 
     course_context = ""
     if available_courses:
@@ -124,20 +126,32 @@ def recommend_courses(
 Student profile:
 - Major: {major}
 - Completed courses: {completed_str}
+- Currently enrolled (in-progress): {in_progress_str}
 - Constraints / preferences: {constraints_str}
+
+IN-PROGRESS COURSE RULES:
+- Each in-progress course is listed as "COURSE CODE (currently enrolled, grade: X)"
+- If the current grade is A, B, or C: treat as LIKELY TO COMPLETE — count toward prerequisites when planning next semester
+- If the current grade is D or F: treat as AT-RISK — do NOT count as a completed prerequisite; flag in warnings
+- If no grade is reported: treat conservatively — do not count as completed
 {catalog_context}
 {course_context}
 
 Task: Recommend the next semester of courses for this student.
 
+FORMATTING RULES (strictly follow these):
+- The "reasoning" field MUST use markdown: use **bold** for course codes and key points, and "- " bullet points for each distinct reason or strategy. Write 3-5 bullet points minimum.
+- Each item in "warnings" MUST use **bold** for course codes. Example: "**CS 3114** requires **CS 2114** which is not yet completed."
+- The "reason" for each recommended course should be 1 sentence with **bold** on the course code.
+
 Respond ONLY with valid JSON in this exact structure:
 {{
   "recommended_courses": [
-    {{"code": "CS 3114", "name": "Data Structures and Algorithms", "reason": "Core CS requirement, prereqs satisfied"}},
+    {{"code": "CS 3114", "name": "Data Structures and Algorithms", "reason": "**CS 3114** is a core requirement with all prerequisites satisfied."}},
     ...
   ],
-  "reasoning": "A short paragraph explaining the overall plan strategy.",
-  "warnings": ["Any prerequisite gaps or scheduling risks go here."]
+  "reasoning": "- **Overall strategy**: balanced 15-credit semester focusing on core requirements.\n- **CS 3114** is next in the CS core sequence and prereqs are met.\n- **MATH 2214** addresses a required math gap before upper-level courses.",
+  "warnings": ["**CS 4234** requires **CS 3114** which is not yet completed — do not take concurrently."]
 }}
 
 Rules:
@@ -202,10 +216,10 @@ Return ONLY valid JSON:
     }}
   ],
   "tips": [
-    "Visit office hours at least once a week — professors remember students who show up.",
-    "Break each struggling topic into 20-minute focused review blocks."
+    "Use **bold** for key actions. Keep each tip to 1-2 sentences with a concrete action.",
+    "Example: **Attend office hours** at least once a week — professors remember students who show up."
   ],
-  "encouragement": "A 1-2 sentence personalized motivational note for this student."
+  "encouragement": "1-2 sentences with **bold** on key motivational words. Personalized to the courses they are struggling with."
 }}
 
 Resource types (use exactly): "tutoring", "study_group", "office_hours", "online", "writing_center", "ai_tutor"

@@ -1,4 +1,13 @@
 import SwiftUI
+import Combine
+
+// MARK: - Markdown Helper
+
+extension String {
+    var markdown: AttributedString {
+        (try? AttributedString(markdown: self)) ?? AttributedString(self)
+    }
+}
 
 // MARK: - Design System
 
@@ -228,7 +237,8 @@ struct PlanView: View {
                 await vm.generatePlan(
                     completedCourses: appState.completedCourseCodes,
                     major: appState.major,
-                    constraints: constraints
+                    constraints: constraints,
+                    inProgressCourses: appState.inProgressSummary
                 )
             }
         } label: {
@@ -414,7 +424,7 @@ struct TutoringSheet: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 24) {
                             if !response.encouragement.isEmpty {
-                                Text(response.encouragement)
+                                Text(response.encouragement.markdown)
                                     .font(.subheadline)
                                     .foregroundStyle(.primary)
                                     .lineSpacing(4)
@@ -444,7 +454,7 @@ struct TutoringSheet: View {
                                                     .foregroundStyle(Color.vtBurgundy)
                                                     .font(.footnote)
                                                     .padding(.top, 2)
-                                                Text(tip)
+                                                Text(tip.markdown)
                                                     .font(.subheadline)
                                                     .fixedSize(horizontal: false, vertical: true)
                                             }
@@ -604,13 +614,90 @@ struct CourseCard: View {
     }
 }
 
+// MARK: - Block Markdown Renderer
+
+struct MarkdownBody: View {
+    let text: String
+    var baseFont: Font = .subheadline
+    var baseColor: Color = .primary
+
+    private enum Block {
+        case heading(Int, String)
+        case bullet(String)
+        case numbered(Int, String)
+        case paragraph(String)
+    }
+
+    private var blocks: [Block] {
+        var result: [Block] = []
+        var pending = ""
+        for line in text.components(separatedBy: "\n") {
+            let t = line.trimmingCharacters(in: .whitespaces)
+            if t.isEmpty {
+                if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+            } else if t.hasPrefix("### ") {
+                if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+                result.append(.heading(3, String(t.dropFirst(4))))
+            } else if t.hasPrefix("## ") {
+                if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+                result.append(.heading(2, String(t.dropFirst(3))))
+            } else if t.hasPrefix("# ") {
+                if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+                result.append(.heading(1, String(t.dropFirst(2))))
+            } else if t.hasPrefix("- ") || t.hasPrefix("* ") {
+                if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+                result.append(.bullet(String(t.dropFirst(2))))
+            } else {
+                let parts = t.components(separatedBy: ". ")
+                if parts.count >= 2, let num = Int(parts[0]), parts[0].count <= 3 {
+                    if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+                    result.append(.numbered(num, parts.dropFirst().joined(separator: ". ")))
+                } else {
+                    pending += pending.isEmpty ? t : " \(t)"
+                }
+            }
+        }
+        if !pending.isEmpty { result.append(.paragraph(pending)) }
+        return result
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
+                switch block {
+                case .heading(let level, let content):
+                    Text(content.markdown)
+                        .font(level == 1 ? .headline : .subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(baseColor)
+                        .padding(.top, level <= 2 ? 6 : 2)
+                case .bullet(let content):
+                    HStack(alignment: .top, spacing: 6) {
+                        Text("•").font(baseFont).foregroundStyle(baseColor.opacity(0.6))
+                        Text(content.markdown).font(baseFont).foregroundStyle(baseColor)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                case .numbered(let number, let content):
+                    HStack(alignment: .top, spacing: 6) {
+                        Text("\(number).").font(baseFont).foregroundStyle(baseColor.opacity(0.6))
+                            .frame(minWidth: 20, alignment: .trailing)
+                        Text(content.markdown).font(baseFont).foregroundStyle(baseColor)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                case .paragraph(let content):
+                    Text(content.markdown).font(baseFont).foregroundStyle(baseColor)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+    }
+}
+
 struct ReasoningCard: View {
     let text: String
 
     var body: some View {
-        Text(text)
-            .font(.subheadline).foregroundStyle(.primary)
-            .lineSpacing(4)
+        MarkdownBody(text: text)
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.blue.opacity(0.07))
@@ -626,7 +713,7 @@ struct WarningCard: View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(.orange).font(.footnote).padding(.top, 2)
-            Text(text)
+            Text(text.markdown)
                 .font(.subheadline).foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
