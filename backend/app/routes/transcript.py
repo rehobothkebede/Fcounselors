@@ -19,8 +19,15 @@ class TranscriptCourse(BaseModel):
     semester: Optional[str] = None
 
 
+class InProgressCourse(BaseModel):
+    code: str
+    name: str
+    credits: Optional[float] = None
+
+
 class TranscriptResponse(BaseModel):
     courses: List[TranscriptCourse]
+    in_progress_courses: List[InProgressCourse]
     course_count: int
     warnings: List[str]
 
@@ -52,6 +59,7 @@ async def upload_transcript(file: UploadFile = File(...)):
 
     return TranscriptResponse(
         courses=[TranscriptCourse(**c) for c in result["courses"]],
+        in_progress_courses=[InProgressCourse(**c) for c in result["in_progress_courses"]],
         course_count=len(result["courses"]),
         warnings=result["warnings"],
     )

@@ -13,7 +13,7 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: list[Message]
-    major: str = ""  # optional — used to inject COE course data into context
+    major: str = "Computer Science"  # defaults to CS; used to inject course catalog into context
 
 
 class ChatResponse(BaseModel):

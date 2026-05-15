@@ -28,11 +28,6 @@ class PlanResponse(BaseModel):
     warnings: list[str]
 
 
-def _resolve_subject(major: str) -> str:
-    """Resolve a major name to a VT subject code for timetable lookup."""
-    return resolve_subject_for_major(major)
-
-
 @router.post("/plan", response_model=PlanResponse)
 def get_plan(request: PlanRequest):
     """
@@ -49,7 +44,7 @@ def get_plan(request: PlanRequest):
         raise HTTPException(status_code=400, detail="major cannot be empty")
 
     # 1. Load timetable courses (cached)
-    subject = _resolve_subject(request.major)
+    subject = resolve_subject_for_major(request.major)
     available_courses = load_courses(subject)
 
     # 2. Fetch degree requirements from VT catalog (with fail-safe)

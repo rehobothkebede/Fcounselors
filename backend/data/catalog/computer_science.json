@@ -1,33 +1,197 @@
 {
   "major": "Computer Science",
+  "degree": "B.S.",
+  "catalog_year": "2025-2026",
+  "total_credits": 123,
+
   "required_courses": [
-    "CS 1114",
-    "CS 2114",
-    "CS 2505",
-    "CS 2506",
-    "CS 3114",
-    "CS 3304",
-    "CS 3744",
-    "CS 4104",
-    "CS 4234",
-    "MATH 1225",
-    "MATH 1226",
-    "MATH 2114",
-    "MATH 2534",
-    "STAT 4105",
-    "ECE 2574"
+    "CS 1114", "CS 2114", "CS 1944", "CS 2104", "CS 2505", "CS 2506",
+    "CS 3114", "CS 3214", "CS 3304", "CS 3604", "CS 4094", "CS 4944",
+    "ENGE 1215", "ENGE 1216", "ENGE 3900",
+    "ENGL 1105", "ENGL 1106",
+    "MATH 1225", "MATH 1226", "MATH 2114", "MATH 2204", "MATH 2534", "MATH 3134"
   ],
+
   "electives": [
-    "CS 3654",
-    "CS 4244",
-    "CS 4284",
-    "CS 4404",
-    "CS 4414",
-    "CS 4664",
-    "CS 4734",
-    "CS 4824",
-    "CS 4954",
-    "CS 4984"
+    "BIOL 1105", "BIOL 1115", "BIOL 1106", "BIOL 1116",
+    "CHEM 1035", "CHEM 1045", "CHEM 1036", "CHEM 1046",
+    "PHYS 2305", "PHYS 2306",
+    "COMM 2004", "COMM 2014",
+    "ENGL 3764", "ENGL 3804", "ENGL 3814", "ENGL 3824", "ENGL 3834", "ENGL 3844", "ENGL 4824"
   ],
-  "notes": "Students must complete a senior project (CS 4000-level). 15-credit minimum in CS 3000+ electives. Verify current requirements with your degree audit."
+
+  "notes": "B.S. CS requires 123 total credits. Students must earn a C or better in core CS courses (marked C). Must complete 30 credits of non-technical courses. CS 4094 Capstone requires CS 2505 and CS 3114. Pathways 7 suspended as of Oct 1 2025 — a free elective (3 cr) replaces it. Common substitutions: ENGE 1414 for ENGE 1215+1216; ECE 2514 for CS 1114; ECE 3514 for CS 2114; ECE 2564 for CS 2505; CS 2064 for CS 1114.",
+
+  "four_year_plan": [
+    {
+      "year": 1,
+      "fall": {
+        "total_credits": 16,
+        "courses": [
+          {"code": "CS 1114",  "name": "Intro to Software Design",          "credits": 3, "prerequisites": [],                    "corequisites": ["MATH 1225"],                       "grade_required": "C"},
+          {"code": "ENGE 1215","name": "Foundations of Engineering",         "credits": 2, "prerequisites": [],                    "corequisites": []},
+          {"code": "ENGL 1105","name": "First-Year Writing",                 "credits": 3, "prerequisites": [],                    "corequisites": []},
+          {"code": "MATH 1225","name": "Calculus of a Single Variable I",    "credits": 4, "prerequisites": ["MATH Placement (ALEKS)"], "corequisites": []},
+          {"code": "ELEC",     "name": "Natural Science Elective",           "credits": 4, "type": "natural_science_elective"}
+        ]
+      },
+      "spring": {
+        "total_credits": 16,
+        "courses": [
+          {"code": "CS 2114",  "name": "Software Design & Data Structures",  "credits": 3, "prerequisites": ["CS 1114"],            "corequisites": [],                                  "grade_required": "C", "semesters_offered": ["F","S","SI","SII"]},
+          {"code": "ENGE 1216","name": "Foundations of Engineering",         "credits": 2, "prerequisites": ["ENGE 1215"],          "corequisites": []},
+          {"code": "ENGL 1106","name": "First-Year Writing",                 "credits": 3, "prerequisites": ["ENGL 1105"],          "corequisites": []},
+          {"code": "MATH 1226","name": "Calculus of a Single Variable II",   "credits": 4, "prerequisites": ["MATH 1225 (C-)"],     "corequisites": []},
+          {"code": "ELEC",     "name": "Natural Science Elective",           "credits": 4, "type": "natural_science_elective"}
+        ]
+      }
+    },
+    {
+      "year": 2,
+      "fall": {
+        "total_credits": 16,
+        "courses": [
+          {"code": "CS 1944",  "name": "CS First Year Seminar",              "credits": 1, "prerequisites": ["CS 1114"],            "corequisites": [],                                  "semesters_offered": ["F","S"]},
+          {"code": "CS 2104",  "name": "Intro to Problem Solving in CS",     "credits": 3, "prerequisites": ["MATH 1225","CS 1114"],"corequisites": [],                                  "grade_required": "C", "semesters_offered": ["F","S","SI"]},
+          {"code": "CS 2505",  "name": "Intro to Computer Organization I",   "credits": 3, "prerequisites": ["CS 2114"],            "corequisites": ["MATH 2534"],                        "grade_required": "C", "semesters_offered": ["F","S","SI"]},
+          {"code": "MATH 2534","name": "Intro to Discrete Mathematics",      "credits": 3, "prerequisites": ["CS 1114"],            "corequisites": [],                                  "semesters_offered": ["F","S","SI"]},
+          {"code": "ELEC",     "name": "Pathways 2, 3, or 6a",               "credits": 3, "type": "pathway"},
+          {"code": "ELEC",     "name": "Pathways 2, 3, or 6a",               "credits": 3, "type": "pathway"}
+        ]
+      },
+      "spring": {
+        "total_credits": 16,
+        "courses": [
+          {"code": "CS 2506",  "name": "Intro to Computer Organization II",  "credits": 3, "prerequisites": ["CS 2114","CS 2505","MATH 2534"], "corequisites": [],                        "grade_required": "C", "semesters_offered": ["F","S"]},
+          {"code": "MATH 2114","name": "Intro to Linear Algebra",            "credits": 3, "prerequisites": ["MATH 1225 (B) or MATH 1226"],   "corequisites": []},
+          {"code": "MATH 2204","name": "Intro to Multivariable Calculus",    "credits": 3, "prerequisites": ["MATH 1226"],                    "corequisites": []},
+          {"code": "ELEC",     "name": "Communications Elective",            "credits": 3, "type": "communications_elective"},
+          {"code": "ELEC",     "name": "Advanced Natural Science Elective",  "credits": 4, "type": "advanced_natural_science_elective"}
+        ]
+      }
+    },
+    {
+      "year": 3,
+      "fall": {
+        "total_credits": 15,
+        "courses": [
+          {"code": "CS 3114",  "name": "Data Structures & Algorithms",       "credits": 3, "prerequisites": ["CS 2114","CS 2505","MATH 2534"], "corequisites": [],                        "grade_required": "C", "semesters_offered": ["F","S","SI"]},
+          {"code": "MATH 3134","name": "Applied Combinatorics",              "credits": 3, "prerequisites": ["MATH 1226","MATH 2534"],         "corequisites": []},
+          {"code": "ENGE 3900","name": "Bridge Experience",                  "credits": 0, "prerequisites": [],                              "corequisites": []},
+          {"code": "ELEC",     "name": "CS 3/4/5XXX Elective",               "credits": 3, "type": "cs_3_4_5xxx_elective"},
+          {"code": "ELEC",     "name": "Professional Writing Elective",      "credits": 3, "type": "professional_writing_elective"},
+          {"code": "ELEC",     "name": "Pathways 2, 3, or 6a",               "credits": 3, "type": "pathway"}
+        ]
+      },
+      "spring": {
+        "total_credits": 15,
+        "courses": [
+          {"code": "CS 3214",  "name": "Computer Systems",                   "credits": 3, "prerequisites": ["CS 2506","CS 2114"],            "corequisites": [],                        "semesters_offered": ["F","S"]},
+          {"code": "CS 3604",  "name": "Professionalism in Computing",       "credits": 3, "prerequisites": ["CS 1944","CS 2114","COMM 2004 or COMM 2014"], "corequisites": [],          "semesters_offered": ["F","S"]},
+          {"code": "ELEC",     "name": "Statistics Elective",                "credits": 3, "type": "statistics_elective"},
+          {"code": "ELEC",     "name": "Pathways 2, 3, or 6a",               "credits": 3, "type": "pathway"},
+          {"code": "ELEC",     "name": "Pathways 2, 3, or 6a",               "credits": 3, "type": "pathway"}
+        ]
+      }
+    },
+    {
+      "year": 4,
+      "fall": {
+        "total_credits": 16,
+        "courses": [
+          {"code": "CS 3304",  "name": "Comparative Languages",              "credits": 3, "prerequisites": ["CS 3114"],            "corequisites": [],                                  "semesters_offered": ["F","S"]},
+          {"code": "ELEC",     "name": "CS Theory Elective",                 "credits": 3, "type": "cs_theory_elective"},
+          {"code": "ELEC",     "name": "CS 3/4/5XXX Elective",               "credits": 3, "type": "cs_3_4_5xxx_elective"},
+          {"code": "ELEC",     "name": "CS Technical Elective",              "credits": 3, "type": "cs_technical_elective"},
+          {"code": "ELEC",     "name": "Free Elective",                      "credits": 3, "type": "free_elective"}
+        ]
+      },
+      "spring": {
+        "total_credits": 14,
+        "courses": [
+          {"code": "CS 4944",  "name": "CS Seminar",                         "credits": 1, "prerequisites": ["CS 3604"],            "corequisites": [],                                  "semesters_offered": ["F","S"]},
+          {"code": "CS 4094",  "name": "Computer Science Capstone",          "credits": 3, "prerequisites": ["CS 2505","CS 3114"],  "corequisites": []},
+          {"code": "ELEC",     "name": "CS 4/5XXX Elective",                 "credits": 3, "type": "cs_4_5xxx_elective"},
+          {"code": "ELEC",     "name": "Free Elective",                      "credits": 3, "type": "free_elective"},
+          {"code": "ELEC",     "name": "Free Elective",                      "credits": 4, "type": "free_elective"}
+        ]
+      }
+    }
+  ],
+
+  "elective_categories": {
+    "natural_science_elective": {
+      "description": "Choose 2 sequences totaling 8 credits. Must pick one complete sequence (lecture + lab).",
+      "options": [
+        {"group": "Biology",    "courses": [{"code": "BIOL 1105", "credits": 3, "semesters": ["F","SI"]}, {"code": "BIOL 1115", "credits": 1, "note": "Co: BIOL 1105", "semesters": ["F","SI"]}]},
+        {"group": "Chemistry",  "courses": [{"code": "CHEM 1035", "credits": 3, "prerequisites": ["CHEM Placement (ALEKS)"]}, {"code": "CHEM 1045", "credits": 1, "note": "Co: CHEM 1035"}]},
+        {"group": "Physics",    "courses": [{"code": "PHYS 2305", "credits": 4, "prerequisites": ["MATH 1225"], "corequisites": ["MATH 1226"]}]}
+      ]
+    },
+    "advanced_natural_science_elective": {
+      "description": "Choose 1 sequence totaling 4 credits. Must follow the same subject as Natural Science Elective.",
+      "options": [
+        {"group": "Biology",    "courses": [{"code": "BIOL 1106", "credits": 3, "semesters": ["S","SII"]}, {"code": "BIOL 1116", "credits": 1, "note": "Co: BIOL 1106", "semesters": ["S","SII"]}]},
+        {"group": "Chemistry",  "courses": [{"code": "CHEM 1036", "credits": 3, "prerequisites": ["CHEM 1035"]}, {"code": "CHEM 1046", "credits": 1, "prerequisites": ["CHEM 1045"], "note": "Co: CHEM 1036"}]},
+        {"group": "Physics",    "courses": [{"code": "PHYS 2306", "credits": 4, "prerequisites": ["PHYS 2305","MATH 1226"]}]}
+      ]
+    },
+    "communications_elective": {
+      "description": "Choose 1. COMM 2004 also satisfies Pathways 1A.",
+      "options": [
+        {"code": "COMM 2004", "name": "Public Speaking",          "credits": 3, "prerequisites": ["Sophomore Standing"], "satisfies_pathways_1a": true},
+        {"code": "COMM 2014", "name": "Speech Communication",     "credits": 3, "prerequisites": ["Sophomore Standing"]}
+      ]
+    },
+    "professional_writing_elective": {
+      "description": "Choose 1. ENGL 3764 also satisfies Pathways 1A.",
+      "options": [
+        {"code": "ENGL 3764", "name": "Technical Writing",                        "credits": 3, "prerequisites": ["ENGL 1106","Junior Standing"], "satisfies_pathways_1a": true},
+        {"code": "ENGL 3804", "name": "Technical Editing and Style",               "credits": 3, "prerequisites": ["ENGL 1106"]},
+        {"code": "ENGL 3814", "name": "Creating User Documentation",               "credits": 3, "prerequisites": ["ENGL 1106"]},
+        {"code": "ENGL 3824", "name": "Visual Rhetoric and Document Design",       "credits": 3, "prerequisites": ["ENGL 1106"]},
+        {"code": "ENGL 3834", "name": "Intercultural Issues in Professional Writing","credits": 3, "prerequisites": ["ENGL 1106"]},
+        {"code": "ENGL 3844", "name": "Writing and Digital Media",                 "credits": 3, "prerequisites": ["ENGL 1106"]},
+        {"code": "ENGL 4824", "name": "Science Writing",                           "credits": 3, "prerequisites": ["ENGL 1106"]}
+      ]
+    },
+    "statistics_elective":       {"description": "See VT Catalog for approved options."},
+    "cs_theory_elective":        {"description": "See VT Catalog for approved options."},
+    "cs_technical_elective":     {"description": "See VT Catalog for approved options."},
+    "cs_3_4_5xxx_elective":      {"description": "Any CS course numbered 3000–5999. Two required (one in Year 3 Fall, one in Year 4 Fall)."},
+    "cs_4_5xxx_elective":        {"description": "Any CS course numbered 4000–5999. One required in Year 4 Spring."},
+    "free_elective":             {"description": "Any course that does not meet a specific graduation requirement. Three required (one 3 cr in Year 4 Fall, two in Year 4 Spring: 3 cr + 4 cr)."}
+  },
+
+  "pathways_general_education": {
+    "1f_discourse_foundational":          ["ENGL 1105", "ENGL 1106"],
+    "1a_discourse_advanced":              "Satisfied by COMM 2004, ENGL 3764, or a suitable free elective.",
+    "2_critical_thinking_humanities":     "Student chooses 2 courses (3 cr each).",
+    "3_reasoning_social_sciences":        "Student chooses 2 courses (3 cr each).",
+    "4_reasoning_natural_sciences":       "Natural Science Elective (2 courses, 4 cr each).",
+    "5f_quantitative_foundational":       ["MATH 1225", "MATH 1226"],
+    "5a_quantitative_advanced":           "CS 3114 (3 cr).",
+    "6a_arts":                            "Student chooses 1 course (3 cr).",
+    "6d_design":                          "ENGE 1215 + ENGE 1216 (or ENGE 1414).",
+    "7_identity_equity":                  "SUSPENDED as of Oct 1 2025. A free elective (3 cr) was added in its place. Students who already completed Pathway 7 may count those credits toward the free elective requirement."
+  },
+
+  "non_technical_requirement": {
+    "credits_required": 30,
+    "description": "B.S. CS students must complete 30 credits of non-technical courses.",
+    "excluded_departments": [
+      "Biological Sciences", "Chemistry", "Geosciences", "Physics", "Mathematics", "Statistics",
+      "All College of Engineering departments"
+    ],
+    "note": "Engineering courses that satisfy Pathways 7 are excluded from the non-technical exclusion list. CS technical electives are also excluded."
+  },
+
+  "substitutions": [
+    {"substitute": "ENGE 1414 (4 cr)",                           "replaces": "ENGE 1215 (2 cr) + ENGE 1216 (2 cr)"},
+    {"substitute": "MATH 2405H (5 cr) + MATH 2406H (5 cr)",     "replaces": "MATH 2114 (3 cr) + MATH 2204 (3 cr) + free elective (4 cr)"},
+    {"substitute": "CS 2064 (C) (3 cr)",                         "replaces": "CS 1114 (C) (3 cr)"},
+    {"substitute": "ECE 2514 (C) (3 cr)",                        "replaces": "CS 1114 (C) (3 cr)"},
+    {"substitute": "ECE 3514 (C) (3 cr)",                        "replaces": "CS 2114 (C) (3 cr)"},
+    {"substitute": "ECE 2564 (C) (3 cr)",                        "replaces": "CS 2505 (C) (3 cr)"}
+  ]
 }

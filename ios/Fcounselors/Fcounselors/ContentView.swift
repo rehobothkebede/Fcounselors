@@ -90,7 +90,7 @@ struct PlanView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
-                    Text("Next semester, powered by your transcript")
+                    Text("Your CS degree plan, powered by your transcript")
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.85))
                 }
@@ -126,7 +126,7 @@ struct PlanView: View {
 
             InputCard(
                 label: "Major",
-                placeholder: "e.g. Computer Science",
+                placeholder: "Computer Science",
                 icon: "graduationcap.fill",
                 text: $appState.major,
                 accentColor: .vtBurgundy
@@ -269,8 +269,8 @@ struct PlanView: View {
                 .font(.headline)
                 .foregroundStyle(.secondary)
             Text(appState.hasTranscript
-                 ? "Enter your major above and tap Generate to get personalized recommendations."
-                 : "Import your transcript first, then come back here to generate your plan.")
+                 ? "Tap Generate to get CS course recommendations for next semester."
+                 : "Import your transcript first, then come back here to generate your CS plan.")
                 .font(.subheadline)
                 .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)

@@ -43,7 +43,7 @@ struct TranscriptView: View {
             allowsMultipleSelection: false,
             onCompletion: handlePickedFile
         )
-        .onChange(of: vm.result) { result in
+        .onChange(of: vm.result) { _, result in
             guard let result = result else { return }
             appState.transcriptCourses = result.courses
             appState.inProgressCourses = result.in_progress_courses
@@ -64,7 +64,7 @@ struct TranscriptView: View {
                         Text("Transcript")
                             .font(.largeTitle).fontWeight(.bold)
                             .foregroundStyle(.white)
-                        Text("Your academic history, automatically parsed")
+                        Text("Your CS course history, automatically parsed")
                             .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.85))
                     }

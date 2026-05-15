@@ -13,7 +13,7 @@ final class AppState: ObservableObject {
     @Published var transcriptCourses: [TranscriptCourse] = []
     @Published var inProgressCourses: [InProgressCourse] = []
     @Published var inProgressGrades: [String: String] = [:]
-    @Published var major: String = ""
+    @Published var major: String = "Computer Science"
     @Published var hasTranscript: Bool = false
     @Published var passingAllClasses: Bool? = nil
     @Published var strugglingCourses: [String] = []

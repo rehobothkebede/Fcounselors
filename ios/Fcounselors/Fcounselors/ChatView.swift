@@ -21,7 +21,7 @@ struct ChatView: View {
                 vm.major = appState.major
             }
         }
-        .onChange(of: appState.major) { major in
+        .onChange(of: appState.major) { _, major in
             if !major.isEmpty { vm.major = major }
         }
     }
@@ -36,7 +36,7 @@ struct ChatView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
-                    Text("Ask anything about courses or your degree")
+                    Text("Your CS advisor — courses, prereqs, and degree planning")
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.85))
                 }
@@ -98,10 +98,10 @@ struct ChatView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
-            .onChange(of: vm.messages.count) { _ in
+            .onChange(of: vm.messages.count) { _, _ in
                 withAnimation { proxy.scrollTo(bottomID, anchor: .bottom) }
             }
-            .onChange(of: vm.isLoading) { _ in
+            .onChange(of: vm.isLoading) { _, _ in
                 withAnimation { proxy.scrollTo(bottomID, anchor: .bottom) }
             }
         }
@@ -124,10 +124,11 @@ struct ChatView: View {
                         vm: vm
                     )
                 }
-                SuggestionChip(text: "What courses should I take next semester?", vm: vm)
-                SuggestionChip(text: "Explain recursion to me", vm: vm)
+                SuggestionChip(text: "What CS courses should I take next semester?", vm: vm)
+                SuggestionChip(text: "What are the communications and writing elective options?", vm: vm)
+                SuggestionChip(text: "Explain pointers and memory for CS 2505", vm: vm)
                 SuggestionChip(text: "What are the prerequisites for CS 3114?", vm: vm)
-                SuggestionChip(text: "Help me plan my degree", vm: vm)
+                SuggestionChip(text: "Help me plan my CS degree sequence", vm: vm)
             }
         }
         .padding(.top, 40)
@@ -309,14 +310,6 @@ struct SuggestionChip: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.25)))
         }
-    }
-}
-
-// MARK: - Placeholder helper
-
-extension View {
-    func placeholder<Content: View>(when condition: Bool, @ViewBuilder content: () -> Content) -> some View {
-        overlay(condition ? content() : nil)
     }
 }
 

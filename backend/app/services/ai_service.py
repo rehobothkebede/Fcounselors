@@ -10,23 +10,27 @@ logger = logging.getLogger(__name__)
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-_BASE_SYSTEM_PROMPT = """You are Fcounselors — an AI academic companion for Virginia Tech College of Engineering students. You operate in two modes depending on what the student needs:
+_BASE_SYSTEM_PROMPT = """You are Fcounselors — an AI academic advisor for Virginia Tech Computer Science students (B.S. CS, 2025-2026 catalog, 123 total credits). You operate in two modes depending on what the student needs:
 
 **TUTOR MODE** — When a student is confused about course material, a concept, or a topic:
-- Break down concepts clearly using examples and analogies
+- Break down concepts clearly using examples and analogies tailored to CS students
 - Ask Socratic follow-up questions to check understanding
-- Reference specific VT course numbers when relevant (e.g. "this is covered in CS 3114")
+- Reference specific VT CS course numbers when relevant (e.g. "this is covered in CS 3114 Data Structures & Algorithms")
 - Never just give the answer to homework — guide them to it
 
 **ADVISOR MODE** — When a student needs help planning their degree or next semester:
-- Check prerequisites before recommending any course
-- Balance credit load (12–18 cr/semester typical at VT)
-- Prioritize required degree courses the student hasn't completed
+- Check prerequisites before recommending any course — many CS core courses require a grade of C or better to proceed
+- Balance credit load (12–18 cr/semester; the standard CS plan averages 15-16 cr/semester)
+- Prioritize required CS core courses the student hasn't completed, following the 4-year sequence
+- Know the CS elective requirements: natural science (8 cr), advanced natural science (4 cr), communications, professional writing, statistics, CS theory, CS technical, and General Education Pathways
 - Flag scheduling risks and prerequisite gaps explicitly
-- Mention career relevance (internships, grad school, industry)
+- Mention career relevance (SWE internships, research opportunities, grad school)
 
 **General rules:**
-- You serve VT College of Engineering students; all course data comes from the VT timetable
+- You serve VT Computer Science students pursuing a B.S. in CS; total degree: 123 credits
+- The CS core sequence: CS 1114 → CS 2114 → CS 2505 + CS 2506 → CS 3114 → CS 3214 + CS 3304 → CS 4094 (capstone)
+- Courses requiring C or better: CS 1114, CS 2114, CS 2104, CS 2505, CS 2506, CS 3114
+- Common substitutions: ECE 2514 for CS 1114, ECE 3514 for CS 2114, ECE 2564 for CS 2505, CS 2064 for CS 1114
 - Never fabricate prerequisites or course requirements — if unsure, say so
 - Be concise: use bullet points and short paragraphs"""
 
@@ -80,6 +84,52 @@ def chat_with_advisor(messages: list, course_context: str = "") -> str:
     return _call_with_retry(_call)
 
 
+def _build_plan_context(major_requirements: dict) -> str:
+    """Format four_year_plan, elective_categories, and substitutions into a compact prompt string."""
+    parts = []
+
+    plan = major_requirements.get("four_year_plan", [])
+    if plan:
+        lines = ["4-year CS sequence (* = C or better required):"]
+        for yr in plan:
+            y = yr.get("year")
+            for sem in ("fall", "spring"):
+                sem_data = yr.get(sem, {})
+                courses = [c for c in sem_data.get("courses", []) if c.get("code") != "ELEC"]
+                if courses:
+                    labels = [
+                        f"{c['code']}*" if c.get("grade_required") == "C" else c["code"]
+                        for c in courses
+                    ]
+                    lines.append(f"  Y{y} {sem.capitalize()[:2]}: {', '.join(labels)} ({sem_data.get('total_credits', '?')}cr)")
+        parts.append("\n".join(lines))
+
+    electives = major_requirements.get("elective_categories", {})
+    if electives:
+        lines = ["CS elective requirements:"]
+        for key, cat in electives.items():
+            name = key.replace("_", " ").title()
+            desc = cat.get("description", "")
+            options = cat.get("options", [])
+            line = f"  {name}: {desc}"
+            if options:
+                if isinstance(options[0], dict) and "code" in options[0]:
+                    line += f" Options: {', '.join(o['code'] for o in options)}"
+                elif isinstance(options[0], dict) and "group" in options[0]:
+                    line += f" Choose: {' or '.join(o['group'] for o in options)}"
+            lines.append(line)
+        parts.append("\n".join(lines))
+
+    subs = major_requirements.get("substitutions", [])
+    if subs:
+        lines = ["Approved substitutions:"]
+        for s in subs:
+            lines.append(f"  {s['substitute']} → replaces {s['replaces']}")
+        parts.append("\n".join(lines))
+
+    return "\n\n".join(parts)
+
+
 def recommend_courses(
     completed_courses: list[str],
     major: str,
@@ -120,6 +170,9 @@ def recommend_courses(
             catalog_context += f"\nApproved electives: {', '.join(elec[:20])}"
         if notes:
             catalog_context += f"\nCatalog notes: {notes}"
+        plan_context = _build_plan_context(major_requirements)
+        if plan_context:
+            catalog_context += "\n\n" + plan_context
 
     prompt = f"""You are an academic advisor for Virginia Tech.
 
@@ -248,27 +301,3 @@ Keep descriptions concise (1-2 sentences each). Include 3-5 practical study tips
     result.setdefault("tips", [])
     result.setdefault("encouragement", "")
     return result
-
-
-def summarize_course_data(raw_text: str) -> dict:
-    """
-    Given raw scraped course text, extract structured course info.
-    Returns a dict with keys: name, code, credits, description, prerequisites.
-    """
-    prompt = f"""Extract structured course information from the following text.
-Return ONLY valid JSON with these keys: name, code, credits, description, prerequisites (list of strings).
-
-Text:
-{raw_text[:3000]}"""
-
-    def _call():
-        response = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0,
-            max_tokens=512,
-            response_format={"type": "json_object"},
-        )
-        return json.loads(response.choices[0].message.content)
-
-    return _call_with_retry(_call)
