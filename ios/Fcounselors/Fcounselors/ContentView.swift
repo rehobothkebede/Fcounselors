@@ -23,6 +23,44 @@ extension LinearGradient {
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
+    static let vtBackground = LinearGradient(
+        stops: [
+            .init(color: Color.vtBurgundy.opacity(0.10), location: 0),
+            .init(color: Color(red: 0.96, green: 0.94, blue: 0.98), location: 0.45),
+            .init(color: Color(red: 0.93, green: 0.95, blue: 1.0), location: 1),
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+}
+
+struct GlassCard: ViewModifier {
+    var cornerRadius: CGFloat = 14
+    var accentColor: Color = .clear
+
+    func body(content: Content) -> some View {
+        content
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(
+                        LinearGradient(
+                            colors: [.white.opacity(0.7), .white.opacity(0.2)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .shadow(color: accentColor == .clear ? .black.opacity(0.07) : accentColor.opacity(0.12), radius: 10, x: 0, y: 4)
+    }
+}
+
+extension View {
+    func glassCard(cornerRadius: CGFloat = 14, accent: Color = .clear) -> some View {
+        modifier(GlassCard(cornerRadius: cornerRadius, accentColor: accent))
+    }
 }
 
 // MARK: - Root View
@@ -72,7 +110,7 @@ struct PlanView: View {
                     .padding()
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background { LinearGradient.vtBackground.ignoresSafeArea() }
             .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showTutoringSheet) {
                 TutoringSheet(vm: tutoringVM)
@@ -165,9 +203,8 @@ struct PlanView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(14)
-                .background(Color.green.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.green.opacity(0.2), lineWidth: 1))
+                .glassCard(cornerRadius: 12, accent: .green)
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.green.opacity(0.35), lineWidth: 1.5))
             } else {
                 HStack(spacing: 10) {
                     Image(systemName: "doc.text.magnifyingglass")
@@ -181,9 +218,8 @@ struct PlanView: View {
                     }
                 }
                 .padding(14)
-                .background(Color.vtBurgundyMuted)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.3), lineWidth: 1))
+                .glassCard(cornerRadius: 12, accent: .vtBurgundy)
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.35), lineWidth: 1.5))
             }
         }
     }
@@ -218,9 +254,8 @@ struct PlanView: View {
             .clipShape(Capsule())
         }
         .padding(14)
-        .background(Color.orange.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.orange.opacity(0.25), lineWidth: 1))
+        .glassCard(cornerRadius: 12, accent: .orange)
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.orange.opacity(0.4), lineWidth: 1.5))
     }
 
     // MARK: - Generate Button
@@ -326,8 +361,8 @@ struct PlanView: View {
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.green.opacity(0.08))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .glassCard(cornerRadius: 10, accent: .green)
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.green.opacity(0.35), lineWidth: 1.5))
 
             VStack(alignment: .leading, spacing: 12) {
                 SectionHeader(title: "Recommended Courses", icon: "book.closed.fill", color: .vtBurgundy)
@@ -430,9 +465,8 @@ struct TutoringSheet: View {
                                     .lineSpacing(4)
                                     .padding(16)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(Color.vtBurgundyMuted)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.25), lineWidth: 1))
+                                    .glassCard(cornerRadius: 12, accent: .vtBurgundy)
+                                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.35), lineWidth: 1.5))
                             }
 
                             if !response.resources.isEmpty {
@@ -461,9 +495,7 @@ struct TutoringSheet: View {
                                         }
                                     }
                                     .padding(12)
-                                    .background(Color(.systemBackground))
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    .glassCard(cornerRadius: 12)
                                 }
                             }
                         }
@@ -486,7 +518,7 @@ struct TutoringSheet: View {
                         .foregroundStyle(Color.vtBurgundy)
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background { LinearGradient.vtBackground.ignoresSafeArea() }
         }
     }
 }
@@ -525,9 +557,7 @@ struct TutoringResourceCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .glassCard(cornerRadius: 12)
     }
 }
 
@@ -554,9 +584,7 @@ struct InputCard: View {
             }
             TextField(placeholder, text: $text)
                 .padding(12)
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                .glassCard(cornerRadius: 10)
             if let hint {
                 Text(hint)
                     .font(.caption2).foregroundStyle(.tertiary)
@@ -608,9 +636,7 @@ struct CourseCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .glassCard(cornerRadius: 14)
     }
 }
 
@@ -700,9 +726,8 @@ struct ReasoningCard: View {
         MarkdownBody(text: text)
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.blue.opacity(0.07))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.15), lineWidth: 1))
+            .glassCard(cornerRadius: 12, accent: .blue)
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.35), lineWidth: 1.5))
     }
 }
 
@@ -719,9 +744,8 @@ struct WarningCard: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.orange.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.orange.opacity(0.25), lineWidth: 1))
+        .glassCard(cornerRadius: 12, accent: .orange)
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.orange.opacity(0.4), lineWidth: 1.5))
     }
 }
 

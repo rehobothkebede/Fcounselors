@@ -14,7 +14,7 @@ struct ChatView: View {
             Divider()
             inputBar
         }
-        .background(Color(.systemGroupedBackground))
+        .background { LinearGradient.vtBackground.ignoresSafeArea() }
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             if vm.major.isEmpty && !appState.major.isEmpty {
@@ -143,9 +143,10 @@ struct ChatView: View {
                 .lineLimit(1...5)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(Color(.systemBackground))
+                .background(.ultraThinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 22))
-                .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 1)
+                .overlay(RoundedRectangle(cornerRadius: 22).stroke(.white.opacity(0.55), lineWidth: 1))
+                .shadow(color: .black.opacity(0.07), radius: 6, x: 0, y: 2)
                 .onSubmit {
                     if vm.canSend {
                         Task { await vm.sendMessage() }
@@ -164,7 +165,7 @@ struct ChatView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .background(Color(.systemGroupedBackground))
+        .background(.thinMaterial)
     }
 }
 
@@ -174,6 +175,28 @@ struct MessageBubble: View {
     let message: ChatMessage
 
     private var isUser: Bool { message.role == "user" }
+
+    @ViewBuilder
+    private var bubbleContent: some View {
+        if isUser {
+            Text(message.content)
+                .font(.subheadline)
+                .foregroundStyle(Color.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(Color.vtBurgundy)
+                .clipShape(BubbleShape(isUser: true))
+                .shadow(color: Color.vtBurgundy.opacity(0.3), radius: 8, x: 0, y: 4)
+        } else {
+            MarkdownBody(text: message.content, baseColor: .primary)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(.ultraThinMaterial)
+                .clipShape(BubbleShape(isUser: false))
+                .overlay(BubbleShape(isUser: false).stroke(Color.white.opacity(0.55), lineWidth: 1))
+                .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 4)
+        }
+    }
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
@@ -188,20 +211,7 @@ struct MessageBubble: View {
                     .clipShape(Circle())
             }
 
-            Group {
-                if isUser {
-                    Text(message.content)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.white)
-                } else {
-                    MarkdownBody(text: message.content, baseColor: .primary)
-                }
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(isUser ? Color.vtBurgundy : Color(.systemBackground))
-            .clipShape(BubbleShape(isUser: isUser))
-            .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+            bubbleContent
 
             if !isUser { Spacer(minLength: 48) }
         }
@@ -258,9 +268,10 @@ struct TypingIndicator: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(Color(.systemBackground))
+            .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 18))
-            .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+            .overlay(RoundedRectangle(cornerRadius: 18).stroke(.white.opacity(0.55), lineWidth: 1))
+            .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 4)
 
             Spacer(minLength: 48)
         }
@@ -283,9 +294,8 @@ struct ErrorBanner: View {
         }
         .padding(10)
         .frame(maxWidth: .infinity)
-        .background(Color.orange.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.orange.opacity(0.25)))
+        .glassCard(cornerRadius: 10, accent: .orange)
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.orange.opacity(0.4), lineWidth: 1.5))
     }
 }
 
@@ -306,9 +316,8 @@ struct SuggestionChip: View {
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.vtBurgundyMuted)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.25)))
+                .glassCard(cornerRadius: 12, accent: .vtBurgundy)
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.vtBurgundy.opacity(0.35), lineWidth: 1.5))
         }
     }
 }

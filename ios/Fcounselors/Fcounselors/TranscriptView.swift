@@ -34,7 +34,7 @@ struct TranscriptView: View {
                     .padding()
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background { LinearGradient.vtBackground.ignoresSafeArea() }
             .toolbar(.hidden, for: .navigationBar)
         }
         .fileImporter(
@@ -138,9 +138,7 @@ struct TranscriptView: View {
                 featureRow(icon: "lock.fill", text: "Processed securely, never stored")
             }
             .padding(16)
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 3)
+            .glassCard(cornerRadius: 16)
         }
     }
 
@@ -212,9 +210,8 @@ struct TranscriptView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.green.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.green.opacity(0.2), lineWidth: 1))
+        .glassCard(cornerRadius: 12, accent: .green)
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.green.opacity(0.4), lineWidth: 1.5))
     }
 
     // MARK: - In-Progress Courses Section
@@ -235,9 +232,7 @@ struct TranscriptView: View {
                 .padding(.top, 2)
         }
         .padding(16)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .glassCard(cornerRadius: 16)
     }
 
     private func inProgressCourseRow(course: InProgressCourse) -> some View {
@@ -276,8 +271,7 @@ struct TranscriptView: View {
             }
         }
         .padding(12)
-        .background(Color(.systemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .glassCard(cornerRadius: 12)
     }
 
     // MARK: - Semester Status Section
@@ -313,9 +307,7 @@ struct TranscriptView: View {
             }
         }
         .padding(16)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .glassCard(cornerRadius: 16)
     }
 
     private func statusButton(title: String, icon: String, isSelected: Bool, color: Color, action: @escaping () -> Void) -> some View {
@@ -369,8 +361,7 @@ struct TranscriptView: View {
                 TextField("e.g. CS 3114", text: $newStrugglingCourse)
                     .font(.subheadline)
                     .padding(.horizontal, 12).padding(.vertical, 10)
-                    .background(Color(.systemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .glassCard(cornerRadius: 10)
                     .submitLabel(.done)
                     .onSubmit { addStrugglingCourse() }
 
@@ -578,9 +569,7 @@ struct TranscriptCourseCard: View {
             Spacer()
         }
         .padding(14)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.04), radius: 4, x: 0, y: 2)
+        .glassCard(cornerRadius: 12)
     }
 
     private func gradeColor(_ grade: String) -> Color {
