@@ -209,12 +209,39 @@ Fcounselors aims to build an intelligent advising companion that helps students 
 
 ---
 
+## Patch Notes
+
+### 5/15/26
+
+**UI Overhaul: Glassmorphism Design**
+- Replaced all solid white/gray card backgrounds with `.ultraThinMaterial` glass panels across Transcript, Plan, and Chat views
+- Added a warm-to-cool gradient page background (VT Burgundy → lavender → sky) so glass cards actually refract color
+- All cards now have a directional white-gradient border stroke and soft accent-tinted shadows
+- Input fields, suggestion chips, chat bubbles, and the typing indicator all updated to match the glass system
+- Added a reusable `GlassCard` modifier and `LinearGradient.vtBackground` to the design system for consistent use going forward
+- Fixed a crash (`Thread 1: signal SIGTERM`) caused by `AnyShapeStyle` usage which requires iOS 17+ — replaced with a `@ViewBuilder` approach that works on iOS 15+
+
+**Pathways Data**
+- Parsed both VT Pathways PDFs (at-a-glance guide + full alphabetical guide) using `pdfplumber`
+- Generated `backend/data/pathways.json` with all 880 courses organized by pathway concept and subsection:
+  - Pathway 1 (Discourse): 1f Foundational / 1a Advanced-Applied
+  - Pathway 2 (Critical Thinking in the Humanities)
+  - Pathway 3 (Reasoning in the Social Sciences)
+  - Pathway 4 (Reasoning in the Natural Sciences)
+  - Pathway 5 (Quantitative & Computational Thinking): 5f / 5a
+  - Pathway 6 (Design and the Arts): 6a Arts / 6d Design
+  - Pathway 7 (Critical Analysis of Identity & Equity in the US)
+- Each course entry includes: course code, name, prerequisites (cleaned), crosslists, Pathways minor affiliations, and double-count flags
+- Parser script saved to `backend/scripts/parse_pathways.py` for re-use
+
+---
+
 ## Status
 
 Active development — backend API and iOS app in progress.
 
-- Backend: FastAPI with OpenAI integration, VT course scraper, COE catalog context injection
-- iOS: SwiftUI chat interface connected to the backend
+- Backend: FastAPI with OpenAI integration, VT course scraper, COE catalog context injection, Pathways data
+- iOS: SwiftUI app with glassmorphism UI connected to the backend
 
 ---
 

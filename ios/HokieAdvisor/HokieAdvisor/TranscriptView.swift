@@ -1,0 +1,457 @@
+import SwiftUI
+import UniformTypeIdentifiers
+
+struct TranscriptView: View {
+    @EnvironmentObject var appState: AppState
+    @StateObject private var vm = TranscriptViewModel()
+    @State private var showFilePicker = false
+    @State private var newStrugglingCourse = ""
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                pageHeader(
+                    title: "Transcript",
+                    subtitle: "Your CS course history, automatically parsed"
+                )
+
+                if vm.isLoading {
+                    loadingView.padding(.horizontal, 20)
+                } else if let error = vm.errorMessage {
+                    statusCard(icon: "exclamationmark.triangle.fill", iconColor: .orange,
+                               title: "Could not parse transcript", subtitle: error)
+                        .padding(.horizontal, 20)
+                    primaryButton(title: "Try Again", icon: "arrow.up.doc.fill") {
+                        vm.reset(); showFilePicker = true
+                    }
+                    .padding(.horizontal, 20)
+                } else if appState.hasTranscript {
+                    successBanner.padding(.horizontal, 20)
+                    if !appState.inProgressCourses.isEmpty {
+                        inProgressSection.padding(.horizontal, 20)
+                    }
+                    semesterStatusSection.padding(.horizontal, 20)
+                    courseListSection.padding(.horizontal, 20)
+                    reuploadButton.padding(.horizontal, 20)
+                } else {
+                    uploadPrompt.padding(.horizontal, 20)
+                }
+
+                Spacer(minLength: 110)
+            }
+        }
+        .scrollIndicators(.hidden)
+        .background(Color(.systemBackground))
+        .fileImporter(
+            isPresented: $showFilePicker,
+            allowedContentTypes: [.pdf, .png, .jpeg],
+            allowsMultipleSelection: false,
+            onCompletion: handlePickedFile
+        )
+        .onChange(of: vm.result) { _, result in
+            guard let result = result else { return }
+            appState.transcriptCourses = result.courses
+            appState.inProgressCourses = result.in_progress_courses
+            appState.inProgressGrades = [:]
+            appState.hasTranscript = true
+            appState.passingAllClasses = nil
+            appState.strugglingCourses = []
+        }
+    }
+
+    // MARK: - Upload Prompt
+
+    private var uploadPrompt: some View {
+        VStack(spacing: 16) {
+            Button {
+                vm.reset(); showFilePicker = true
+            } label: {
+                VStack(spacing: 16) {
+                    Image(systemName: "arrow.up.doc.fill")
+                        .font(.system(size: 44, weight: .semibold))
+                        .foregroundStyle(.white)
+                    VStack(spacing: 4) {
+                        Text("Upload Transcript")
+                            .font(.title3.bold()).fontDesign(.rounded).foregroundStyle(.white)
+                        Text("PDF, PNG, or JPG")
+                            .font(.subheadline).foregroundStyle(.white.opacity(0.75))
+                    }
+                }
+                .frame(maxWidth: .infinity).frame(height: 200)
+                .background(Color.vtBurgundy)
+                .clipShape(RoundedRectangle(cornerRadius: 32))
+            }
+
+            VStack(spacing: 14) {
+                featureRow(icon: "brain.head.profile", text: "AI-powered parsing — no manual entry needed")
+                featureRow(icon: "calendar.badge.checkmark", text: "Feeds directly into your course plan")
+                featureRow(icon: "lock.fill", text: "Processed securely, never stored")
+            }
+            .padding(20)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 28))
+        }
+    }
+
+    private func featureRow(icon: String, text: String) -> some View {
+        HStack(spacing: 14) {
+            circleIcon(icon, color: .vtBurgundy, size: 38)
+            Text(text).font(.subheadline).foregroundStyle(.secondary)
+        }
+    }
+
+    private func primaryButton(title: String, icon: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Image(systemName: icon).font(.body.bold())
+                Text(title).font(.body.bold())
+            }
+            .frame(maxWidth: .infinity).padding(.vertical, 18)
+            .background(Color.vtBurgundy).foregroundStyle(.white)
+            .clipShape(Capsule())
+        }
+    }
+
+    private var reuploadButton: some View {
+        Button {
+            vm.reset()
+            appState.hasTranscript = false
+            appState.transcriptCourses = []
+            showFilePicker = true
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "arrow.triangle.2.circlepath").font(.subheadline.bold())
+                Text("Re-upload Transcript").font(.subheadline.bold())
+            }
+            .foregroundStyle(Color.vtBurgundy)
+            .frame(maxWidth: .infinity).padding(.vertical, 16)
+            .background(Color.vtBurgundy.opacity(0.1))
+            .clipShape(Capsule())
+        }
+    }
+
+    // MARK: - Success Banner
+
+    private var successBanner: some View {
+        statusCard(
+            icon: "checkmark.seal.fill",
+            iconColor: .green,
+            title: "\(appState.transcriptCourses.count) courses found",
+            subtitle: "\(Int(appState.totalCredits)) total credit hours parsed"
+        )
+    }
+
+    // MARK: - In-Progress Courses
+
+    private var inProgressSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionLabel(title: "Currently Enrolled", icon: "clock.badge.fill", color: .orange)
+
+            Text("We found \(appState.inProgressCourses.count) in-progress course\(appState.inProgressCourses.count == 1 ? "" : "s"). How are they going?")
+                .font(.subheadline).foregroundStyle(.secondary)
+
+            ForEach(appState.inProgressCourses) { inProgressCourseRow(course: $0) }
+
+            Text("Your current grades help the advisor decide which prereqs you'll have completed by next semester.")
+                .font(.caption).foregroundStyle(.tertiary)
+        }
+        .padding(20)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 28))
+    }
+
+    private func inProgressCourseRow(course: InProgressCourse) -> some View {
+        let grades = ["A", "B", "C", "D", "F"]
+        let selected = appState.inProgressGrades[course.code]
+
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Text(course.code)
+                    .font(.caption.bold()).foregroundStyle(.white)
+                    .padding(.horizontal, 10).padding(.vertical, 5)
+                    .background(Color.vtBurgundy).clipShape(Capsule())
+                Text(course.name).font(.subheadline.bold()).lineLimit(1)
+            }
+            HStack(spacing: 8) {
+                ForEach(grades, id: \.self) { grade in
+                    let isSelected = selected == grade
+                    let color: Color = grade == "D" || grade == "F" ? .red : (grade == "C" ? .orange : .green)
+                    Button {
+                        appState.inProgressGrades[course.code] = isSelected ? nil : grade
+                    } label: {
+                        Text(grade).font(.subheadline.bold())
+                            .frame(maxWidth: .infinity).padding(.vertical, 10)
+                            .background(isSelected ? color : color.opacity(0.1))
+                            .foregroundStyle(isSelected ? .white : color)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Semester Status
+
+    private var semesterStatusSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionLabel(title: "Current Semester", icon: "calendar", color: .vtBurgundy)
+
+            Text("How are your current classes going?")
+                .font(.subheadline).foregroundStyle(.secondary)
+
+            HStack(spacing: 10) {
+                statusToggle(title: "All Good", icon: "checkmark.circle.fill",
+                             isSelected: appState.passingAllClasses == true, color: .green) {
+                    withAnimation { appState.passingAllClasses = true; appState.strugglingCourses = [] }
+                }
+                statusToggle(title: "Struggling", icon: "exclamationmark.triangle.fill",
+                             isSelected: appState.passingAllClasses == false, color: .orange) {
+                    withAnimation { appState.passingAllClasses = false }
+                }
+            }
+
+            if appState.passingAllClasses == false {
+                strugglingCoursesInput
+            }
+        }
+        .padding(20)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 28))
+    }
+
+    private func statusToggle(title: String, icon: String, isSelected: Bool,
+                               color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                Text(title).fontWeight(.semibold)
+            }
+            .font(.subheadline)
+            .frame(maxWidth: .infinity).padding(.vertical, 14)
+            .background(isSelected ? color : color.opacity(0.1))
+            .foregroundStyle(isSelected ? .white : color)
+            .clipShape(Capsule())
+        }
+    }
+
+    private var strugglingCoursesInput: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Which courses are you struggling with?")
+                .font(.caption.bold()).foregroundStyle(.secondary)
+                .textCase(.uppercase).tracking(0.5)
+
+            if !appState.strugglingCourses.isEmpty {
+                FlowLayout(spacing: 8) {
+                    ForEach(appState.strugglingCourses, id: \.self) { course in
+                        HStack(spacing: 4) {
+                            Text(course).font(.caption.bold())
+                            Button {
+                                appState.strugglingCourses.removeAll { $0 == course }
+                            } label: {
+                                Image(systemName: "xmark").font(.caption2)
+                            }
+                        }
+                        .padding(.horizontal, 12).padding(.vertical, 6)
+                        .background(Color.orange).foregroundStyle(.white)
+                        .clipShape(Capsule())
+                    }
+                }
+            }
+
+            HStack(spacing: 10) {
+                TextField("e.g. CS 3114", text: $newStrugglingCourse)
+                    .font(.subheadline)
+                    .padding(.horizontal, 16).padding(.vertical, 12)
+                    .background(Color(.tertiarySystemBackground))
+                    .clipShape(Capsule())
+                    .submitLabel(.done)
+                    .onSubmit { addStrugglingCourse() }
+
+                Button(action: addStrugglingCourse) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(newStrugglingCourse.trimmingCharacters(in: .whitespaces).isEmpty
+                            ? Color.gray.opacity(0.4) : Color.orange)
+                }
+                .disabled(newStrugglingCourse.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+
+            if appState.needsTutoringSupport {
+                HStack(spacing: 8) {
+                    Image(systemName: "arrow.right.circle.fill").foregroundStyle(.orange)
+                    Text("Go to Plan tab to get tutoring resources.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    private func addStrugglingCourse() {
+        let trimmed = newStrugglingCourse.trimmingCharacters(in: .whitespaces).uppercased()
+        guard !trimmed.isEmpty, !appState.strugglingCourses.contains(trimmed) else { return }
+        appState.strugglingCourses.append(trimmed)
+        newStrugglingCourse = ""
+    }
+
+    // MARK: - Course List
+
+    private var courseListSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            SectionLabel(title: "Completed Courses", icon: "checkmark.circle.fill", color: .vtBurgundy)
+
+            if let result = vm.result, !result.warnings.isEmpty {
+                ForEach(result.warnings, id: \.self) { WarningCard(text: $0) }
+            }
+
+            ForEach(appState.semesterGroups) { group in
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(group.semester)
+                        .font(.caption.bold()).foregroundStyle(.secondary)
+                        .textCase(.uppercase).tracking(0.5).padding(.leading, 4)
+                    ForEach(group.courses) { TranscriptCourseCard(course: $0) }
+                }
+            }
+        }
+    }
+
+    // MARK: - Loading
+
+    private var loadingView: some View {
+        VStack(spacing: 16) {
+            ProgressView().scaleEffect(1.5).tint(Color.vtBurgundy)
+            Text("Parsing your transcript...")
+                .font(.headline.bold()).fontDesign(.rounded)
+            Text("AI is reading your course history")
+                .font(.caption).foregroundStyle(.tertiary)
+        }
+        .frame(maxWidth: .infinity).frame(height: 200)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 32))
+    }
+
+    // MARK: - File Handling
+
+    private func handlePickedFile(_ pickerResult: Result<[URL], Error>) {
+        switch pickerResult {
+        case .failure(let error):
+            vm.errorMessage = error.localizedDescription
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            let accessing = url.startAccessingSecurityScopedResource()
+            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+            guard let data = try? Data(contentsOf: url) else {
+                vm.errorMessage = "Could not read the selected file."
+                return
+            }
+            let mime: String
+            switch url.pathExtension.lowercased() {
+            case "pdf": mime = "application/pdf"
+            case "png": mime = "image/png"
+            default: mime = "image/jpeg"
+            }
+            Task { await vm.upload(fileData: data, mimeType: mime, fileName: url.lastPathComponent) }
+        }
+    }
+}
+
+// MARK: - Flow Layout
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = computeRows(width: proposal.width ?? 0, subviews: subviews)
+        let height = rows.map { $0.map { $0.sizeThatFits(.unspecified).height }.max() ?? 0 }
+            .reduce(0) { $0 + $1 + spacing } - spacing
+        return CGSize(width: proposal.width ?? 0, height: max(height, 0))
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let rows = computeRows(width: bounds.width, subviews: subviews)
+        var y = bounds.minY
+        for row in rows {
+            let rowHeight = row.map { $0.sizeThatFits(.unspecified).height }.max() ?? 0
+            var x = bounds.minX
+            for subview in row {
+                let size = subview.sizeThatFits(.unspecified)
+                subview.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += rowHeight + spacing
+        }
+    }
+
+    private func computeRows(width: CGFloat, subviews: Subviews) -> [[LayoutSubview]] {
+        var rows: [[LayoutSubview]] = [[]]
+        var rowWidth: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if rowWidth + size.width > width, !rows[rows.count - 1].isEmpty {
+                rows.append([]); rowWidth = 0
+            }
+            rows[rows.count - 1].append(subview)
+            rowWidth += size.width + spacing
+        }
+        return rows
+    }
+}
+
+// MARK: - Transcript Course Card
+
+struct TranscriptCourseCard: View {
+    let course: TranscriptCourse
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 8) {
+                    Text(course.code)
+                        .font(.caption.bold()).foregroundStyle(.white)
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .background(Color.vtBurgundy).clipShape(Capsule())
+
+                    if let grade = course.grade {
+                        Text(grade)
+                            .font(.caption.bold()).foregroundStyle(.white)
+                            .padding(.horizontal, 10).padding(.vertical, 4)
+                            .background(gradeColor(grade)).clipShape(Capsule())
+                    }
+                }
+                Text(course.name).font(.subheadline.bold()).lineLimit(2)
+                if let credits = course.credits {
+                    Text("\(credits, specifier: "%.0f") credits").font(.caption).foregroundStyle(.tertiary)
+                }
+            }
+            Spacer()
+        }
+        .padding(16)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private func gradeColor(_ grade: String) -> Color {
+        switch grade {
+        case "A", "A+": return .green
+        case "A-", "B+", "B": return Color(red: 0.2, green: 0.6, blue: 0.2)
+        case "B-", "C+", "C": return .orange
+        case "C-", "D+", "D", "D-": return .red.opacity(0.8)
+        case "P", "CR", "TR", "T": return Color.vtBurgundy
+        default: return .gray
+        }
+    }
+}
+
+// MARK: - Previews
+
+#Preview("Transcript — Empty") { TranscriptView().environmentObject(AppState()) }
+
+#Preview("Transcript — Loaded") {
+    let state = AppState()
+    state.hasTranscript = true
+    state.transcriptCourses = [
+        TranscriptCourse(code: "CS 1114", name: "Intro to Software Design", credits: 3, grade: "A", semester: "Fall 2023"),
+        TranscriptCourse(code: "MATH 1225", name: "Calculus I", credits: 3, grade: "B+", semester: "Fall 2023"),
+        TranscriptCourse(code: "CS 2114", name: "Software Design & Data Structures", credits: 3, grade: "A-", semester: "Spring 2024"),
+    ]
+    return TranscriptView().environmentObject(state)
+}
