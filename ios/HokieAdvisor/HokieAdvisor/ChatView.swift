@@ -16,9 +16,15 @@ struct ChatView: View {
         .background(Color(.systemBackground))
         .onAppear {
             if vm.major.isEmpty && !appState.major.isEmpty { vm.major = appState.major }
+            vm.transcriptCourses = appState.transcriptCourses
+            vm.inProgressSummary = appState.inProgressSummary
         }
         .onChange(of: appState.major) { _, major in
             if !major.isEmpty { vm.major = major }
+        }
+        .onChange(of: appState.transcriptCourses) { _, courses in
+            vm.transcriptCourses = courses
+            vm.inProgressSummary = appState.inProgressSummary
         }
     }
 
@@ -71,6 +77,9 @@ struct ChatView: View {
             }
             .onChange(of: vm.isLoading) { _, _ in
                 withAnimation { proxy.scrollTo(bottomID, anchor: .bottom) }
+            }
+            .onChange(of: vm.messages.last?.content) { _, _ in
+                proxy.scrollTo(bottomID, anchor: .bottom)
             }
         }
     }
@@ -147,25 +156,47 @@ struct MessageBubble: View {
                 .background(Color.vtBurgundy)
                 .clipShape(RoundedRectangle(cornerRadius: 22))
         } else {
-            MarkdownBody(text: message.content, baseColor: .primary)
-                .padding(.horizontal, 16).padding(.vertical, 12)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 22))
+            VStack(alignment: .leading, spacing: 4) {
+                MarkdownBody(text: message.content.isEmpty ? " " : message.content, baseColor: .primary)
+                if message.isStreaming {
+                    StreamingCursor()
+                }
+            }
+            .padding(.horizontal, 16).padding(.vertical, 12)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 22))
         }
     }
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            if isUser { Spacer(minLength: 48) }
+            if isUser { Spacer(minLength: 60) }
             if !isUser {
                 Image(systemName: "brain.head.profile")
                     .font(.caption.bold()).foregroundStyle(.white)
                     .frame(width: 30, height: 30)
                     .background(Color.vtBurgundy).clipShape(Circle())
+                    .alignmentGuide(.bottom) { d in d[.bottom] }
             }
             bubbleContent
-            if !isUser { Spacer(minLength: 48) }
+            // No right spacer for assistant — let code-heavy replies use full available width
         }
+    }
+}
+
+// MARK: - Streaming Cursor
+
+struct StreamingCursor: View {
+    @State private var visible = true
+    let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 1)
+            .frame(width: 2, height: 14)
+            .foregroundStyle(Color.vtBurgundy)
+            .opacity(visible ? 1 : 0)
+            .animation(.easeInOut(duration: 0.15), value: visible)
+            .onReceive(timer) { _ in visible.toggle() }
     }
 }
 

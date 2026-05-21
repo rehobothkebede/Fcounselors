@@ -9,8 +9,14 @@ final class ChatViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
 
+    // Synced from AppState by ChatView on appear / onChange
+    var transcriptCourses: [TranscriptCourse] = []
+    var inProgressSummary: [String] = []
+
     var canSend: Bool {
-        !inputText.trimmingCharacters(in: .whitespaces).isEmpty && !isLoading
+        !inputText.trimmingCharacters(in: .whitespaces).isEmpty
+            && !isLoading
+            && !messages.contains(where: { $0.isStreaming })
     }
 
     func sendMessage() async {
@@ -23,15 +29,39 @@ final class ChatViewModel: ObservableObject {
         isLoading = true
 
         let payload = messages.map { ChatPayload(role: $0.role, content: $0.content) }
-        let request = ChatRequest(messages: payload, major: major)
+        let transcriptEntries = transcriptCourses.map {
+            TranscriptEntry(code: $0.code, name: $0.name, grade: $0.grade,
+                            semester: $0.semester, credits: $0.credits)
+        }
+        let chatRequest = ChatRequest(
+            messages: payload,
+            major: major,
+            transcript: transcriptEntries,
+            inProgressCourses: inProgressSummary
+        )
+
+        let streamID = UUID()
+        var streamStarted = false
 
         do {
-            let response = try await APIService.sendChat(request: request)
-            messages.append(ChatMessage(role: "assistant", content: response.reply))
+            for try await token in APIService.streamChat(request: chatRequest) {
+                if !streamStarted {
+                    streamStarted = true
+                    isLoading = false
+                    messages.append(ChatMessage(id: streamID, role: "assistant", content: "", isStreaming: true))
+                }
+                if let idx = messages.firstIndex(where: { $0.id == streamID }) {
+                    messages[idx].content += token
+                }
+            }
+            if let idx = messages.firstIndex(where: { $0.id == streamID }) {
+                messages[idx].isStreaming = false
+            }
         } catch {
+            isLoading = false
+            messages.removeAll { $0.id == streamID }
+            if messages.last?.role == "user" { messages.removeLast() }
             errorMessage = error.localizedDescription
-            // Remove the user message so they can retry
-            messages.removeLast()
             inputText = text
         }
 

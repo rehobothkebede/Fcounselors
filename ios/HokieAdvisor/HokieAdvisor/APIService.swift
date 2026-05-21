@@ -30,6 +30,46 @@ final class APIService {
         try await post(path: "/chat", body: request)
     }
 
+    static func streamChat(request: ChatRequest) -> AsyncThrowingStream<String, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                guard let url = URL(string: "\(baseURL)/chat/stream") else {
+                    continuation.finish(throwing: APIError.invalidURL)
+                    return
+                }
+                var req = URLRequest(url: url)
+                req.httpMethod = "POST"
+                req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                req.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+                do {
+                    req.httpBody = try JSONEncoder().encode(request)
+                } catch {
+                    continuation.finish(throwing: APIError.decodingError(error))
+                    return
+                }
+                do {
+                    let (bytes, response) = try await URLSession.shared.bytes(for: req)
+                    if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                        continuation.finish(throwing: APIError.serverError(http.statusCode))
+                        return
+                    }
+                    for try await line in bytes.lines {
+                        guard line.hasPrefix("data: ") else { continue }
+                        let payload = String(line.dropFirst(6))
+                        if payload == "[DONE]" { break }
+                        if let data = payload.data(using: .utf8),
+                           let token = try? JSONDecoder().decode(String.self, from: data) {
+                            continuation.yield(token)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: APIError.networkError(error))
+                }
+            }
+        }
+    }
+
     static func fetchTutoring(request: TutoringRequest) async throws -> TutoringResponse {
         try await post(path: "/tutoring/recommend", body: request)
     }

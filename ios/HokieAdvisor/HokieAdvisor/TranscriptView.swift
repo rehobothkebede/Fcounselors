@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 struct TranscriptView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var vm = TranscriptViewModel()
+    @AppStorage("graduationYear") private var graduationYear = ""
     @State private var showFilePicker = false
     @State private var newStrugglingCourse = ""
 
@@ -56,6 +57,9 @@ struct TranscriptView: View {
             appState.hasTranscript = true
             appState.passingAllClasses = nil
             appState.strugglingCourses = []
+            if let inferred = inferredGradYear(from: result.courses) {
+                graduationYear = String(inferred)
+            }
         }
     }
 
@@ -327,6 +331,20 @@ struct TranscriptView: View {
         .frame(maxWidth: .infinity).frame(height: 200)
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 32))
+    }
+
+    // MARK: - Grad Year Inference
+
+    private func inferredGradYear(from courses: [TranscriptCourse]) -> Int? {
+        let startYear = courses.compactMap { course -> Int? in
+            guard let semester = course.semester,
+                  semester.lowercased() != "transfer" else { return nil }
+            let parts = semester.split(separator: " ")
+            guard parts.count == 2, let year = Int(parts[1]) else { return nil }
+            return year
+        }.min()
+        guard let year = startYear else { return nil }
+        return year + 4
     }
 
     // MARK: - File Handling

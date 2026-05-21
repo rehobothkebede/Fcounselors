@@ -7,8 +7,8 @@
       "layers" : [
         {
           "glass" : false,
-          "image-name" : "ChatGPT Image May 18, 2026 at 06_50_02 PM 2.png",
-          "name" : "ChatGPT Image May 18, 2026 at 06_50_02 PM 2",
+          "image-name" : "AppIcon-Light.png",
+          "name" : "AppIcon-Light",
           "opacity-specializations" : [
             {
               "appearance" : "dark",
@@ -25,8 +25,8 @@
             }
           ],
           "glass" : false,
-          "image-name" : "ChatGPT Image May 18, 2026 at 06_11_07 PM (2).png",
-          "name" : "ChatGPT Image May 18, 2026 at 06_11_07 PM (2)",
+          "image-name" : "AppIcon-Dark.png",
+          "name" : "AppIcon-Dark",
           "opacity" : 1,
           "position" : {
             "scale" : 1.1,

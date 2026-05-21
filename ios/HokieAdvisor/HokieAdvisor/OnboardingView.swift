@@ -9,6 +9,7 @@ struct OnboardingView: View {
     @AppStorage("vtPID") private var storedPID = ""
     @AppStorage("appPasswordHash") private var storedPasswordHash = ""
     @AppStorage("howHeardAboutUs") private var storedHowHeard = ""
+    @AppStorage("appearanceMode") private var appearanceMode = "system"
 
     @State private var step = 0
     @State private var nameInput = ""
@@ -33,7 +34,7 @@ struct OnboardingView: View {
             Color(.systemBackground).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                if step > 0 && step <= 5 {
+                if step > 0 && step <= 6 {
                     progressHeader
                 }
 
@@ -43,8 +44,9 @@ struct OnboardingView: View {
                     if step == 2 { emailStep.transition(forStep: step) }
                     if step == 3 { passwordStep.transition(forStep: step) }
                     if step == 4 { howHeardStep.transition(forStep: step) }
-                    if step == 5 { transcriptStep.transition(forStep: step) }
-                    if step == 6 { doneStep.transition(forStep: step) }
+                    if step == 5 { appearanceStep.transition(forStep: step) }
+                    if step == 6 { transcriptStep.transition(forStep: step) }
+                    if step == 7 { doneStep.transition(forStep: step) }
                 }
                 .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
             }
@@ -59,7 +61,7 @@ struct OnboardingView: View {
     private var progressHeader: some View {
         VStack(spacing: 10) {
             HStack(spacing: 5) {
-                ForEach(1...5, id: \.self) { i in
+                ForEach(1...6, id: \.self) { i in
                     Capsule()
                         .fill(i <= step ? Color.vtBurgundy : Color(.tertiarySystemFill))
                         .frame(height: 4)
@@ -68,7 +70,7 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 28)
 
-            Text("Step \(step) of 5")
+            Text("Step \(step) of 6")
                 .font(.caption2.bold()).foregroundStyle(.tertiary)
         }
         .padding(.top, 60)
@@ -131,36 +133,40 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step 2: Email
+    // MARK: - Step 2: Email (PID-only input)
 
     private var emailStep: some View {
         let pid = emailInput.lowercased().trimmingCharacters(in: .whitespaces)
-            .components(separatedBy: "@").first ?? ""
-        let valid = isValidEmail
+        let valid = isValidPID
 
         return stepShell(icon: "envelope.fill", iconColor: .blue,
                   title: "Your VT email",
-                  subtitle: "Enter your Virginia Tech email address ending in @vt.edu.",
+                  subtitle: "Enter your Virginia Tech PID — we'll add @vt.edu for you.",
                   canProceed: valid,
                   onContinue: {
-                      let lower = emailInput.lowercased().trimmingCharacters(in: .whitespaces)
-                      guard lower.hasSuffix("@vt.edu") && lower.count > 7 else {
-                          emailError = "Please enter a valid @vt.edu email."; return
+                      let p = emailInput.lowercased().trimmingCharacters(in: .whitespaces)
+                      guard !p.isEmpty && p.count >= 2 && !p.contains("@") else {
+                          emailError = "Please enter a valid VT PID."; return
                       }
-                      storedEmail = lower
-                      storedPID = lower.components(separatedBy: "@").first ?? ""
+                      storedEmail = "\(p)@vt.edu"
+                      storedPID = p
                       advance()
                   }) {
             VStack(alignment: .leading, spacing: 10) {
-                TextField("pid@vt.edu", text: $emailInput)
-                    .font(.title3)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .padding(.horizontal, 20).padding(.vertical, 16)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
-                    .onChange(of: emailInput) { _, _ in emailError = "" }
+                HStack(alignment: .center, spacing: 0) {
+                    TextField("yourpid", text: $emailInput)
+                        .font(.title3)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding(.leading, 24).padding(.vertical, 16)
+                        .onChange(of: emailInput) { _, _ in emailError = "" }
+                    Text("@vt.edu")
+                        .font(.title3).foregroundStyle(.secondary)
+                        .padding(.trailing, 24)
+                }
+                .background(Color(.secondarySystemBackground))
+                .clipShape(Capsule())
 
                 if !emailError.isEmpty {
                     Text(emailError).font(.caption).foregroundStyle(.red).padding(.leading, 12)
@@ -168,7 +174,7 @@ struct OnboardingView: View {
                 if valid && !pid.isEmpty {
                     HStack(spacing: 6) {
                         Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                        Text("PID: \(pid)").font(.caption.bold()).foregroundStyle(.secondary)
+                        Text("\(pid)@vt.edu").font(.caption.bold()).foregroundStyle(.secondary)
                     }
                     .padding(.leading, 12)
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -178,16 +184,15 @@ struct OnboardingView: View {
         }
     }
 
-    private var isValidEmail: Bool {
-        let lower = emailInput.lowercased().trimmingCharacters(in: .whitespaces)
-        let pid = lower.components(separatedBy: "@").first ?? ""
-        return lower.hasSuffix("@vt.edu") && !pid.isEmpty && pid.count >= 2
+    private var isValidPID: Bool {
+        let pid = emailInput.lowercased().trimmingCharacters(in: .whitespaces)
+        return !pid.isEmpty && pid.count >= 2 && !pid.contains("@") && !pid.contains(" ")
     }
 
     // MARK: - Step 3: Password
 
     private var passwordStep: some View {
-        let canProceed = passwordInput.count >= 6 && !confirmInput.isEmpty
+        let canProceed = passwordInput.count >= 6 && confirmInput == passwordInput
         return stepShell(icon: "lock.fill", iconColor: .orange,
                   title: "Secure your account",
                   subtitle: "Create a password to protect your data. Stored securely on your device.",
@@ -219,14 +224,6 @@ struct OnboardingView: View {
                 if !passwordError.isEmpty {
                     Text(passwordError).font(.caption).foregroundStyle(.red).padding(.leading, 12)
                 }
-
-                Button("Skip — set this up later") {
-                    storedPasswordHash = ""
-                    advance()
-                }
-                .font(.footnote).foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 4)
             }
         }
     }
@@ -276,7 +273,57 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step 5: Transcript
+    // MARK: - Step 5: Appearance
+
+    private let appearanceOptions: [(icon: String, label: String, tag: String)] = [
+        ("circle.lefthalf.filled", "Use system setting", "system"),
+        ("sun.max.fill",           "Light",              "light"),
+        ("moon.fill",              "Dark",               "dark"),
+    ]
+
+    private var appearanceStep: some View {
+        stepShell(
+            icon: "paintbrush.fill", iconColor: .purple,
+            title: "Pick your look",
+            subtitle: "Choose how Hokie Advisor appears. \"System\" matches your device setting and can always be changed later in Profile.",
+            canProceed: true,
+            onContinue: { advance() }
+        ) {
+            VStack(spacing: 8) {
+                ForEach(appearanceOptions, id: \.tag) { opt in
+                    Button {
+                        withAnimation(.spring(response: 0.2, dampingFraction: 0.7)) {
+                            appearanceMode = opt.tag
+                        }
+                    } label: {
+                        HStack(spacing: 14) {
+                            let selected = appearanceMode == opt.tag
+                            Image(systemName: opt.icon)
+                                .font(.body.bold())
+                                .foregroundStyle(selected ? .white : Color.vtBurgundy)
+                                .frame(width: 38, height: 38)
+                                .background(selected ? Color.vtBurgundy : Color.vtBurgundy.opacity(0.1))
+                                .clipShape(Circle())
+                            Text(opt.label).font(.subheadline.bold()).foregroundStyle(.primary)
+                            Spacer()
+                            if selected {
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.vtBurgundy)
+                            }
+                        }
+                        .padding(16)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(appearanceMode == opt.tag ? Color.vtBurgundy : Color.clear, lineWidth: 2)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Step 6: Transcript
 
     private var transcriptStep: some View {
         VStack(spacing: 0) {
@@ -328,31 +375,41 @@ struct OnboardingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: - Step 6: Done
+    // MARK: - Step 7: Done
 
     private var doneStep: some View {
-        VStack(spacing: 0) {
+        let hasTranscript = appState.hasTranscript
+        let first = storedName.components(separatedBy: " ").first ?? storedName
+
+        return VStack(spacing: 0) {
             Spacer()
             VStack(spacing: 28) {
                 ZStack {
-                    Circle().fill(Color.vtBurgundy).frame(width: 120, height: 120)
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 52, weight: .bold)).foregroundStyle(.white)
+                    Circle()
+                        .fill(hasTranscript ? Color.vtBurgundy : Color.orange.opacity(0.15))
+                        .frame(width: 120, height: 120)
+                    Image(systemName: hasTranscript ? "checkmark" : "doc.text.fill")
+                        .font(.system(size: hasTranscript ? 52 : 44, weight: .bold))
+                        .foregroundStyle(hasTranscript ? .white : Color.orange)
                 }
 
                 VStack(spacing: 10) {
-                    Text("You're all set!")
+                    Text(hasTranscript ? "You're all set!" : "Almost there!")
                         .font(.system(size: 38, weight: .bold, design: .rounded))
-                    let first = storedName.components(separatedBy: " ").first ?? storedName
-                    Text("Welcome to Hokie Advisor\(first.isEmpty ? "!" : ", \(first)!")")
+                    Text(hasTranscript
+                         ? "Welcome to Hokie Advisor\(first.isEmpty ? "!" : ", \(first)!")"
+                         : "Import your transcript to unlock your degree audit, personalized course plan, and the full Hokie Advisor experience.")
                         .font(.title3).foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.center).lineSpacing(4)
                 }
 
                 VStack(spacing: 10) {
-                    if appState.hasTranscript {
+                    if hasTranscript {
                         completionPill("checkmark.circle.fill", color: .green,
                                        text: "\(appState.transcriptCourses.count) courses · \(Int(appState.totalCredits)) credits")
+                    } else {
+                        completionPill("arrow.up.doc.fill", color: .orange,
+                                       text: "Add your transcript in the Profile tab")
                     }
                     completionPill("brain.head.profile", color: .blue, text: "AI Advisor ready to help")
                     completionPill("wand.and.stars", color: .vtBurgundy, text: "Generate your first course plan")

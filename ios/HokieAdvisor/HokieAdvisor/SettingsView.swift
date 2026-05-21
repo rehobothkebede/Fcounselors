@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @AppStorage("studentName") private var studentName = ""
-    @AppStorage("graduationYear") private var graduationYear = "2027"
+    @AppStorage("graduationYear") private var graduationYear = ""
     @AppStorage("appearanceMode") private var appearanceMode = "system"
     @AppStorage("vtEmail") private var vtEmail = ""
     @AppStorage("vtPID") private var vtPID = ""
@@ -138,7 +138,7 @@ struct SettingsView: View {
     private var appearanceSection: some View {
         row(icon: "moon.stars.fill", iconColor: .purple, label: "Theme") {
             Picker("", selection: $appearanceMode) {
-                Text("Auto").tag("system")
+                Text("System").tag("system")
                 Text("Light").tag("light")
                 Text("Dark").tag("dark")
             }
@@ -151,7 +151,7 @@ struct SettingsView: View {
 
     private var academicSection: some View {
         row(icon: "calendar", iconColor: .blue, label: "Grad Year") {
-            TextField("e.g. 2027", text: $graduationYear)
+            TextField("From transcript", text: $graduationYear)
                 .font(.subheadline).foregroundStyle(.secondary)
                 .multilineTextAlignment(.trailing)
                 .keyboardType(.numberPad)

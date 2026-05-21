@@ -33,12 +33,12 @@ struct ContentView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.bottom, 90)
 
             FloatingTabBar(selectedTab: $selectedTab)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 24)
         }
-        .ignoresSafeArea(.keyboard)
     }
 }
 
@@ -133,7 +133,7 @@ struct PlanView: View {
                     emptyState.padding(.horizontal, 20)
                 }
 
-                Spacer(minLength: 110)
+                Spacer(minLength: 20)
             }
         }
         .scrollIndicators(.hidden)
@@ -526,14 +526,42 @@ struct MarkdownBody: View {
     var baseColor: Color = .primary
 
     private enum Block {
-        case heading(Int, String), bullet(String), numbered(Int, String), paragraph(String)
+        case heading(Int, String)
+        case bullet(String)
+        case numbered(Int, String)
+        case paragraph(String)
+        case code(language: String, content: String)
     }
 
     private var blocks: [Block] {
         var result: [Block] = []
         var pending = ""
+        var inCode = false
+        var codeLang = ""
+        var codeLines: [String] = []
+
         for line in text.components(separatedBy: "\n") {
             let t = line.trimmingCharacters(in: .whitespaces)
+
+            if inCode {
+                if t.hasPrefix("```") {
+                    let content = codeLines.joined(separator: "\n")
+                        .trimmingCharacters(in: .newlines)
+                    result.append(.code(language: codeLang, content: content))
+                    inCode = false; codeLang = ""; codeLines = []
+                } else {
+                    codeLines.append(line)
+                }
+                continue
+            }
+
+            if t.hasPrefix("```") {
+                if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
+                codeLang = String(t.dropFirst(3)).trimmingCharacters(in: .whitespaces)
+                inCode = true; codeLines = []
+                continue
+            }
+
             if t.isEmpty {
                 if !pending.isEmpty { result.append(.paragraph(pending)); pending = "" }
             } else if t.hasPrefix("### ") {
@@ -586,6 +614,9 @@ struct MarkdownBody: View {
                 case .paragraph(let content):
                     Text(content.markdown).font(baseFont).foregroundStyle(baseColor)
                         .fixedSize(horizontal: false, vertical: true)
+                case .code(let lang, let content):
+                    CodeBlockView(language: lang, code: content)
+                        .padding(.vertical, 2)
                 }
             }
         }

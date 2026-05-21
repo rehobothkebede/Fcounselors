@@ -54,6 +54,13 @@ The `Assets.xcassets` was cleared out (old generated AppIcon.appiconset/AccentCo
 | HANDOFF.md | Added mobile chat UI task to next steps; updated current state |
 | Cleanup | Removed `appicon/` folder and all Python icon-processing scripts |
 
+### Session 3
+| Change | Detail |
+|---|---|
+| `vt_minors_scraper.py` | New scraper at `backend/scraper/vt_minors_scraper.py` — scrapes all 158 VT undergraduate minors from `catalog.vt.edu/undergraduate/minors/` |
+| `vt_minors.jsonl` | Output at `backend/data/vt_minors.jsonl` — 158 lines, one JSON object per minor (name, code, url, description, courses[], total_credits, requirements). JSONL format chosen for fine-tuning / RAG ingestion |
+| Codex plugin | OpenAI Codex CLI plugin installed in Claude Code (`openai/codex-plugin-cc`). Node.js installed via Homebrew. Logged in with OpenAI account. Commands available: `/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:status`, `/codex:result`, `/codex:cancel` |
+
 ---
 
 ## Next Steps
@@ -100,5 +107,5 @@ Always compile in Xcode to see actual diagnostics.
 ## /compact
 
 ```
-/compact Project: Hokie Advisor — SwiftUI iOS academic advising app for Virginia Tech (formerly Fcounselors). Repo: /Users/rehobothkebede/GitHub/Fcounselors. Xcode 16 project at ios/HokieAdvisor/HokieAdvisor.xcodeproj. Session 1: renamed project, added 6-step onboarding (OnboardingView.swift), login screen (LoginView.swift), fixed dark mode (preferredColorScheme at App level), removed major field from Chat/Settings. Session 2: replaced all icon scripts/PNGs with Hoki.icon (Xcode 16 Icon Composer package at ios/HokieAdvisor/HokieAdvisor/Hoki.icon — DO NOT DELETE). App icon working. Assets.xcassets cleared out. Next: mobile-optimized chat UI with Markdown/LaTeX/code rendering, DARS degree audit, fix hardcoded CS 26 badge. VT Burgundy: #861F41. Bundle ID: com.hokieadvisor.HokieAdvisor. AppStorage keys: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, appearanceMode, transcriptData, graduationYear.
+/compact Project: Hokie Advisor — SwiftUI iOS academic advising app for Virginia Tech (formerly Fcounselors). Repo: /Users/rehobothkebede/GitHub/Fcounselors. Xcode 16 project at ios/HokieAdvisor/HokieAdvisor.xcodeproj. Session 1: renamed project, added 6-step onboarding (OnboardingView.swift), login screen (LoginView.swift), fixed dark mode (preferredColorScheme at App level), removed major field from Chat/Settings. Session 2: replaced all icon scripts/PNGs with Hoki.icon (Xcode 16 Icon Composer package at ios/HokieAdvisor/HokieAdvisor/Hoki.icon — DO NOT DELETE). App icon working. Assets.xcassets cleared out. Session 3: built vt_minors_scraper.py — scrapes all 158 VT undergrad minors into backend/data/vt_minors.jsonl (JSONL, fine-tuning ready). Installed OpenAI Codex plugin in Claude Code (Node.js via Homebrew, npm install -g @openai/codex, logged in) — /codex:review and /codex:rescue available. Next: mobile-optimized chat UI with Markdown/LaTeX/code rendering, DARS degree audit, fix hardcoded CS 26 badge. VT Burgundy: #861F41. Bundle ID: com.hokieadvisor.HokieAdvisor. AppStorage keys: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, appearanceMode, transcriptData, graduationYear.
 ```

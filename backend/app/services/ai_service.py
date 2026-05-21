@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 import logging
 from openai import OpenAI, APIError, RateLimitError, APITimeoutError
@@ -10,35 +11,190 @@ logger = logging.getLogger(__name__)
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-_BASE_SYSTEM_PROMPT = """You are Fcounselors — an AI academic advisor for Virginia Tech Computer Science students (B.S. CS, 2025-2026 catalog, 123 total credits). You operate in two modes depending on what the student needs:
+# ---------------------------------------------------------------------------
+# Load CS degree requirements once at startup so every chat has full context
+# ---------------------------------------------------------------------------
 
-**TUTOR MODE** — When a student is confused about course material, a concept, or a topic:
-- Break down concepts clearly using examples and analogies tailored to CS students
-- Ask Socratic follow-up questions to check understanding
-- Reference specific VT CS course numbers when relevant (e.g. "this is covered in CS 3114 Data Structures & Algorithms")
-- Never just give the answer to homework — guide them to it
+def _load_cs_requirements_context() -> str:
+    """Parse computer_science.json and produce a compact, advisor-ready summary."""
+    data_path = os.path.join(os.path.dirname(__file__), "../../data/catalog/computer_science.json")
+    try:
+        with open(data_path) as f:
+            data = json.load(f)
+    except Exception as e:
+        logger.warning("Could not load CS requirements JSON: %s", e)
+        return ""
 
-**ADVISOR MODE** — When a student needs help planning their degree or next semester:
-- Check prerequisites before recommending any course — many CS core courses require a grade of C or better to proceed
-- Balance credit load (12–18 cr/semester; the standard CS plan averages 15-16 cr/semester)
-- Prioritize required CS core courses the student hasn't completed, following the 4-year sequence
-- Know the CS elective requirements: natural science (8 cr), advanced natural science (4 cr), communications, professional writing, statistics, CS theory, CS technical, and General Education Pathways
-- Flag scheduling risks and prerequisite gaps explicitly
-- Mention career relevance (SWE internships, research opportunities, grad school)
+    lines = [
+        f"CS B.S. DEGREE REQUIREMENTS ({data.get('catalog_year','2025-2026')}, "
+        f"{data.get('total_credits',123)} total credits required):",
+        "",
+        "COURSES REQUIRING C OR BETTER (C- does NOT count at VT — must earn plain C or above):",
+    ]
 
-**General rules:**
-- You serve VT Computer Science students pursuing a B.S. in CS; total degree: 123 credits
-- The CS core sequence: CS 1114 → CS 2114 → CS 2505 + CS 2506 → CS 3114 → CS 3214 + CS 3304 → CS 4094 (capstone)
-- Courses requiring C or better: CS 1114, CS 2114, CS 2104, CS 2505, CS 2506, CS 3114
-- Common substitutions: ECE 2514 for CS 1114, ECE 3514 for CS 2114, ECE 2564 for CS 2505, CS 2064 for CS 1114
-- Never fabricate prerequisites or course requirements — if unsure, say so
-- Be concise: use bullet points and short paragraphs"""
+    grade_req_codes: set[str] = set()
+    all_courses: list[dict] = []
+
+    for yr in data.get("four_year_plan", []):
+        for sem in ("fall", "spring"):
+            for c in yr.get(sem, {}).get("courses", []):
+                if c.get("code") == "ELEC":
+                    continue
+                all_courses.append({**c, "year": yr.get("year"), "sem": sem})
+                if c.get("grade_required"):
+                    grade_req_codes.add(c["code"])
+                    prereqs = ", ".join(c.get("prerequisites", [])) or "none"
+                    lines.append(
+                        f"  • {c['code']} ({c.get('name','')}) — "
+                        f"requires {c['grade_required']}+  |  prereqs: {prereqs}"
+                    )
+
+    lines += [
+        "",
+        "COURSES WITH NO GRADE CUTOFF IN CS CURRICULUM (a D is passing for degree purposes):",
+        "  MATH 2114, MATH 1225, MATH 1226, MATH 2204, MATH 2534, MATH 3134,",
+        "  ENGL 1105, ENGL 1106, ENGE 1215, ENGE 1216, ENGE 3900,",
+        "  CS 3304, CS 3214, CS 3604, CS 4094, CS 4944, CS 1944, and all electives.",
+        "",
+        "FULL REQUIRED SEQUENCE WITH PREREQUISITES:",
+    ]
+
+    seen: set[str] = set()
+    for c in all_courses:
+        if c["code"] in seen:
+            continue
+        seen.add(c["code"])
+        prereqs = ", ".join(c.get("prerequisites", [])) or "none"
+        grade_note = f"  ← MUST earn {c['grade_required']}+" if c.get("grade_required") else ""
+        lines.append(
+            f"  Yr{c['year']} {c['sem'].capitalize()[:2]}: {c['code']} "
+            f"({c.get('name','')}, {c.get('credits','?')} cr)  prereqs: {prereqs}{grade_note}"
+        )
+
+    lines += ["", f"Notes: {data.get('notes','')}"]
+    return "\n".join(lines)
 
 
-def _build_system_prompt(course_context: str = "") -> str:
+_CS_REQUIREMENTS_CONTEXT = _load_cs_requirements_context()
+
+# Grade codes that require C or better in the CS curriculum (derived from JSON above)
+_GRADE_REQUIRED_CODES = {"CS 1114", "CS 2114", "CS 2104", "CS 2505", "CS 2506", "CS 3114"}
+
+_BASE_SYSTEM_PROMPT = f"""You are Hokie Advisor — a personalized AI academic advisor for Virginia Tech \
+Computer Science students (B.S. CS, 2025-2026 catalog, 123 total credits).
+
+══════════════════════════════════════════
+PRIME DIRECTIVE — YOU ARE THE ADVISOR
+══════════════════════════════════════════
+You have the student's complete transcript with real grades AND the full CS degree requirements \
+below. NEVER say "check your transcript," "verify on Hokie SPA," "consult your advisor," or \
+"you should look that up." YOU look it up and tell them definitively. If they ask "am I fine?" \
+answer YES or NO first, then explain why using their actual grades.
+
+GRADE RULING RULES (apply automatically when you have the transcript):
+• "C or better" at VT means a plain C (2.0 GPA points) or higher. C- (1.7) does NOT count.
+• Core course requires C or better AND student earned C, B, or A (any +/−) → FINE, say so.
+• Core course requires C or better AND student earned C-, D, F, or W → MUST RETAKE before \
+  progressing; say this directly.
+• Course with NO grade cutoff → any passing grade (D or above) satisfies the degree requirement. \
+  Do not imply they need to retake it unless GPA, a downstream prerequisite, or grad school \
+  makes it relevant — and name that reason explicitly.
+• Always state the ruling first ("Yes, you're fine" / "No, you need to retake this"), then explain.
+
+══════════════════════════════════════════
+OPERATING MODES
+══════════════════════════════════════════
+
+TUTOR MODE — when a student asks about course material, concepts, or debugging:
+• Break down concepts with examples and analogies tailored to CS students
+• Ask Socratic follow-up questions to check understanding
+• Reference specific VT course numbers when relevant
+• Guide toward the answer; never just hand over homework solutions
+
+ADVISOR MODE — when a student asks about their degree plan, scheduling, or grades:
+• Cross-reference their transcript (provided below each session) with the requirements
+• State exactly which required courses they have left, which they have satisfied, and why
+• Check prerequisites before recommending any course
+• Balance credit load (12–18 cr/semester; CS plan averages 15–16 cr)
+• Flag prerequisite gaps and risky grade situations explicitly by course code
+• Mention career relevance (SWE internships, research, grad school) when helpful
+
+COMMON SUBSTITUTIONS: ECE 2514 → CS 1114 | ECE 3514 → CS 2114 | ECE 2564 → CS 2505 | \
+CS 2064 → CS 1114
+
+Never fabricate requirements. Be concise — use bullet points and short paragraphs.
+
+══════════════════════════════════════════
+CS DEGREE REQUIREMENTS (always in context)
+══════════════════════════════════════════
+{_CS_REQUIREMENTS_CONTEXT}"""
+
+
+def _build_student_context(transcript: list[dict], in_progress_courses: list[str]) -> str:
+    """Build a personalized, advisor-readable context block from the student's transcript."""
+    if not transcript and not in_progress_courses:
+        return ""
+
+    lines = [
+        "══════════════════════════════════════════",
+        "THIS STUDENT'S TRANSCRIPT (use this — do not ask them to check it)",
+        "══════════════════════════════════════════",
+    ]
+
+    completed_cs_core: list[str] = []
+    remaining_cs_core = list(_GRADE_REQUIRED_CODES)
+
+    for entry in transcript:
+        code  = entry.get("code", "")
+        name  = entry.get("name", "") or ""
+        grade = entry.get("grade") or "N/A"
+        sem   = entry.get("semester") or ""
+        sem_str = f" [{sem}]" if sem else ""
+
+        if code in _GRADE_REQUIRED_CODES:
+            # VT "C or better" = 2.0 GPA points minimum; C- (1.7) does NOT satisfy it
+            grade_status = ""
+            if grade in ("A+", "A", "A-", "B+", "B", "B-", "C+", "C"):
+                grade_status = " ✓ satisfies C-or-better requirement"
+                if code in remaining_cs_core:
+                    remaining_cs_core.remove(code)
+                    completed_cs_core.append(f"{code}({grade})")
+            elif grade in ("C-", "D+", "D", "D-", "F", "W", "WF"):
+                grade_status = " ✗ MUST RETAKE — C- and below do not satisfy VT's C-or-better rule"
+        else:
+            grade_status = " (no grade cutoff for this course in the CS curriculum)"
+
+        lines.append(f"  {code} — {name}: Grade {grade}{sem_str}{grade_status}")
+
+    if in_progress_courses:
+        lines.append("")
+        lines.append("CURRENTLY ENROLLED:")
+        for c in in_progress_courses:
+            lines.append(f"  {c}")
+
+    lines.append("")
+    if completed_cs_core:
+        lines.append(f"CS CORE COMPLETED: {', '.join(completed_cs_core)}")
+    if remaining_cs_core:
+        lines.append(f"CS CORE STILL NEEDED: {', '.join(remaining_cs_core)}")
+
+    total_credits = sum(
+        (entry.get("credits") or 0) for entry in transcript
+        if entry.get("grade") not in ("W", "WF", "F", None)
+    )
+    lines.append(f"CREDITS COMPLETED (approx): {total_credits:.0f} / 123")
+    lines.append("══════════════════════════════════════════")
+
+    return "\n".join(lines)
+
+
+def _build_system_prompt(course_context: str = "", student_context: str = "") -> str:
+    parts = [_BASE_SYSTEM_PROMPT]
+    if student_context:
+        parts.append(student_context)
     if course_context:
-        return _BASE_SYSTEM_PROMPT + f"\n\n**Available course data for this student's department:**\n{course_context}"
-    return _BASE_SYSTEM_PROMPT
+        parts.append(f"\nDEPARTMENT COURSE CATALOG FOR THIS MAJOR:\n{course_context}")
+    return "\n\n".join(parts)
 
 
 def _call_with_retry(fn, retries: int = 3, backoff: float = 1.5):
@@ -63,13 +219,40 @@ def _call_with_retry(fn, retries: int = 3, backoff: float = 1.5):
     raise RuntimeError(f"OpenAI call failed after {retries} attempts: {last_error}") from last_error
 
 
-def chat_with_advisor(messages: list, course_context: str = "") -> str:
-    """
-    Send a conversation to the AI counselor/advisor/tutor and return the response.
-    `messages` is a list of {"role": "user"/"assistant", "content": "..."} dicts.
-    `course_context` is an optional pre-built string of COE course data to inject.
-    """
-    system_prompt = _build_system_prompt(course_context)
+def chat_stream_with_advisor(
+    messages: list,
+    course_context: str = "",
+    transcript: list[dict] | None = None,
+    in_progress_courses: list[str] | None = None,
+):
+    """Stream a chat response token by token as SSE events."""
+    student_ctx = _build_student_context(transcript or [], in_progress_courses or [])
+    system_prompt = _build_system_prompt(course_context, student_ctx)
+    full_messages = [{"role": "system", "content": system_prompt}] + messages
+
+    stream = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=full_messages,
+        temperature=0.7,
+        max_completion_tokens=1500,
+        stream=True,
+    )
+    for chunk in stream:
+        delta = chunk.choices[0].delta
+        if delta.content:
+            yield f"data: {json.dumps(delta.content)}\n\n"
+    yield "data: [DONE]\n\n"
+
+
+def chat_with_advisor(
+    messages: list,
+    course_context: str = "",
+    transcript: list[dict] | None = None,
+    in_progress_courses: list[str] | None = None,
+) -> str:
+    """Send a conversation to the AI advisor and return the full response."""
+    student_ctx = _build_student_context(transcript or [], in_progress_courses or [])
+    system_prompt = _build_system_prompt(course_context, student_ctx)
     full_messages = [{"role": "system", "content": system_prompt}] + messages
 
     def _call():
@@ -77,7 +260,7 @@ def chat_with_advisor(messages: list, course_context: str = "") -> str:
             model=OPENAI_MODEL,
             messages=full_messages,
             temperature=0.7,
-            max_completion_tokens=1024,
+            max_completion_tokens=1500,
         )
         return response.choices[0].message.content
 

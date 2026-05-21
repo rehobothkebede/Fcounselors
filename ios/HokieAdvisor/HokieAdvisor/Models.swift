@@ -26,19 +26,36 @@ struct RecommendedCourse: Decodable, Identifiable {
 
 struct ChatMessage: Identifiable {
     let id: UUID
-    let role: String   // "user" or "assistant"
-    let content: String
+    let role: String
+    var content: String
+    var isStreaming: Bool
 
-    init(id: UUID = UUID(), role: String, content: String) {
+    init(id: UUID = UUID(), role: String, content: String, isStreaming: Bool = false) {
         self.id = id
         self.role = role
         self.content = content
+        self.isStreaming = isStreaming
     }
+}
+
+struct TranscriptEntry: Encodable {
+    let code: String
+    let name: String
+    let grade: String?
+    let semester: String?
+    let credits: Double?
 }
 
 struct ChatRequest: Encodable {
     let messages: [ChatPayload]
     let major: String
+    let transcript: [TranscriptEntry]
+    let inProgressCourses: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case messages, major, transcript
+        case inProgressCourses = "in_progress_courses"
+    }
 }
 
 struct ChatPayload: Encodable {
