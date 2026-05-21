@@ -23,6 +23,7 @@ from typing import Optional
 from app.config import (
     CATALOG_DIR,
     COURSES_DIR,
+    DATA_DIR,
     VT_FULL_CATALOG_PATH,
     VT_PROGRAMS_PATH,
     VT_SUBJECTS_PATH,
@@ -50,6 +51,55 @@ def get_catalog_meta() -> Optional[dict]:
     """Return the meta block from the full catalog, or None."""
     cat = _load_full_catalog()
     return cat.get("meta") if cat else None
+
+
+@lru_cache(maxsize=1)
+def _load_legacy_catalogs() -> list[dict]:
+    """Load legacy data/vt_catalog_*.json caches, newest filename first."""
+    catalogs: list[dict] = []
+    try:
+        filenames = sorted(
+            (
+                f for f in os.listdir(DATA_DIR)
+                if f.startswith("vt_catalog_") and f.endswith(".json")
+            ),
+            reverse=True,
+        )
+    except OSError as exc:
+        logger.warning("Failed to list data directory %s: %s", DATA_DIR, exc)
+        return catalogs
+
+    for fname in filenames:
+        path = os.path.join(DATA_DIR, fname)
+        try:
+            with open(path) as f:
+                catalogs.append(json.load(f))
+        except Exception as exc:
+            logger.warning("Failed to read legacy catalog %s: %s", path, exc)
+    return catalogs
+
+
+def _load_legacy_subject_courses(subject: str) -> Optional[list]:
+    """Return subject courses from legacy vt_catalog_TERM.json files."""
+    code = subject.upper()
+    for catalog in _load_legacy_catalogs():
+        subject_data = catalog.get(code)
+        if isinstance(subject_data, dict) and isinstance(subject_data.get("courses"), list):
+            return subject_data["courses"]
+    return None
+
+
+def _dedupe_courses(courses: list[dict]) -> list[dict]:
+    """Return one course record per course code, preserving first-seen order."""
+    seen: set[str] = set()
+    unique: list[dict] = []
+    for course in courses:
+        code = course.get("code")
+        if not code or code in seen:
+            continue
+        seen.add(code)
+        unique.append(course)
+    return unique
 
 
 # ── Subject helpers ───────────────────────────────────────────────────────────
@@ -96,6 +146,10 @@ def load_courses(subject: str) -> Optional[list]:
         if courses is not None:
             return courses
 
+    legacy_courses = _load_legacy_subject_courses(code)
+    if legacy_courses is not None:
+        return legacy_courses
+
     # Per-subject file (backward compat)
     path = os.path.join(COURSES_DIR, f"{code}.json")
     if os.path.exists(path):
@@ -116,7 +170,12 @@ def load_unique_courses(subject: str) -> Optional[list]:
     code = subject.upper()
     cat = _load_full_catalog()
     if cat:
-        return cat.get("unique_courses", {}).get(code)
+        courses = cat.get("unique_courses", {}).get(code)
+        if courses is not None:
+            return courses
+    legacy_courses = _load_legacy_subject_courses(code)
+    if legacy_courses is not None:
+        return _dedupe_courses(legacy_courses)
     return None
 
 
@@ -126,15 +185,29 @@ def search_courses_by_keyword(keyword: str) -> list[dict]:
     Returns list of course dicts with an added 'subject' field.
     """
     cat = _load_full_catalog()
-    if not cat:
-        return []
 
     kw = keyword.lower()
     results: list[dict] = []
-    for subject, courses in cat.get("unique_courses", {}).items():
-        for c in courses:
-            if kw in c.get("name", "").lower() or kw in c.get("description", "").lower():
-                results.append({**c, "subject": subject})
+    if cat:
+        for subject, courses in cat.get("unique_courses", {}).items():
+            for c in courses:
+                if kw in c.get("name", "").lower() or kw in c.get("description", "").lower():
+                    results.append({**c, "subject": subject})
+    if results:
+        return results
+
+    for catalog in _load_legacy_catalogs():
+        for subject, subject_data in catalog.items():
+            if subject == "meta" or not isinstance(subject_data, dict):
+                continue
+            courses = subject_data.get("courses", [])
+            if not isinstance(courses, list):
+                continue
+            for c in _dedupe_courses(courses):
+                if kw in c.get("name", "").lower() or kw in c.get("description", "").lower():
+                    results.append({**c, "subject": subject})
+        if results:
+            break
     return results
 
 
