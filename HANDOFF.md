@@ -6,7 +6,7 @@
 
 ## Current State
 
-App builds and runs. Icon is working. Repo has uncommitted changes (see below). 3 commits ahead of `origin/main` (not pushed).
+App builds and runs. Icon is working. Repo has uncommitted changes (not pushed).
 
 ```
 37b618e  fix app icon crops — remove dark header border, clean panel edges
@@ -24,17 +24,18 @@ The app icon is an **Xcode 16 Icon Composer** package named `Hoki.icon`, located
 ios/HokieAdvisor/HokieAdvisor/Hoki.icon/
   icon.json
   Assets/
-    ChatGPT Image May 18, 2026 at 06_11_07 PM (2).png   ← dark variant
-    ChatGPT Image May 18, 2026 at 06_50_02 PM 2.png     ← light variant
+    AppIcon-Light.png   ← light variant (opacity → 0 in dark mode)
+    AppIcon-Dark.png    ← dark variant  (fill removed in dark mode, opacity 1 always)
 ```
 
-Xcode 16's `PBXFileSystemSynchronizedRootGroup` picks this up automatically from the source folder. **Do not move, rename, or delete `Hoki.icon`.**
+`icon.json` `image-name` and `name` fields reference `AppIcon-Light` / `AppIcon-Dark` exactly.
+Xcode 16's `PBXFileSystemSynchronizedRootGroup` picks this up automatically. **Do not move, rename, or delete `Hoki.icon`.**
 
-The `Assets.xcassets` was cleared out (old generated AppIcon.appiconset/AccentColor.colorset removed). If Xcode complains about a missing accent color or asset catalog on the next build, recreate a minimal `Assets.xcassets/Contents.json` with `{"info":{"author":"xcode","version":1}}` — no icon set needed there.
+The `Assets.xcassets` was cleared out (old AppIcon.appiconset/AccentColor.colorset removed). If Xcode complains, recreate a minimal `Assets.xcassets/Contents.json` with `{"info":{"author":"xcode","version":1}}`.
 
 ---
 
-## What Changed Across Both Sessions
+## What Changed Across All Sessions
 
 ### Session 1
 | Change | Detail |
@@ -51,30 +52,53 @@ The `Assets.xcassets` was cleared out (old generated AppIcon.appiconset/AccentCo
 | Change | Detail |
 |---|---|
 | App icon | Replaced all previous icon scripts/PNGs with `Hoki.icon` (Icon Composer package) |
-| HANDOFF.md | Added mobile chat UI task to next steps; updated current state |
 | Cleanup | Removed `appicon/` folder and all Python icon-processing scripts |
 
 ### Session 3
 | Change | Detail |
 |---|---|
-| `vt_minors_scraper.py` | New scraper at `backend/scraper/vt_minors_scraper.py` — scrapes all 158 VT undergraduate minors from `catalog.vt.edu/undergraduate/minors/` |
-| `vt_minors.jsonl` | Output at `backend/data/vt_minors.jsonl` — 158 lines, one JSON object per minor (name, code, url, description, courses[], total_credits, requirements). JSONL format chosen for fine-tuning / RAG ingestion |
-| Codex plugin | OpenAI Codex CLI plugin installed in Claude Code (`openai/codex-plugin-cc`). Node.js installed via Homebrew. Logged in with OpenAI account. Commands available: `/codex:review`, `/codex:adversarial-review`, `/codex:rescue`, `/codex:status`, `/codex:result`, `/codex:cancel` |
+| `vt_minors_scraper.py` | New scraper at `backend/scraper/vt_minors_scraper.py` — scrapes all 158 VT undergraduate minors |
+| `vt_minors.jsonl` | Output at `backend/data/vt_minors.jsonl` — 158 lines, one JSON object per minor |
+| Codex plugin | OpenAI Codex CLI plugin installed in Claude Code |
+
+### Session 4
+| Change | Detail |
+|---|---|
+| Appearance system rewrite | `WindowAppearanceSetter` (UIViewRepresentable) sets `window.overrideUserInterfaceStyle` directly |
+| Appearance onboarding step | Step 5 "Pick your look" added — System / Light / Dark cards, live preview |
+| Email step — PID-only | User types PID, `@vt.edu` is a static suffix; full email assembled before saving |
+| Password required | No skip; Continue requires matching passwords ≥6 chars |
+| Done step — transcript nudge | "Almost there!" + import nudge if no transcript; "You're all set!" if imported |
+| Grad year auto-inferred | `TranscriptView` calculates grad year = earliest semester year + 4 after parse |
+
+### Session 5
+| Change | Detail |
+|---|---|
+| **Chat streaming (SSE)** | Backend: `POST /chat/stream` yields `data: "token"\n\n` SSE events via OpenAI `stream=True`. iOS: `APIService.streamChat()` uses `URLSession.bytes(for:)` + `AsyncThrowingStream`. `ChatViewModel` appends a live message and grows it token by token. Typing indicator shows until first token, then streaming cursor takes over. |
+| **Streaming cursor** | `StreamingCursor` — burgundy blinking `\|` bar shown below AI bubble while streaming; disappears when done. |
+| **Scroll-on-token** | `messageList` now has `onChange(of: vm.messages.last?.content)` so the view auto-scrolls on every token during streaming. |
+| **Code block rendering** | New file `CodeBlockView.swift`. `MarkdownBody` parser now detects fenced code blocks (` ``` `). Code renders in a dark terminal-style card: language dot + label, horizontal scroll, Copy button, `SyntaxHighlighter` colors keywords/types/strings/comments/numbers in VS Code Dark+ palette. Languages: C, C++, Python, Java, Swift, JS, TS, Bash + generic fallback. |
+| **Assistant bubble width** | Removed right `Spacer(minLength: 60)` from `MessageBubble` so AI responses use the full available width — important for code blocks. |
+| **Tab bar overlap fix** | Removed `.ignoresSafeArea(.keyboard)` from `ContentView` ZStack. Added `.padding(.bottom, 90)` to content Group so the floating tab bar never covers input fields. Keyboard now properly pushes content up on all tabs. Reduced `PlanView` spacer from 110 → 20. |
+| **Icon files renamed** | `ChatGPT Image May 18…PM (2).png` → `AppIcon-Dark.png`; `ChatGPT Image May 18…PM 2.png` → `AppIcon-Light.png`. `icon.json` updated to match. |
+| **Transcript-aware chatbot** | `computer_science.json` loaded at backend startup into `_CS_REQUIREMENTS_CONTEXT` (grade cutoffs, prereqs, full 4-year sequence). `_build_student_context()` annotates each transcript course: `✓ satisfies C-or-better requirement` or `✗ MUST RETAKE`. iOS `ChatRequest` now sends `transcript[]` + `in_progress_courses[]`. `ChatViewModel` syncs from `AppState` on appear/change. |
+| **Authoritative system prompt** | Bot is explicitly instructed: never say "check yourself / Hokie SPA / your advisor." Answer YES/NO first, then explain using the student's actual grades. |
+| **VT grade rules baked in** | "C or better" at VT = plain C (2.0 GPA) minimum. C- (1.7) does **not** satisfy it. System prompt and transcript annotator both enforce this. Courses with no cutoff (MATH 2114, etc.) are listed explicitly — bot says "a D is passing here" instead of implying retake. |
 
 ---
 
 ## Next Steps
 
 ### High priority
-- [ ] **Mobile-optimized chat UI for advising/tutoring** — redesign `ChatView` for iPhone-first reading: bubble width capped so lines stay short, AI responses broken into multiple short sequential bubbles rather than one long wall of text, minimal vertical scrolling. Must render rich content inline: **Markdown** (bold, italic, lists, blockquotes), **LaTeX** (inline `$…$` and block `$$…$$` math via `LaTeXSwiftUI` or MathJax WKWebView fallback), and **code blocks** with syntax highlighting (e.g. `Splash` or `Highlightr`). Typing indicator (animated dots) while backend streams. Goal: feel closer to Photomath / Wolfram Alpha than a generic chat client.
-- [ ] **DARS degree audit system** — parse student transcript against degree requirement buckets (Pathways, major requirements, free electives). Pathways data at `backend/data/pathways.json`. Needs major requirement data structure.
+- [ ] **DARS degree audit system** — parse student transcript against degree requirement buckets (Pathways, major requirements, free electives). Pathways data at `backend/data/pathways.json`.
 - [ ] **Fix hardcoded "CS '26" badge** in `SettingsView` profile card — use `@AppStorage("graduationYear")` + `@AppStorage("major")`
 - [ ] **Xcode display name** — verify "Hokie Advisor" shows correctly in Target → General → Display Name
 
 ### Nice to have
-- [ ] Backend `/transcript/parse` endpoint — accept DARS/unofficial transcript PDF, return structured completion data
-- [ ] PlanView: pull actual major requirements from backend for structured degree-audit context
+- [ ] Backend `/transcript/parse` endpoint — accept DARS/unofficial transcript PDF, return structured data
+- [ ] LaTeX rendering in chat — inline `$…$` and block `$$…$$` math (MathJax WKWebView or LaTeXSwiftUI)
 - [ ] Face ID / Touch ID option for `appPasswordHash` in onboarding
+- [ ] PlanView: pull actual major requirements from backend for structured degree-audit context
 
 ---
 
@@ -86,9 +110,34 @@ Stack:
             @EnvironmentObject AppState, @AppStorage for persistence
   Backend:  FastAPI + OpenAI, Python, uvicorn
 
+Chat system:
+  POST /chat/stream  — SSE, token-by-token, consumed by URLSession.bytes(for:)
+  POST /chat         — legacy non-streaming fallback
+  Each request includes: messages[], major, transcript[], in_progress_courses[]
+  Backend injects: CS requirements from computer_science.json + student transcript context
+
 AppStorage keys:
   onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash,
   howHeardAboutUs, graduationYear, appearanceMode, transcriptData, transcriptImported
+
+Appearance:
+  WindowAppearanceSetter (UIViewRepresentable) in HokieAdvisorApp.swift
+  sets window.overrideUserInterfaceStyle on every render + onChange.
+  Values: "system" → .unspecified, "light" → .light, "dark" → .dark
+
+Onboarding steps (7 total):
+  0: Welcome  1: Name  2: Email (PID-only, @vt.edu suffix shown)  3: Password (required)
+  4: How Heard  5: Appearance picker  6: Transcript  7: Done
+
+VT grade rules (baked into backend system prompt):
+  "C or better" = plain C (2.0 GPA) minimum; C- (1.7) does NOT satisfy it
+  Courses with no cutoff: MATH 2114, MATH 1225/1226/2204/2534/3134, ENGL, ENGE, and all electives
+
+Backend data files:
+  backend/data/catalog/computer_science.json  ← CS 4-year plan, prereqs, grade cutoffs
+  backend/data/pathways.json                  ← Gen Ed pathways data
+  backend/data/coe/CS.json                    ← COE course catalog for CS
+  backend/data/vt_minors.jsonl                ← 158 VT minors (scraped)
 
 VT Burgundy:  Color(red: 0.525, green: 0.122, blue: 0.255)  /  #861F41
 Bundle ID:    com.hokieadvisor.HokieAdvisor
@@ -107,5 +156,21 @@ Always compile in Xcode to see actual diagnostics.
 ## /compact
 
 ```
-/compact Project: Hokie Advisor — SwiftUI iOS academic advising app for Virginia Tech (formerly Fcounselors). Repo: /Users/rehobothkebede/GitHub/Fcounselors. Xcode 16 project at ios/HokieAdvisor/HokieAdvisor.xcodeproj. Session 1: renamed project, added 6-step onboarding (OnboardingView.swift), login screen (LoginView.swift), fixed dark mode (preferredColorScheme at App level), removed major field from Chat/Settings. Session 2: replaced all icon scripts/PNGs with Hoki.icon (Xcode 16 Icon Composer package at ios/HokieAdvisor/HokieAdvisor/Hoki.icon — DO NOT DELETE). App icon working. Assets.xcassets cleared out. Session 3: built vt_minors_scraper.py — scrapes all 158 VT undergrad minors into backend/data/vt_minors.jsonl (JSONL, fine-tuning ready). Installed OpenAI Codex plugin in Claude Code (Node.js via Homebrew, npm install -g @openai/codex, logged in) — /codex:review and /codex:rescue available. Next: mobile-optimized chat UI with Markdown/LaTeX/code rendering, DARS degree audit, fix hardcoded CS 26 badge. VT Burgundy: #861F41. Bundle ID: com.hokieadvisor.HokieAdvisor. AppStorage keys: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, appearanceMode, transcriptData, graduationYear.
+/compact Project: Hokie Advisor — SwiftUI iOS academic advising app for Virginia Tech (formerly Fcounselors). Repo: /Users/rehobothkebede/GitHub/Fcounselors. Xcode 16 project at ios/HokieAdvisor/HokieAdvisor.xcodeproj.
+
+Session 1: renamed project, added 7-step onboarding (OnboardingView.swift), login screen (LoginView.swift), fixed dark mode with WindowAppearanceSetter, removed major field from Chat/Settings.
+Session 2: replaced all icon scripts/PNGs with Hoki.icon (Xcode 16 Icon Composer at ios/HokieAdvisor/HokieAdvisor/Hoki.icon — DO NOT DELETE). Assets.xcassets cleared. Icons now named AppIcon-Light.png and AppIcon-Dark.png inside Hoki.icon/Assets/.
+Session 3: vt_minors_scraper.py → backend/data/vt_minors.jsonl (158 minors). OpenAI Codex plugin installed.
+Session 4: Appearance system rewrite (WindowAppearanceSetter), PID-only email step, password required, transcript nudge on Done step, grad year auto-inferred from transcript.
+Session 5:
+- Chat streaming: POST /chat/stream SSE endpoint (OpenAI stream=True). iOS APIService.streamChat() via URLSession.bytes. ChatViewModel streams tokens into live message. Typing indicator → streaming burgundy cursor → done.
+- Code blocks: CodeBlockView.swift (new file). MarkdownBody parses fenced code blocks. Dark terminal card with language dot, Copy button, SyntaxHighlighter (VS Code Dark+ palette) for C/C++/Python/Java/Swift/JS/TS/Bash.
+- Tab bar fix: removed .ignoresSafeArea(.keyboard) from ContentView ZStack, added .padding(.bottom, 90) to content group. Keyboard now pushes input bar up properly.
+- Icon rename: ChatGPT Image filenames → AppIcon-Light.png / AppIcon-Dark.png. icon.json updated.
+- Transcript-aware chatbot: backend loads computer_science.json at startup (grade cutoffs, prereqs, 4-year sequence). Every ChatRequest now sends transcript[] + in_progress_courses[]. _build_student_context() annotates each course. Bot answers YES/NO first, never says "check yourself." VT grade rule: C- (1.7 GPA) does NOT satisfy "C or better" — plain C (2.0) is the minimum.
+
+Next: DARS degree audit, fix hardcoded CS '26 badge in SettingsView, LaTeX rendering in chat.
+VT Burgundy: #861F41. Bundle ID: com.hokieadvisor.HokieAdvisor.
+AppStorage keys: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, howHeardAboutUs, graduationYear, appearanceMode, transcriptData, transcriptImported.
+Backend chat endpoint: POST /chat/stream (primary), POST /chat (fallback). Payload: {messages, major, transcript[], in_progress_courses[]}.
 ```
