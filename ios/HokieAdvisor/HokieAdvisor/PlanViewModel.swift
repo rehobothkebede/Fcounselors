@@ -2,41 +2,31 @@ import Combine
 import Foundation
 
 @MainActor
-final class PlanViewModel: ObservableObject {
-    // MARK: - Input (from AppState via PlanView)
-    @Published var preferences: String = ""
+final class DegreeAuditViewModel: ObservableObject {
+    @Published var audit: DegreeAuditResponse? = nil
+    @Published var isAuditLoading: Bool = false
+    @Published var auditErrorMessage: String? = nil
 
-    // MARK: - Outputs
-    @Published var plan: PlanResponse? = nil
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String? = nil
+    func runAudit(transcript: [TranscriptCourse], major: String, inProgressCourses: [String] = []) async {
+        guard !major.trimmingCharacters(in: .whitespaces).isEmpty, !transcript.isEmpty else { return }
+        isAuditLoading = true
+        auditErrorMessage = nil
 
-    // MARK: - Actions
-
-    func generatePlan(completedCourses: [String], major: String, constraints: [String] = [], inProgressCourses: [String] = []) async {
-        guard !major.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-        isLoading = true
-        errorMessage = nil
-        plan = nil
-
-        var allConstraints = constraints
-        if !preferences.trimmingCharacters(in: .whitespaces).isEmpty {
-            allConstraints.append(preferences.trimmingCharacters(in: .whitespaces))
+        let entries = transcript.map {
+            TranscriptEntry(code: $0.code, name: $0.name, grade: $0.grade, semester: $0.semester, credits: $0.credits)
         }
-
-        let body = PlanRequest(
-            completed_courses: completedCourses,
+        let body = DegreeAuditRequest(
             major: major.trimmingCharacters(in: .whitespaces),
-            constraints: allConstraints,
-            in_progress_courses: inProgressCourses
+            transcript: entries,
+            inProgressCourses: inProgressCourses
         )
 
         do {
-            plan = try await APIService.fetchPlan(request: body)
+            audit = try await APIService.fetchDegreeAudit(request: body)
         } catch {
-            errorMessage = error.localizedDescription
+            auditErrorMessage = error.localizedDescription
         }
 
-        isLoading = false
+        isAuditLoading = false
     }
 }

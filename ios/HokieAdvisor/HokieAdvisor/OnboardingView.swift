@@ -51,6 +51,7 @@ struct OnboardingView: View {
                 .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
             }
         }
+        .swipeDownToDismissKeyboard()
         .sheet(isPresented: $showTranscript) {
             TranscriptView().environmentObject(appState)
         }
@@ -458,6 +459,7 @@ struct OnboardingView: View {
                 .padding(.horizontal, 28).padding(.top, 28).padding(.bottom, 120)
             }
             .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
 
             bigButton("Continue", enabled: canProceed, action: onContinue)
                 .padding(.horizontal, 32).padding(.bottom, 48)

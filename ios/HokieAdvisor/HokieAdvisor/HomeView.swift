@@ -1,16 +1,17 @@
 import SwiftUI
+import UIKit
 
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
     @Binding var selectedTab: Int
     @AppStorage("studentName") private var studentName = ""
-    @AppStorage("graduationYear") private var graduationYear = "2027"
+    @AppStorage("graduationYear") private var graduationYear = ""
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
                 welcomeHeader.padding(.horizontal, 24).padding(.top, 16)
-                statsRow.padding(.horizontal, 20)
+                statsGrid.padding(.horizontal, 20)
                 quickActionsSection
                 if appState.hasTranscript { progressSection } else { transcriptNudge }
                 tipsSection
@@ -31,13 +32,20 @@ struct HomeView: View {
                     .font(.headline.bold()).foregroundStyle(.white)
             }
             VStack(alignment: .leading, spacing: 3) {
-                Text(studentName.isEmpty ? "Welcome, Hokie!" : "Hey, \(firstName)!")
+                Text(studentName.isEmpty ? "Welcome, Hokie!" : "\(greeting), \(firstName)!")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
-                Text(appState.major.isEmpty ? "Set your major in Plan" : appState.major)
+                Text(appState.major.isEmpty ? "Set your major in Profile" : appState.major)
                     .font(.subheadline).foregroundStyle(.secondary)
             }
             Spacer()
         }
+    }
+
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 12 { return "Good morning" }
+        if hour < 17 { return "Good afternoon" }
+        return "Good evening"
     }
 
     private var firstName: String {
@@ -51,15 +59,22 @@ struct HomeView: View {
         return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased()
     }
 
-    // MARK: - Stats Row
+    // MARK: - Stats Grid
 
-    private var statsRow: some View {
-        HStack(spacing: 12) {
+    private var statsGrid: some View {
+        let gpa = appState.calculatedGPA
+        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
             statCard(
                 value: appState.hasTranscript ? "\(Int(appState.totalCredits))" : "—",
                 label: "Credits",
                 icon: "books.vertical.fill",
                 color: appState.hasTranscript ? .vtBurgundy : Color(.systemGray3)
+            )
+            statCard(
+                value: appState.hasTranscript ? (gpa.map { String(format: "%.2f", $0) } ?? "N/A") : "—",
+                label: "GPA",
+                icon: "chart.bar.fill",
+                color: appState.hasTranscript ? (gpa.map { gpaColor($0) } ?? Color(.systemGray3)) : Color(.systemGray3)
             )
             statCard(
                 value: appState.hasTranscript ? "\(appState.transcriptCourses.count)" : "—",
@@ -68,10 +83,10 @@ struct HomeView: View {
                 color: appState.hasTranscript ? .green : Color(.systemGray3)
             )
             statCard(
-                value: appState.hasTranscript ? graduationYear : "—",
+                value: graduationYear.isEmpty ? "—" : graduationYear,
                 label: "Grad Year",
                 icon: "graduationcap.fill",
-                color: appState.hasTranscript ? .blue : Color(.systemGray3)
+                color: graduationYear.isEmpty ? Color(.systemGray3) : .blue
             )
         }
     }
@@ -100,8 +115,8 @@ struct HomeView: View {
                 .padding(.horizontal, 24)
 
             VStack(spacing: 10) {
-                quickActionRow(icon: "wand.and.stars", title: "Generate My Plan",
-                               subtitle: "Get personalized course recommendations",
+                quickActionRow(icon: "checklist.checked", title: "View Degree Audit",
+                               subtitle: "See your CS requirements and remaining credits",
                                color: .vtBurgundy, tab: 1)
                 quickActionRow(icon: "bubble.left.and.bubble.right.fill", title: "Ask Your Advisor",
                                subtitle: "Chat with your AI academic advisor",
@@ -113,7 +128,10 @@ struct HomeView: View {
 
     private func quickActionRow(icon: String, title: String, subtitle: String,
                                  color: Color, tab: Int) -> some View {
-        Button { withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { selectedTab = tab } } label: {
+        Button {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { selectedTab = tab }
+        } label: {
             HStack(spacing: 14) {
                 Image(systemName: icon)
                     .font(.title3.bold()).foregroundStyle(.white)

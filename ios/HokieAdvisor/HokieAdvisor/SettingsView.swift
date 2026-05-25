@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var chatHistory: ChatHistoryStore
     @AppStorage("studentName") private var studentName = ""
     @AppStorage("graduationYear") private var graduationYear = ""
     @AppStorage("appearanceMode") private var appearanceMode = "system"
@@ -15,6 +16,7 @@ struct SettingsView: View {
     @State private var showTerms = false
     @State private var showPrivacy = false
     @State private var showTranscriptImport = false
+    @State private var showMemoryEditor = false
 
     var body: some View {
         NavigationStack {
@@ -24,6 +26,7 @@ struct SettingsView: View {
                     settingsGroup(title: "Appearance") { appearanceSection }
                     settingsGroup(title: "Academic") { academicSection }
                     settingsGroup(title: "Transcript") { transcriptSection }
+                    settingsGroup(title: "Chat Memory") { chatMemorySection }
                     settingsGroup(title: "About") { aboutSection }
                     settingsGroup(title: "") { dangerSection }
 
@@ -37,12 +40,18 @@ struct SettingsView: View {
                 .padding(.horizontal, 20)
             }
             .scrollIndicators(.hidden)
+            .scrollDismissesKeyboard(.interactively)
             .background(Color(.systemBackground))
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.large)
         }
+        .swipeDownToDismissKeyboard()
         .sheet(isPresented: $showTranscriptImport) {
             TranscriptView().environmentObject(appState)
+        }
+        .sheet(isPresented: $showMemoryEditor) {
+            ChatMemoryEditorView()
+                .environmentObject(chatHistory)
         }
         .sheet(isPresented: $showTerms) {
             LegalSheet(title: "Terms of Service", content: termsBody)
@@ -54,24 +63,30 @@ struct SettingsView: View {
             Button("Clear Everything", role: .destructive) {
                 appState.transcriptCourses = []
                 appState.inProgressCourses = []
+                appState.plannedCourses = []
+                appState.transcriptNotes = []
                 appState.inProgressGrades = [:]
                 appState.hasTranscript = false
                 appState.passingAllClasses = nil
                 appState.strugglingCourses = []
+                chatHistory.deleteAll()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Your transcript and all academic data will be removed from this device. This cannot be undone.")
+            Text("Your transcript, academic data, saved chat history, and chat memories will be removed from this device. This cannot be undone.")
         }
         .alert("Reset Account", isPresented: $showResetAlert) {
             Button("Reset & Restart", role: .destructive) {
                 appState.transcriptCourses = []
                 appState.inProgressCourses = []
+                appState.plannedCourses = []
+                appState.transcriptNotes = []
                 appState.inProgressGrades = [:]
                 appState.hasTranscript = false
                 appState.passingAllClasses = nil
                 appState.strugglingCourses = []
                 appState.major = ""
+                chatHistory.deleteAll()
                 appPasswordHash = ""
                 vtEmail = ""
                 vtPID = ""
@@ -100,24 +115,44 @@ struct SettingsView: View {
                 if !vtEmail.isEmpty {
                     Text(vtEmail)
                         .font(.caption).foregroundStyle(.secondary)
-                } else {
-                    Text(appState.major.isEmpty ? "Virginia Tech Student" : appState.major)
-                        .font(.subheadline).foregroundStyle(.secondary)
+                }
+
+                if let gpa = appState.calculatedGPA {
+                    Text(String(format: "%.2f GPA", gpa))
+                        .font(.subheadline.bold())
+                        .foregroundStyle(gpaColor(gpa))
                 }
             }
 
-            HStack(spacing: 8) {
-                Text("Virginia Tech")
-                    .font(.caption.bold()).foregroundStyle(.white)
-                    .padding(.horizontal, 14).padding(.vertical, 7)
-                    .background(Color.vtBurgundy).clipShape(Capsule())
-
-                if !vtPID.isEmpty {
-                    Text("PID: \(vtPID)")
-                        .font(.caption.bold()).foregroundStyle(Color.vtBurgundy)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Text("Virginia Tech")
+                        .font(.caption.bold()).foregroundStyle(.white)
                         .padding(.horizontal, 14).padding(.vertical, 7)
-                        .background(Color.vtBurgundy.opacity(0.1)).clipShape(Capsule())
+                        .background(Color.vtBurgundy).clipShape(Capsule())
+
+                    if !appState.major.isEmpty {
+                        Text(appState.major)
+                            .font(.caption.bold()).foregroundStyle(Color.vtBurgundy)
+                            .padding(.horizontal, 14).padding(.vertical, 7)
+                            .background(Color.vtBurgundy.opacity(0.1)).clipShape(Capsule())
+                    }
+
+                    if !graduationYear.isEmpty {
+                        Text("'\(String(graduationYear.suffix(2)))")
+                            .font(.caption.bold()).foregroundStyle(Color.blue)
+                            .padding(.horizontal, 14).padding(.vertical, 7)
+                            .background(Color.blue.opacity(0.1)).clipShape(Capsule())
+                    }
+
+                    if !vtPID.isEmpty {
+                        Text("PID: \(vtPID)")
+                            .font(.caption.bold()).foregroundStyle(Color(.systemGray))
+                            .padding(.horizontal, 14).padding(.vertical, 7)
+                            .background(Color(.systemGray4)).clipShape(Capsule())
+                    }
                 }
+                .padding(.horizontal, 4)
             }
         }
         .frame(maxWidth: .infinity)
@@ -173,6 +208,64 @@ struct SettingsView: View {
                         Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
                     }
                 }
+            }
+        }
+    }
+
+    // MARK: - Chat Memory
+
+    private var chatMemorySection: some View {
+        VStack(spacing: 0) {
+            row(icon: "brain.head.profile", iconColor: .vtBurgundy, label: "Saved Chats") {
+                Text("\(chatHistory.sessions.count)")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+
+            divider
+            Button { showMemoryEditor = true } label: {
+                row(icon: "sparkles", iconColor: .purple, label: "Saved Memories") {
+                    HStack(spacing: 8) {
+                        Text("\(chatHistory.memories.count)")
+                            .font(.subheadline).foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.caption.bold()).foregroundStyle(.tertiary)
+                    }
+                }
+            }
+
+            if appState.hasTranscript {
+                divider
+                row(icon: "person.text.rectangle.fill", iconColor: .blue, label: "Transcript Context") {
+                    Text("\(appState.transcriptCourses.count) courses")
+                        .font(.subheadline).foregroundStyle(.secondary)
+                }
+            }
+
+            if !chatHistory.recentMemoryHighlights.isEmpty {
+                divider
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Memory Preview")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                        .tracking(0.5)
+
+                    ForEach(chatHistory.recentMemoryHighlights) { memory in
+                        HStack(alignment: .top, spacing: 8) {
+                            Circle()
+                                .fill(Color.vtBurgundy.opacity(0.7))
+                                .frame(width: 6, height: 6)
+                                .padding(.top, 7)
+                            Text(memory.content)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 13)
             }
         }
     }
@@ -310,6 +403,83 @@ Questions about this policy? Reach out through the Virginia Tech CS department.
     }
 }
 
+// MARK: - Chat Memory Editor
+
+struct ChatMemoryEditorView: View {
+    @EnvironmentObject var chatHistory: ChatHistoryStore
+    @Environment(\.dismiss) private var dismiss
+    @State private var newMemory = ""
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    HStack(spacing: 10) {
+                        TextField("Add something to remember...", text: $newMemory, axis: .vertical)
+                            .lineLimit(1...3)
+                        Button {
+                            chatHistory.addMemory(newMemory)
+                            newMemory = ""
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title3)
+                                .foregroundStyle(Color.vtBurgundy)
+                        }
+                        .disabled(newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+                } footer: {
+                    Text("Examples: preferred name, tutoring style, recurring weak topics, course goals, or scheduling preferences.")
+                }
+
+                Section("Saved") {
+                    if chatHistory.memories.isEmpty {
+                        Text("No saved memories yet.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(chatHistory.memories) { memory in
+                            EditableMemoryRow(memory: memory)
+                                .environmentObject(chatHistory)
+                        }
+                        .onDelete { offsets in
+                            chatHistory.deleteMemory(at: offsets)
+                        }
+                    }
+                }
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .navigationTitle("Chat Memory")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .foregroundStyle(Color.vtBurgundy)
+                }
+            }
+        }
+        .swipeDownToDismissKeyboard()
+    }
+}
+
+struct EditableMemoryRow: View {
+    @EnvironmentObject var chatHistory: ChatHistoryStore
+    let memory: ChatMemory
+    @State private var draft: String = ""
+
+    var body: some View {
+        TextField("Memory", text: $draft, axis: .vertical)
+            .lineLimit(1...4)
+            .font(.subheadline)
+            .onAppear { draft = memory.content }
+            .onSubmit {
+                chatHistory.updateMemory(memory, content: draft)
+            }
+            .onChange(of: draft) { _, value in
+                chatHistory.updateMemory(memory, content: value)
+            }
+    }
+}
+
 // MARK: - Legal Sheet
 
 struct LegalSheet: View {
@@ -337,5 +507,7 @@ struct LegalSheet: View {
 }
 
 #Preview {
-    SettingsView().environmentObject(AppState())
+    SettingsView()
+        .environmentObject(AppState())
+        .environmentObject(ChatHistoryStore())
 }

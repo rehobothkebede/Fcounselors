@@ -28,6 +28,7 @@ struct WindowAppearanceSetter: UIViewRepresentable {
 @main
 struct HokieAdvisorApp: App {
     @StateObject private var appState = AppState()
+    @StateObject private var chatHistory = ChatHistoryStore()
     @AppStorage("appearanceMode") private var appearanceMode = "system"
     @AppStorage("onboardingComplete") private var onboardingComplete = false
     @AppStorage("appPasswordHash") private var appPasswordHash = ""
@@ -39,11 +40,13 @@ struct HokieAdvisorApp: App {
                 if !onboardingComplete {
                     OnboardingView()
                         .environmentObject(appState)
+                        .environmentObject(chatHistory)
                 } else if !appPasswordHash.isEmpty && !isAuthenticated {
                     LoginView(isAuthenticated: $isAuthenticated)
                 } else {
                     ContentView()
                         .environmentObject(appState)
+                        .environmentObject(chatHistory)
                 }
             }
             .background(WindowAppearanceSetter(mode: appearanceMode))

@@ -64,6 +64,7 @@ struct LoginView: View {
             .padding(.horizontal, 32).padding(.bottom, 48)
         }
         .background(Color(.systemBackground))
+        .swipeDownToDismissKeyboard()
     }
 
     private func attempt() {

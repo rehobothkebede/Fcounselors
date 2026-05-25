@@ -7,6 +7,12 @@ from pydantic import BaseModel
 
 from app.config import COE_DIR
 from app.services.coe_service import load_coe_courses
+from app.services.supabase_service import (
+    SupabaseNotConfigured,
+    SupabaseServiceError,
+    get_supabase_client,
+    get_supabase_status,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/admin", tags=["Admin"])
@@ -78,3 +84,23 @@ def seed_coe_status():
                 status.append({"subject": subject, "course_count": -1})
 
     return {"subjects": status, "total_courses": total}
+
+
+@router.get("/supabase/status")
+def supabase_status():
+    """Return Supabase configuration and database reachability."""
+    status = get_supabase_status()
+    if not status["configured"]:
+        return {**status, "status": "not_configured"}
+
+    try:
+        health = get_supabase_client().health()
+    except SupabaseNotConfigured:
+        return {**status, "status": "not_configured"}
+    except SupabaseServiceError as exc:
+        return {**status, "status": "unreachable", "detail": str(exc)}
+    except Exception as exc:
+        logger.exception("Supabase health check failed")
+        return {**status, "status": "unreachable", "detail": str(exc)}
+
+    return {**status, **health}

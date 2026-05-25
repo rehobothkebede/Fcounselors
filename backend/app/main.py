@@ -3,13 +3,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import chat, courses, advisor, admin, transcript, tutoring
 from app.config import OPENAI_API_KEY, OPENAI_MODEL
+from app.services.supabase_service import get_supabase_status
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     key_loaded = "YES" if OPENAI_API_KEY else "NO"
+    supabase_status = get_supabase_status()
     print(f"OpenAI key loaded: {key_loaded}")
     print(f"Model: {OPENAI_MODEL}")
+    print(f"Supabase configured: {'YES' if supabase_status['configured'] else 'NO'}")
     print("Server running on http://localhost:8000")
     yield
 
@@ -44,4 +47,4 @@ def root():
 
 @app.get("/health", tags=["Health"])
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "supabase": get_supabase_status()}

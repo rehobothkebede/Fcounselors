@@ -8,6 +8,10 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-nano")
 TRANSCRIPT_MODEL = os.getenv("TRANSCRIPT_MODEL", "gpt-5.4-nano")
 APP_ENV = os.getenv("APP_ENV", "development")
 
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 COURSES_DIR = os.path.join(DATA_DIR, "courses")
 CATALOG_DIR = os.path.join(DATA_DIR, "catalog")

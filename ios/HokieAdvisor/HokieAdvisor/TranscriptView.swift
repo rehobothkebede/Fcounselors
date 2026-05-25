@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 struct TranscriptView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var vm = TranscriptViewModel()
     @AppStorage("graduationYear") private var graduationYear = ""
     @State private var showFilePicker = false
@@ -11,10 +12,7 @@ struct TranscriptView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                pageHeader(
-                    title: "Transcript",
-                    subtitle: "Your CS course history, automatically parsed"
-                )
+                transcriptHeader
 
                 if vm.isLoading {
                     loadingView.padding(.horizontal, 20)
@@ -28,10 +26,15 @@ struct TranscriptView: View {
                     .padding(.horizontal, 20)
                 } else if appState.hasTranscript {
                     successBanner.padding(.horizontal, 20)
-                    if !appState.inProgressCourses.isEmpty {
+                    if !appState.activeSemesterCourses.isEmpty {
                         inProgressSection.padding(.horizontal, 20)
                     }
-                    semesterStatusSection.padding(.horizontal, 20)
+                    if !appState.registeredUpcomingCourses.isEmpty {
+                        plannedCoursesSection.padding(.horizontal, 20)
+                    }
+                    if appState.isSemesterInSession {
+                        semesterStatusSection.padding(.horizontal, 20)
+                    }
                     courseListSection.padding(.horizontal, 20)
                     reuploadButton.padding(.horizontal, 20)
                 } else {
@@ -42,7 +45,9 @@ struct TranscriptView: View {
             }
         }
         .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
         .background(Color(.systemBackground))
+        .swipeDownToDismissKeyboard()
         .fileImporter(
             isPresented: $showFilePicker,
             allowedContentTypes: [.pdf, .png, .jpeg],
@@ -53,6 +58,8 @@ struct TranscriptView: View {
             guard let result = result else { return }
             appState.transcriptCourses = result.courses
             appState.inProgressCourses = result.in_progress_courses
+            appState.plannedCourses = result.planned_courses ?? []
+            appState.transcriptNotes = result.warnings
             appState.inProgressGrades = [:]
             appState.hasTranscript = true
             appState.passingAllClasses = nil
@@ -61,6 +68,31 @@ struct TranscriptView: View {
                 graduationYear = String(inferred)
             }
         }
+    }
+
+    // MARK: - Header
+
+    private var transcriptHeader: some View {
+        HStack(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Transcript")
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                Text("Your CS course history, automatically parsed")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 28))
+                    .foregroundStyle(Color(.tertiaryLabel))
+                    .symbolRenderingMode(.hierarchical)
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 20)
+        .padding(.bottom, 4)
     }
 
     // MARK: - Upload Prompt
@@ -121,6 +153,9 @@ struct TranscriptView: View {
             vm.reset()
             appState.hasTranscript = false
             appState.transcriptCourses = []
+            appState.inProgressCourses = []
+            appState.plannedCourses = []
+            appState.transcriptNotes = []
             showFilePicker = true
         } label: {
             HStack(spacing: 8) {
@@ -137,26 +172,76 @@ struct TranscriptView: View {
     // MARK: - Success Banner
 
     private var successBanner: some View {
-        statusCard(
-            icon: "checkmark.seal.fill",
-            iconColor: .green,
-            title: "\(appState.transcriptCourses.count) courses found",
-            subtitle: "\(Int(appState.totalCredits)) total credit hours parsed"
-        )
+        HStack(spacing: 14) {
+            circleIcon("checkmark.seal.fill", color: .green)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(appState.transcriptCourses.count) courses found")
+                    .font(.subheadline.bold())
+                Text("\(Int(appState.totalCredits)) total credit hours parsed")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            if let gpa = appState.calculatedGPA {
+                VStack(spacing: 2) {
+                    Text(String(format: "%.2f", gpa))
+                        .font(.title2.bold()).fontDesign(.rounded)
+                        .foregroundStyle(gpaColor(gpa))
+                    Text("GPA").font(.caption2.bold()).foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(18)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
     // MARK: - In-Progress Courses
 
     private var inProgressSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        let courses = appState.activeSemesterCourses
+        return VStack(alignment: .leading, spacing: 16) {
             SectionLabel(title: "Currently Enrolled", icon: "clock.badge.fill", color: .orange)
 
-            Text("We found \(appState.inProgressCourses.count) in-progress course\(appState.inProgressCourses.count == 1 ? "" : "s"). How are they going?")
-                .font(.subheadline).foregroundStyle(.secondary)
+            if let sem = appState.currentVTSemester {
+                Text("\(sem) — \(courses.count) course\(courses.count == 1 ? "" : "s"). How are they going?")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
 
-            ForEach(appState.inProgressCourses) { inProgressCourseRow(course: $0) }
+            ForEach(courses) { inProgressCourseRow(course: $0) }
 
             Text("Your current grades help the advisor decide which prereqs you'll have completed by next semester.")
+                .font(.caption).foregroundStyle(.tertiary)
+        }
+        .padding(20)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 28))
+    }
+
+    private var plannedCoursesSection: some View {
+        let courses = appState.registeredUpcomingCourses
+        return VStack(alignment: .leading, spacing: 16) {
+            SectionLabel(title: "Registered — Not Started", icon: "calendar.badge.plus", color: .blue)
+
+            Text("You're registered for \(courses.count) course\(courses.count == 1 ? "" : "s") in a future semester.")
+                .font(.subheadline).foregroundStyle(.secondary)
+
+            ForEach(courses) { course in
+                HStack(spacing: 10) {
+                    Text(course.code)
+                        .font(.caption.bold()).foregroundStyle(.white)
+                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .background(Color.blue).clipShape(Capsule())
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(course.name).font(.subheadline.bold()).lineLimit(1)
+                        if let sem = course.semester {
+                            Text(sem).font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                    Spacer()
+                }
+            }
+
+            Text("These courses haven't started yet — grades will appear once you begin the semester.")
                 .font(.caption).foregroundStyle(.tertiary)
         }
         .padding(20)
@@ -283,7 +368,7 @@ struct TranscriptView: View {
             if appState.needsTutoringSupport {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.right.circle.fill").foregroundStyle(.orange)
-                    Text("Go to Plan tab to get tutoring resources.")
+                    Text("Go to Audit tab to get tutoring resources.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
@@ -302,10 +387,6 @@ struct TranscriptView: View {
     private var courseListSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             SectionLabel(title: "Completed Courses", icon: "checkmark.circle.fill", color: .vtBurgundy)
-
-            if let result = vm.result, !result.warnings.isEmpty {
-                ForEach(result.warnings, id: \.self) { WarningCard(text: $0) }
-            }
 
             ForEach(appState.semesterGroups) { group in
                 VStack(alignment: .leading, spacing: 8) {

@@ -79,6 +79,9 @@ _CS_REQUIREMENTS_CONTEXT = _load_cs_requirements_context()
 
 # Grade codes that require C or better in the CS curriculum (derived from JSON above)
 _GRADE_REQUIRED_CODES = {"CS 1114", "CS 2114", "CS 2104", "CS 2505", "CS 2506", "CS 3114"}
+_C_OR_BETTER_GRADES = {"A+", "A", "A-", "B+", "B", "B-", "C+", "C"}
+_AWARDED_CREDIT_GRADES = {"P", "PASS", "CR", "CREDIT", "T", "TR", "TRANSFER"}
+_NON_CREDIT_GRADES = {"W", "WF", "F", "I", "NG", None}
 
 _BASE_SYSTEM_PROMPT = f"""You are Hokie Advisor — a personalized AI academic advisor for Virginia Tech \
 Computer Science students (B.S. CS, 2025-2026 catalog, 123 total credits).
@@ -94,6 +97,10 @@ answer YES or NO first, then explain why using their actual grades.
 GRADE RULING RULES (apply automatically when you have the transcript):
 • "C or better" at VT means a plain C (2.0 GPA points) or higher. C- (1.7) does NOT count.
 • Core course requires C or better AND student earned C, B, or A (any +/−) → FINE, say so.
+• Transfer or awarded-credit grades (T, TR, TRANSFER, P, CR) mean VT awarded credit. If the \
+  transcript maps that credit to an exact VT course code like CS 1114, treat it as satisfying \
+  that course requirement, including C-or-better gates. Do not tell the student to retake it \
+  merely because there is no letter grade.
 • Core course requires C or better AND student earned C-, D, F, or W → MUST RETAKE before \
   progressing; say this directly.
 • Course with NO grade cutoff → any passing grade (D or above) satisfies the degree requirement. \
@@ -106,10 +113,37 @@ OPERATING MODES
 ══════════════════════════════════════════
 
 TUTOR MODE — when a student asks about course material, concepts, or debugging:
-• Break down concepts with examples and analogies tailored to CS students
-• Ask Socratic follow-up questions to check understanding
+• Be a strong Math + Computer Science tutor first. Treat discrete math, graph theory, data \
+  structures, algorithms, linear algebra, calculus, probability, logic, proofs, systems, and \
+  programming/debugging as in-scope. For non-Math/CS subjects, briefly redirect toward academic \
+  planning unless the question affects the student's degree plan.
+• Break down concepts with concrete examples, visual structure, and analogies tailored to CS students.
+• If the student asks for an example problem, give a concrete example immediately before asking
+  follow-up questions.
+• Ask Socratic follow-up questions to check understanding after the example or explanation
 • Reference specific VT course numbers when relevant
 • Guide toward the answer; never just hand over homework solutions
+• For visual CS/math topics, include a compact visual representation whenever useful. For graph \
+  theory, paths, circuits, trees, BFS/DFS, shortest paths, network flow, state machines, or \
+  dependency graphs, emit a fenced graph block that the app can render:
+  ```graph
+  A -- B
+  A -- C
+  B -- D
+  C -- D
+  highlight: A B D
+  ```
+  Then explain the diagram in 2-4 short bullets.
+• For math, linear algebra, calculus, proofs, algorithms, or recurrence relations, format equations \
+  with LaTeX. Use inline math like $Ax=b$. For matrices, prefer bmatrix/pmatrix, not array. \
+  Example: $$\\begin{{bmatrix}}1 & 2 \\\\ 3 & 4\\end{{bmatrix}}$$. For augmented matrices, \
+  use $$\\begin{{bmatrix}}1 & 2 & | & 5 \\\\ 3 & 4 & | & 6\\end{{bmatrix}}$$. For systems \
+  of equations, either write plain line-broken equations or use a valid cases environment \
+  with braces: $$\\begin{{cases}}x+y=1 \\\\ 2x-y=3\\end{{cases}}$$.
+• When the topic is visual or hard, end with 1-2 credible video resources as Markdown links under \
+  "Deeper visual resources". Prefer official/educational sources such as MIT OpenCourseWare, \
+  Khan Academy, 3Blue1Brown, William Fiset/freeCodeCamp, Abdul Bari, and Neso Academy. Do not \
+  invent exact video URLs; if unsure, use a YouTube search URL for that topic and channel.
 
 ADVISOR MODE — when a student asks about their degree plan, scheduling, or grades:
 • Cross-reference their transcript (provided below each session) with the requirements
@@ -130,9 +164,14 @@ CS DEGREE REQUIREMENTS (always in context)
 {_CS_REQUIREMENTS_CONTEXT}"""
 
 
-def _build_student_context(transcript: list[dict], in_progress_courses: list[str]) -> str:
+def _build_student_context(
+    transcript: list[dict],
+    in_progress_courses: list[str],
+    transcript_notes: list[str] | None = None,
+    chat_memories: list[str] | None = None,
+) -> str:
     """Build a personalized, advisor-readable context block from the student's transcript."""
-    if not transcript and not in_progress_courses:
+    if not transcript and not in_progress_courses and not transcript_notes and not chat_memories:
         return ""
 
     lines = [
@@ -147,22 +186,30 @@ def _build_student_context(transcript: list[dict], in_progress_courses: list[str
     for entry in transcript:
         code  = entry.get("code", "")
         name  = entry.get("name", "") or ""
-        grade = entry.get("grade") or "N/A"
+        grade = _normalize_grade(entry.get("grade")) or "N/A"
         sem   = entry.get("semester") or ""
         sem_str = f" [{sem}]" if sem else ""
 
         if code in _GRADE_REQUIRED_CODES:
             # VT "C or better" = 2.0 GPA points minimum; C- (1.7) does NOT satisfy it
             grade_status = ""
-            if grade in ("A+", "A", "A-", "B+", "B", "B-", "C+", "C"):
+            if grade in _C_OR_BETTER_GRADES:
                 grade_status = " ✓ satisfies C-or-better requirement"
+                if code in remaining_cs_core:
+                    remaining_cs_core.remove(code)
+                    completed_cs_core.append(f"{code}({grade})")
+            elif _is_awarded_credit_grade(grade):
+                grade_status = " ✓ transfer/awarded credit satisfies this VT course requirement"
                 if code in remaining_cs_core:
                     remaining_cs_core.remove(code)
                     completed_cs_core.append(f"{code}({grade})")
             elif grade in ("C-", "D+", "D", "D-", "F", "W", "WF"):
                 grade_status = " ✗ MUST RETAKE — C- and below do not satisfy VT's C-or-better rule"
         else:
-            grade_status = " (no grade cutoff for this course in the CS curriculum)"
+            if _is_awarded_credit_grade(grade):
+                grade_status = " (transfer/awarded credit; counts as completed credit)"
+            else:
+                grade_status = " (no grade cutoff for this course in the CS curriculum)"
 
         lines.append(f"  {code} — {name}: Grade {grade}{sem_str}{grade_status}")
 
@@ -172,6 +219,18 @@ def _build_student_context(transcript: list[dict], in_progress_courses: list[str
         for c in in_progress_courses:
             lines.append(f"  {c}")
 
+    if transcript_notes:
+        lines.append("")
+        lines.append("Transcript Parsing Notes (private context; do not repeat unless relevant):")
+        for note in transcript_notes[:12]:
+            lines.append(f"  - {note}")
+
+    if chat_memories:
+        lines.append("")
+        lines.append("Saved Chat Memory (use for personalization; do not quote as a list unless relevant):")
+        for memory in chat_memories[:20]:
+            lines.append(f"  - {memory}")
+
     lines.append("")
     if completed_cs_core:
         lines.append(f"CS CORE COMPLETED: {', '.join(completed_cs_core)}")
@@ -180,12 +239,38 @@ def _build_student_context(transcript: list[dict], in_progress_courses: list[str
 
     total_credits = sum(
         (entry.get("credits") or 0) for entry in transcript
-        if entry.get("grade") not in ("W", "WF", "F", None)
+        if _is_credit_bearing_grade(entry.get("grade"))
     )
     lines.append(f"CREDITS COMPLETED (approx): {total_credits:.0f} / 123")
     lines.append("══════════════════════════════════════════")
 
     return "\n".join(lines)
+
+
+def _normalize_grade(grade: str | None) -> str | None:
+    if not grade:
+        return None
+    normalized = grade.strip().upper()
+    if normalized in {"TRANSFER", "TR"}:
+        return "T"
+    if normalized == "PASS":
+        return "P"
+    if normalized == "CREDIT":
+        return "CR"
+    return normalized
+
+
+def _is_awarded_credit_grade(grade: str | None) -> bool:
+    return _normalize_grade(grade) in _AWARDED_CREDIT_GRADES
+
+
+def _is_credit_bearing_grade(grade: str | None) -> bool:
+    normalized = _normalize_grade(grade)
+    if normalized in _NON_CREDIT_GRADES:
+        return False
+    if _is_awarded_credit_grade(normalized):
+        return True
+    return normalized is not None
 
 
 def _build_system_prompt(course_context: str = "", student_context: str = "") -> str:
@@ -224,9 +309,16 @@ def chat_stream_with_advisor(
     course_context: str = "",
     transcript: list[dict] | None = None,
     in_progress_courses: list[str] | None = None,
+    transcript_notes: list[str] | None = None,
+    chat_memories: list[str] | None = None,
 ):
     """Stream a chat response token by token as SSE events."""
-    student_ctx = _build_student_context(transcript or [], in_progress_courses or [])
+    student_ctx = _build_student_context(
+        transcript or [],
+        in_progress_courses or [],
+        transcript_notes or [],
+        chat_memories or [],
+    )
     system_prompt = _build_system_prompt(course_context, student_ctx)
     full_messages = [{"role": "system", "content": system_prompt}] + messages
 
@@ -249,9 +341,16 @@ def chat_with_advisor(
     course_context: str = "",
     transcript: list[dict] | None = None,
     in_progress_courses: list[str] | None = None,
+    transcript_notes: list[str] | None = None,
+    chat_memories: list[str] | None = None,
 ) -> str:
     """Send a conversation to the AI advisor and return the full response."""
-    student_ctx = _build_student_context(transcript or [], in_progress_courses or [])
+    student_ctx = _build_student_context(
+        transcript or [],
+        in_progress_courses or [],
+        transcript_notes or [],
+        chat_memories or [],
+    )
     system_prompt = _build_system_prompt(course_context, student_ctx)
     full_messages = [{"role": "system", "content": system_prompt}] + messages
 

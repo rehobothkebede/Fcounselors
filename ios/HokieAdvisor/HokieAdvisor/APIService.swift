@@ -22,8 +22,8 @@ final class APIService {
     // For the iOS Simulator, http://localhost:8000 works fine.
     static let baseURL = "http://127.0.0.1:8000"
 
-    static func fetchPlan(request: PlanRequest) async throws -> PlanResponse {
-        try await post(path: "/advisor/plan", body: request)
+    static func fetchDegreeAudit(request: DegreeAuditRequest) async throws -> DegreeAuditResponse {
+        try await post(path: "/advisor/audit", body: request)
     }
 
     static func sendChat(request: ChatRequest) async throws -> ChatResponse {

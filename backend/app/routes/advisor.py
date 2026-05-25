@@ -1,12 +1,19 @@
 import logging
-from fastapi import APIRouter, HTTPException
+import asyncio
+from typing import Optional
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from pydantic import BaseModel
 from app.services.ai_service import recommend_courses
+from app.services.dars_audit_service import parse_dars_audit
+from app.services.degree_audit_service import run_degree_audit
 from app.services.scraper_service import load_courses, scrape_vt_major_catalog, resolve_subject_for_major
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/advisor", tags=["Advisor"])
+
+_ALLOWED_AUDIT_TYPES = {"application/pdf", "image/png", "image/jpeg", "image/jpg"}
+_MAX_AUDIT_BYTES = 12 * 1024 * 1024
 
 
 class PlanRequest(BaseModel):
@@ -25,6 +32,84 @@ class RecommendedCourse(BaseModel):
 class PlanResponse(BaseModel):
     recommended_courses: list[RecommendedCourse]
     reasoning: str
+    warnings: list[str]
+
+
+class TranscriptEntry(BaseModel):
+    code: str
+    name: str = ""
+    grade: Optional[str] = None
+    semester: Optional[str] = None
+    credits: Optional[float] = None
+
+
+class DegreeAuditRequest(BaseModel):
+    major: str = "Computer Science"
+    transcript: list[TranscriptEntry]
+    in_progress_courses: list[str] = []
+
+
+class AuditBucket(BaseModel):
+    id: str
+    title: str
+    status: str
+    required_credits: float
+    completed_credits: float
+    required_count: Optional[int] = None
+    completed_count: Optional[int] = None
+    matched_courses: list[str]
+    missing_items: list[str]
+    notes: list[str]
+
+
+class DegreeAuditResponse(BaseModel):
+    major: str
+    degree: str
+    catalog_year: str
+    total_required_credits: float
+    completed_credits: float
+    percent_complete: int
+    complete_bucket_count: int
+    total_bucket_count: int
+    buckets: list[AuditBucket]
+    warnings: list[str]
+
+
+class DarsCategory(BaseModel):
+    id: str
+    title: str
+    status: str
+    complete_hours: Optional[float] = None
+    in_progress_hours: Optional[float] = None
+    unfulfilled_hours: Optional[float] = None
+    planned_hours: Optional[float] = None
+    required_hours: Optional[float] = None
+    gpa: Optional[float] = None
+    notes: list[str] = []
+
+
+class DarsSection(BaseModel):
+    title: str
+    status: str
+    matched_courses: list[str] = []
+    missing_items: list[str] = []
+    notes: list[str] = []
+
+
+class DarsAuditResponse(BaseModel):
+    student_name: Optional[str] = None
+    student_id: Optional[str] = None
+    program: Optional[str] = None
+    program_code: Optional[str] = None
+    catalog_year: Optional[str] = None
+    graduation_date: Optional[str] = None
+    prepared_on: Optional[str] = None
+    job_id: Optional[str] = None
+    audit_type: Optional[str] = None
+    university_gpa: Optional[float] = None
+    in_major_gpa: Optional[float] = None
+    categories: list[DarsCategory]
+    sections: list[DarsSection]
     warnings: list[str]
 
 
@@ -72,3 +157,53 @@ def get_plan(request: PlanRequest):
         raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
 
     return PlanResponse(**result)
+
+
+@router.post("/audit", response_model=DegreeAuditResponse)
+def get_degree_audit(request: DegreeAuditRequest):
+    """Audit a student's transcript against the local CS B.S. catalog data."""
+    if not request.major:
+        raise HTTPException(status_code=400, detail="major cannot be empty")
+
+    try:
+        result = run_degree_audit(
+            major=request.major,
+            transcript=[entry.model_dump() for entry in request.transcript],
+            in_progress_courses=request.in_progress_courses,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.exception("Degree audit failed")
+        raise HTTPException(status_code=500, detail=f"Degree audit failed: {str(e)}")
+
+    return DegreeAuditResponse(**result)
+
+
+@router.post("/dars/upload", response_model=DarsAuditResponse)
+async def upload_dars_audit(file: UploadFile = File(...)):
+    """Parse an official uAchieve/DARS audit export or screenshot."""
+    content_type = (file.content_type or "").split(";")[0].strip().lower()
+    if content_type not in _ALLOWED_AUDIT_TYPES:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type '{content_type}'. Upload a DARS PDF, PNG, or JPG.",
+        )
+
+    file_bytes = await file.read()
+    if len(file_bytes) > _MAX_AUDIT_BYTES:
+        raise HTTPException(status_code=413, detail="File too large. Maximum size is 12 MB.")
+    if len(file_bytes) == 0:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+
+    try:
+        result = await asyncio.to_thread(parse_dars_audit, file_bytes, content_type)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        logger.exception("DARS audit parse failed")
+        raise HTTPException(status_code=500, detail=f"DARS audit parse failed: {str(e)}")
+
+    return DarsAuditResponse(**result)

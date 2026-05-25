@@ -26,6 +26,8 @@ class ChatRequest(BaseModel):
     major: str = "Computer Science"
     transcript: list[TranscriptEntry] = []
     in_progress_courses: list[str] = []
+    transcript_notes: list[str] = []
+    chat_memories: list[str] = []
 
 
 class ChatResponse(BaseModel):
@@ -65,6 +67,8 @@ def chat(request: ChatRequest):
             course_context=course_context,
             transcript=transcript,
             in_progress_courses=request.in_progress_courses,
+            transcript_notes=request.transcript_notes,
+            chat_memories=request.chat_memories,
         )
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
@@ -91,6 +95,8 @@ def chat_stream(request: ChatRequest):
             course_context=course_context,
             transcript=transcript,
             in_progress_courses=request.in_progress_courses,
+            transcript_notes=request.transcript_notes,
+            chat_memories=request.chat_memories,
         )
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
