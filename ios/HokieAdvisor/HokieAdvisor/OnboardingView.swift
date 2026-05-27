@@ -10,6 +10,7 @@ struct OnboardingView: View {
     @AppStorage("appPasswordHash") private var storedPasswordHash = ""
     @AppStorage("howHeardAboutUs") private var storedHowHeard = ""
     @AppStorage("appearanceMode") private var appearanceMode = "system"
+    @AppStorage("graduationYear") private var storedGraduationYear = ""
 
     @State private var step = 0
     @State private var nameInput = ""
@@ -18,6 +19,7 @@ struct OnboardingView: View {
     @State private var passwordInput = ""
     @State private var confirmInput = ""
     @State private var passwordError = ""
+    @State private var isCreatingAccount = false
     @State private var howHeardSelection = ""
     @State private var showTranscript = false
 
@@ -193,21 +195,15 @@ struct OnboardingView: View {
     // MARK: - Step 3: Password
 
     private var passwordStep: some View {
-        let canProceed = passwordInput.count >= 6 && confirmInput == passwordInput
+        let canProceed = passwordInput.count >= 6 && confirmInput == passwordInput && !isCreatingAccount
         return stepShell(icon: "lock.fill", iconColor: .orange,
                   title: "Secure your account",
-                  subtitle: "Create a password to protect your data. Stored securely on your device.",
+                  subtitle: SupabaseConfig.isConfigured
+                    ? "Create your Hokie Advisor account."
+                    : "Create a password to protect your data. Stored securely on your device.",
                   canProceed: canProceed,
                   onContinue: {
-                      passwordError = ""
-                      guard passwordInput.count >= 6 else {
-                          passwordError = "Password must be at least 6 characters."; return
-                      }
-                      guard passwordInput == confirmInput else {
-                          passwordError = "Passwords don't match."; return
-                      }
-                      storedPasswordHash = hashPassword(passwordInput)
-                      advance()
+                      Task { await createAccountAndAdvance() }
                   }) {
             VStack(alignment: .leading, spacing: 12) {
                 SecureField("Password (min. 6 characters)", text: $passwordInput)
@@ -224,6 +220,15 @@ struct OnboardingView: View {
 
                 if !passwordError.isEmpty {
                     Text(passwordError).font(.caption).foregroundStyle(.red).padding(.leading, 12)
+                }
+                if isCreatingAccount {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text("Creating account...")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.leading, 12)
                 }
             }
         }
@@ -429,6 +434,45 @@ struct OnboardingView: View {
 
     private func advance() {
         withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { step += 1 }
+    }
+
+    private func createAccountAndAdvance() async {
+        passwordError = ""
+        guard passwordInput.count >= 6 else {
+            passwordError = "Password must be at least 6 characters."
+            return
+        }
+        guard passwordInput == confirmInput else {
+            passwordError = "Passwords don't match."
+            return
+        }
+
+        storedPasswordHash = hashPassword(passwordInput)
+        guard SupabaseConfig.isConfigured else {
+            advance()
+            return
+        }
+
+        isCreatingAccount = true
+        defer { isCreatingAccount = false }
+
+        do {
+            _ = try await SupabaseAuthService.shared.signUp(
+                email: storedEmail,
+                password: passwordInput,
+                fullName: storedName,
+                vtPID: storedPID,
+                major: appState.major,
+                graduationYear: storedGraduationYear,
+                appearanceMode: appearanceMode
+            )
+            advance()
+        } catch SupabaseAuthError.missingSession {
+            // Email confirmation can intentionally suppress a session.
+            advance()
+        } catch {
+            passwordError = error.localizedDescription
+        }
     }
 
     private func hashPassword(_ pw: String) -> String {

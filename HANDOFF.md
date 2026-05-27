@@ -18,12 +18,15 @@ App builds in Xcode. Backend (`uvicorn`) runs locally on port 8000.
 - Backend has a new official-audit ingestion path: `POST /advisor/dars/upload` parses a uAchieve/DARS PDF or screenshot into DARS-shaped categories (`University GPA`, `Minimum Hours`, `Major`, `General Ed`, `In Major GPA`, `Electives`, `Minor(s)`).
 - Transcript parser warnings/notes are no longer shown in TranscriptView, but are preserved in `AppState.transcriptNotes` and sent to chat as private LLM context.
 - Backend is now prepared for Supabase as the primary persistence stack: env config, service-role REST client, health/status hooks, SQL schema/RLS migration, and a local JSON catalog sync script are in place.
+- Supabase auth/storage bootstrap is now started: migration `002_auth_storage_bootstrap.sql` creates profiles from Auth metadata and adds private transcript/DARS storage buckets; iOS has a lightweight Supabase Auth client that signs up/signs in when `SupabaseConfig` is configured.
 
 **Known gaps / open work:**
 - Statistics elective + CS theory elective approved course lists not in catalog data yet — those two audit buckets stay "open" until data is added
 - `TranscriptView` subtitle still says "CS course history" — should be major-agnostic once multi-major support lands
 - LaTeX rendering in chat now has lightweight native support for inline `$...$`, `\(...\)`, display `$$...$$`, `\[...\]`, and common matrix environments. It is not a full TeX engine.
 - Frontend still needs UI for uploading/importing an official DARS/uAchieve audit report and rendering `DarsAuditResponse`. The screenshot from uachieve.es.cloud.vt.edu is the correct source-of-truth shape.
+- Supabase project values are not yet filled into iOS (`SupabaseService.swift` has blank public URL/anon key). Until those are set, iOS intentionally keeps using local-only auth.
+- The Python API/local server is still required for trusted OpenAI work (chat streaming, transcript parse, DARS extraction) until those are deployed as Supabase Edge Functions or another hosted API.
 
 ---
 
@@ -152,6 +155,18 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 | **Docs** | Added `backend/supabase/README.md` with setup, migration, sync, and health-check instructions. |
 | **Validation** | Python compile passes with bytecode cache redirected to `/private/tmp`. FastAPI app import passes. Sync script correctly exits when Supabase env vars are not configured locally. |
 
+### Session 14 — Supabase Auth/Storage Bootstrap (Codex)
+| Change | Detail |
+|---|---|
+| **Auth/profile bootstrap migration** | Added `backend/supabase/migrations/002_auth_storage_bootstrap.sql`. It creates `public.handle_new_user()` and an `auth.users` trigger that seeds/updates `profiles` from signup metadata (`full_name`, `vt_email`, `vt_pid`, `major`, `graduation_year`, `appearance_mode`). |
+| **Private storage buckets** | Same migration creates private `transcripts` and `dars-audits` buckets with 12 MB limits and per-user folder policies based on `storage.foldername(name)[1] == auth.uid()`. |
+| **iOS Supabase auth client** | Added `SupabaseService.swift` with blank `SupabaseConfig.url`/`anonKey`, REST-based sign-up/sign-in against Supabase Auth, profile upsert when a session is returned, and Keychain-backed session storage. No service-role key is used in iOS. |
+| **Onboarding wired to Supabase** | `OnboardingView` now creates a Supabase account with the collected VT email/password/profile metadata when configured. If not configured, it keeps the existing local password flow. |
+| **Login wired to Supabase** | `LoginView` still checks the local password hash, then signs into Supabase when configured and stores the session in Keychain. |
+| **Reset clears Supabase session** | Settings clear/reset actions now delete the local Supabase session from Keychain. |
+| **Docs updated** | `backend/supabase/README.md` now describes migration order, dashboard auth settings, iOS public config, and the architecture boundary: Supabase owns auth/storage/persistence; trusted AI still needs hosted compute. |
+| **Validation** | Python compile passes via `python3 -m py_compile`. `xcodebuild` reached Swift build work but failed at the existing `Hoki.icon` `actool` crash; no Swift diagnostics appeared before the asset failure. |
+
 ### Session 10 — Native LaTeX Chat Rendering (Codex)
 | Change | Detail |
 |---|---|
@@ -173,6 +188,8 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 - [x] **`transcript_notes` in chat stream** — `POST /chat/stream` body includes `transcript_notes: [String]` and backend injects them into the system prompt under "Transcript Parsing Notes" as private context.
 - [ ] **DARS parser hardening** — once the user exports a real DARS PDF or screenshot, test `POST /advisor/dars/upload` against it and tune extraction for official section text
 - [ ] **Supabase live setup** — create/link the Supabase project, apply `backend/supabase/migrations/001_initial_schema.sql`, set backend env vars, and run `python backend/scripts/sync_catalog_to_supabase.py`
+- [ ] **Supabase client config** — fill `SupabaseConfig.url` and `SupabaseConfig.anonKey` in iOS after project creation; never put service-role key in iOS
+- [ ] **Hosted AI compute** — move chat/transcript/DARS trusted OpenAI endpoints off local `uvicorn` (Supabase Edge Functions or hosted API) and point `APIService.baseURL` to that hosted endpoint
 - [ ] **Persist API outputs to Supabase** — after auth/user IDs are wired from iOS, save transcript uploads, chat sessions/messages, chat memories, degree audits, and DARS audits into the new tables
 - [ ] **Statistics elective approved list** — add to `computer_science.json` so `statistics_elective` bucket resolves
 - [ ] **CS theory elective approved list** — same; `cs_theory_elective` bucket currently always open

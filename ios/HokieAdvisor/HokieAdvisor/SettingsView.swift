@@ -70,6 +70,7 @@ struct SettingsView: View {
                 appState.passingAllClasses = nil
                 appState.strugglingCourses = []
                 chatHistory.deleteAll()
+                Task { await SupabaseAuthService.shared.signOut() }
             }
             Button("Cancel", role: .cancel) {}
         } message: {
@@ -87,6 +88,7 @@ struct SettingsView: View {
                 appState.strugglingCourses = []
                 appState.major = ""
                 chatHistory.deleteAll()
+                Task { await SupabaseAuthService.shared.signOut() }
                 appPasswordHash = ""
                 vtEmail = ""
                 vtPID = ""

@@ -4,11 +4,13 @@ import CryptoKit
 struct LoginView: View {
     @Binding var isAuthenticated: Bool
     @AppStorage("studentName") private var studentName = ""
+    @AppStorage("vtEmail") private var vtEmail = ""
     @AppStorage("appPasswordHash") private var storedHash = ""
 
     @State private var passwordInput = ""
     @State private var errorMessage = ""
     @State private var shake = false
+    @State private var isSigningIn = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -53,14 +55,18 @@ struct LoginView: View {
             Spacer()
 
             Button { attempt() } label: {
-                Text("Sign In")
-                    .font(.body.bold()).frame(maxWidth: .infinity).padding(.vertical, 18)
+                HStack(spacing: 8) {
+                    if isSigningIn { ProgressView().tint(.white) }
+                    Text(isSigningIn ? "Signing In" : "Sign In")
+                        .font(.body.bold())
+                }
+                    .frame(maxWidth: .infinity).padding(.vertical, 18)
                     .background(!passwordInput.isEmpty ? Color.vtBurgundy : Color(.tertiarySystemBackground))
                     .foregroundStyle(!passwordInput.isEmpty ? .white : Color(.tertiaryLabel))
                     .clipShape(Capsule())
             }
-            .disabled(passwordInput.isEmpty)
-            .animation(.easeInOut(duration: 0.2), value: passwordInput.isEmpty)
+            .disabled(passwordInput.isEmpty || isSigningIn)
+            .animation(.easeInOut(duration: 0.2), value: passwordInput.isEmpty || isSigningIn)
             .padding(.horizontal, 32).padding(.bottom, 48)
         }
         .background(Color(.systemBackground))
@@ -75,6 +81,32 @@ struct LoginView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { shake = false }
             return
         }
+        Task { await completeSignIn() }
+    }
+
+    private func completeSignIn() async {
+        guard SupabaseConfig.isConfigured else {
+            finishLocalSignIn()
+            return
+        }
+
+        guard !vtEmail.isEmpty else {
+            withAnimation { errorMessage = "Missing VT email. Please reset account setup." }
+            return
+        }
+
+        isSigningIn = true
+        defer { isSigningIn = false }
+
+        do {
+            _ = try await SupabaseAuthService.shared.signIn(email: vtEmail, password: passwordInput)
+            finishLocalSignIn()
+        } catch {
+            withAnimation { errorMessage = error.localizedDescription }
+        }
+    }
+
+    private func finishLocalSignIn() {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
             isAuthenticated = true
         }
