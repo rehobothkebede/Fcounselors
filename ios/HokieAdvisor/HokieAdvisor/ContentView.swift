@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import UniformTypeIdentifiers
 
 // MARK: - Markdown Helper
 
@@ -94,17 +95,20 @@ struct FloatingTabBar: View {
 struct DegreeAuditView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var vm = DegreeAuditViewModel()
+    @StateObject private var darsVM = DarsAuditViewModel()
     @StateObject private var tutoringVM = TutoringViewModel()
     @State private var showTutoringSheet = false
+    @State private var showDarsImporter = false
 
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 pageHeader(
-                    title: "Degree Audit",
-                    subtitle: "CS requirements checked against your transcript"
+                    title: "Official Audit",
+                    subtitle: "DARS first, local CS check as backup"
                 )
 
+                darsImportSection.padding(.horizontal, 20)
                 transcriptStatusCard.padding(.horizontal, 20)
                 if appState.hasTranscript {
                     auditSection.padding(.horizontal, 20)
@@ -121,6 +125,12 @@ struct DegreeAuditView: View {
         .scrollIndicators(.hidden)
         .background(Color(.systemBackground))
         .sheet(isPresented: $showTutoringSheet) { TutoringSheet(vm: tutoringVM) }
+        .fileImporter(
+            isPresented: $showDarsImporter,
+            allowedContentTypes: [.pdf, .png, .jpeg],
+            allowsMultipleSelection: false,
+            onCompletion: handlePickedDarsFile
+        )
         .task(id: auditRefreshKey) {
             guard appState.hasTranscript else { return }
             await vm.runAudit(
@@ -132,6 +142,45 @@ struct DegreeAuditView: View {
     }
 
     // MARK: Subviews
+
+    private var darsImportSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            DarsHeroCard(
+                audit: darsVM.audit,
+                fileName: darsVM.importedFileName,
+                isLoading: darsVM.isLoading,
+                onImport: {
+                    darsVM.errorMessage = nil
+                    showDarsImporter = true
+                },
+                onClear: { darsVM.clear() }
+            )
+
+            if darsVM.isLoading {
+                statusCard(icon: "hourglass", iconColor: .vtBurgundy,
+                           title: "Reading official audit",
+                           subtitle: "Parsing the uploaded DARS/uAchieve file")
+            }
+
+            if let error = darsVM.errorMessage {
+                DarsBackendStatusCard(message: error)
+            }
+
+            if let audit = darsVM.audit {
+                DarsAuditSummaryCard(audit: audit)
+
+                if !audit.warnings.isEmpty {
+                    ForEach(audit.warnings, id: \.self) { WarningCard(text: $0) }
+                }
+
+                DarsCategoryList(categories: audit.categories)
+
+                if !audit.sections.isEmpty {
+                    DarsSectionList(sections: audit.sections)
+                }
+            }
+        }
+    }
 
     private var auditRefreshKey: String {
         let courses = appState.transcriptCourses
@@ -266,6 +315,28 @@ struct DegreeAuditView: View {
         let priority = audit.buckets.filter { $0.status == "incomplete" }
         let partial = audit.buckets.filter { $0.status == "in_progress" }
         return Array((priority + partial).prefix(14))
+    }
+
+    private func handlePickedDarsFile(_ pickerResult: Result<[URL], Error>) {
+        switch pickerResult {
+        case .failure(let error):
+            darsVM.errorMessage = error.localizedDescription
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            let accessing = url.startAccessingSecurityScopedResource()
+            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+            guard let data = try? Data(contentsOf: url) else {
+                darsVM.errorMessage = "Could not read the selected audit file."
+                return
+            }
+            let mime: String
+            switch url.pathExtension.lowercased() {
+            case "pdf": mime = "application/pdf"
+            case "png": mime = "image/png"
+            default: mime = "image/jpeg"
+            }
+            Task { await darsVM.upload(fileData: data, mimeType: mime, fileName: url.lastPathComponent) }
+        }
     }
 }
 
@@ -563,6 +634,381 @@ struct AuditBucketCard: View {
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
+}
+
+// MARK: - DARS / uAchieve Cards
+
+struct DarsHeroCard: View {
+    let audit: DarsAuditResponse?
+    let fileName: String?
+    let isLoading: Bool
+    let onImport: () -> Void
+    let onClear: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 14) {
+                circleIcon("building.columns.fill", color: .vtBurgundy, size: 54)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Official DARS / CollegeSource")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(audit == nil ? "Source-of-truth audit import" : loadedSubtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            HStack(spacing: 10) {
+                Button(action: onImport) {
+                    Label(audit == nil ? "Import Audit" : "Replace Audit", systemImage: "arrow.up.doc.fill")
+                        .font(.subheadline.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(isLoading ? Color(.tertiarySystemBackground) : Color.vtBurgundy)
+                        .foregroundStyle(isLoading ? Color(.tertiaryLabel) : .white)
+                        .clipShape(Capsule())
+                }
+                .disabled(isLoading)
+
+                if audit != nil {
+                    Button(action: onClear) {
+                        Image(systemName: "xmark")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(Color.vtBurgundy)
+                            .frame(width: 46, height: 46)
+                            .background(Color.vtBurgundy.opacity(0.1))
+                            .clipShape(Circle())
+                    }
+                    .accessibilityLabel("Clear DARS audit")
+                }
+            }
+        }
+        .padding(20)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 26))
+    }
+
+    private var loadedSubtitle: String {
+        if let preparedOn = audit?.preparedOn, !preparedOn.isEmpty {
+            return "Prepared \(preparedOn)"
+        }
+        if let fileName {
+            return fileName
+        }
+        return "Audit loaded"
+    }
+}
+
+struct DarsBackendStatusCard: View {
+    let message: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "network.slash")
+                .foregroundStyle(.orange)
+                .font(.headline)
+                .padding(.top, 2)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("DARS backend not ready")
+                    .font(.subheadline.bold())
+                Text(message)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer()
+        }
+        .padding(16)
+        .background(Color.orange.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+}
+
+struct DarsAuditSummaryCard: View {
+    let audit: DarsAuditResponse
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(audit.program ?? "Official Degree Audit")
+                    .font(.headline.bold())
+                    .fontDesign(.rounded)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 8) {
+                    if let programCode = audit.programCode, !programCode.isEmpty {
+                        DarsPill(text: programCode, color: .vtBurgundy)
+                    }
+                    if let catalogYear = audit.catalogYear, !catalogYear.isEmpty {
+                        DarsPill(text: catalogYear, color: .blue)
+                    }
+                    if let auditType = audit.auditType, !auditType.isEmpty {
+                        DarsPill(text: auditType, color: .purple)
+                    }
+                }
+            }
+
+            HStack(spacing: 12) {
+                darsMetric(value: audit.universityGPA.map { String(format: "%.3f", $0) } ?? "—", label: "University GPA")
+                darsMetric(value: audit.inMajorGPA.map { String(format: "%.3f", $0) } ?? "—", label: "In-Major GPA")
+            }
+        }
+        .padding(18)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private func darsMetric(value: String, label: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.title3.bold())
+                .fontDesign(.rounded)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(Color(.tertiarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+struct DarsCategoryList: View {
+    let categories: [DarsCategory]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Official Categories")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(0.5)
+            ForEach(categories) { category in
+                DarsCategoryCard(category: category)
+            }
+        }
+    }
+}
+
+struct DarsCategoryCard: View {
+    let category: DarsCategory
+
+    private var totalHours: Double {
+        let visibleTotal = (category.completeHours ?? 0) +
+            (category.inProgressHours ?? 0) +
+            (category.unfulfilledHours ?? 0) +
+            (category.plannedHours ?? 0)
+        return max(category.requiredHours ?? visibleTotal, visibleTotal, 1)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: statusIcon)
+                    .foregroundStyle(statusColor)
+                Text(category.title)
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                if let required = category.requiredHours {
+                    Text("\(formatHours(required)) hrs")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                } else if let gpa = category.gpa {
+                    Text(String(format: "%.3f", gpa))
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            DarsProgressBar(category: category, totalHours: totalHours)
+
+            HStack(spacing: 10) {
+                darsLegend("Complete", category.completeHours, .green)
+                darsLegend("Progress", category.inProgressHours, .blue)
+                darsLegend("Open", category.unfulfilledHours, .red)
+                darsLegend("Planned", category.plannedHours, .purple)
+            }
+
+            if let note = category.notes.first {
+                Text(note)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private var statusColor: Color {
+        switch category.status {
+        case "complete": return .green
+        case "in_progress": return .blue
+        case "unfulfilled": return .red
+        case "planned": return .purple
+        default: return Color(.systemGray)
+        }
+    }
+
+    private var statusIcon: String {
+        switch category.status {
+        case "complete": return "checkmark.circle.fill"
+        case "in_progress": return "clock.fill"
+        case "unfulfilled": return "xmark.circle.fill"
+        case "planned": return "calendar.badge.clock"
+        default: return "questionmark.circle.fill"
+        }
+    }
+
+    private func darsLegend(_ title: String, _ hours: Double?, _ color: Color) -> some View {
+        HStack(spacing: 5) {
+            Circle().fill(color).frame(width: 7, height: 7)
+            Text("\(title) \(formatHours(hours ?? 0))")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct DarsProgressBar: View {
+    let category: DarsCategory
+    let totalHours: Double
+
+    private var segments: [(Double, Color)] {
+        [
+            (category.completeHours ?? 0, .green),
+            (category.inProgressHours ?? 0, .blue),
+            (category.unfulfilledHours ?? 0, .red),
+            (category.plannedHours ?? 0, .purple),
+        ].filter { $0.0 > 0 }
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            HStack(spacing: 2) {
+                if segments.isEmpty {
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color(.tertiarySystemBackground))
+                } else {
+                    ForEach(Array(segments.enumerated()), id: \.offset) { _, segment in
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(segment.1)
+                            .frame(width: max(4, proxy.size.width * CGFloat(segment.0 / totalHours)))
+                    }
+                    Spacer(minLength: 0)
+                }
+            }
+        }
+        .frame(height: 11)
+        .background(Color(.tertiarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 6))
+    }
+}
+
+struct DarsSectionList: View {
+    let sections: [DarsSection]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Official Sections")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(0.5)
+            ForEach(sections.prefix(12)) { section in
+                DarsSectionCard(section: section)
+            }
+        }
+    }
+}
+
+struct DarsSectionCard: View {
+    let section: DarsSection
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: statusIcon)
+                    .foregroundStyle(statusColor)
+                Text(section.title)
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+            }
+
+            if !section.matchedCourses.isEmpty {
+                Text(section.matchedCourses.prefix(6).joined(separator: ", "))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if !section.missingItems.isEmpty {
+                Text("Missing: \(section.missingItems.joined(separator: ", "))")
+                    .font(.caption)
+                    .foregroundStyle(statusColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if let note = section.notes.first {
+                Text(note)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private var statusColor: Color {
+        switch section.status {
+        case "complete": return .green
+        case "in_progress": return .blue
+        case "unfulfilled": return .red
+        case "planned": return .purple
+        default: return Color(.systemGray)
+        }
+    }
+
+    private var statusIcon: String {
+        switch section.status {
+        case "complete": return "checkmark.circle.fill"
+        case "in_progress": return "clock.fill"
+        case "unfulfilled": return "xmark.circle.fill"
+        case "planned": return "calendar.badge.clock"
+        default: return "questionmark.circle.fill"
+        }
+    }
+}
+
+struct DarsPill: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        Text(text)
+            .font(.caption.bold())
+            .foregroundStyle(color)
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(color.opacity(0.1))
+            .clipShape(Capsule())
+    }
+}
+
+private func formatHours(_ value: Double) -> String {
+    value.rounded() == value ? "\(Int(value))" : String(format: "%.1f", value)
 }
 
 // MARK: - MarkdownBody

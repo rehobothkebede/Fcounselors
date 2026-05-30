@@ -12,10 +12,11 @@ App builds in Xcode. Backend (`uvicorn`) runs locally on port 8000.
 
 **What's fully working end-to-end:**
 - Transcript import → AI parse → AppState population → GPA/credits/courses displayed
-- Chat streaming (SSE) with transcript context and VT grade rules
+- Chat streaming (SSE) with transcript context, VT grade rules, saved chat memory, native code/math/graph rendering, and YouTube resource cards
 - Degree Audit: backend `POST /advisor/audit` returns full bucket breakdown; frontend `DegreeAuditView` renders it
 - Backend now treats transfer/awarded credit grades (`T`, `TR`, `TRANSFER`, `P`, `CR`) as completed awarded credit for audit/chat purposes. Example: `CS 1114` with grade `T` satisfies the CS 1114 requirement.
 - Backend has a new official-audit ingestion path: `POST /advisor/dars/upload` parses a uAchieve/DARS PDF or screenshot into DARS-shaped categories (`University GPA`, `Minimum Hours`, `Major`, `General Ed`, `In Major GPA`, `Electives`, `Minor(s)`).
+- Frontend now has a DARS-first Audit tab flow: Swift DARS models, `APIService.uploadDarsAudit`, PDF/PNG/JPG file import, official DARS summary cards, category status bars, section cards, and backend-error handling.
 - Transcript parser warnings/notes are no longer shown in TranscriptView, but are preserved in `AppState.transcriptNotes` and sent to chat as private LLM context.
 - Backend is now prepared for Supabase as the primary persistence stack: env config, service-role REST client, health/status hooks, SQL schema/RLS migration, and a local JSON catalog sync script are in place.
 - Supabase auth/storage bootstrap is now started: migration `002_auth_storage_bootstrap.sql` creates profiles from Auth metadata and adds private transcript/DARS storage buckets; iOS has a lightweight Supabase Auth client that signs up/signs in when `SupabaseConfig` is configured.
@@ -24,9 +25,13 @@ App builds in Xcode. Backend (`uvicorn`) runs locally on port 8000.
 - Statistics elective + CS theory elective approved course lists not in catalog data yet — those two audit buckets stay "open" until data is added
 - `TranscriptView` subtitle still says "CS course history" — should be major-agnostic once multi-major support lands
 - LaTeX rendering in chat now has lightweight native support for inline `$...$`, `\(...\)`, display `$$...$$`, `\[...\]`, and common matrix environments. It is not a full TeX engine.
-- Frontend still needs UI for uploading/importing an official DARS/uAchieve audit report and rendering `DarsAuditResponse`. The screenshot from uachieve.es.cloud.vt.edu is the correct source-of-truth shape.
+- Official CollegeSource/uAchieve API access is still unsolved and likely needs school support. The frontend is ready for the existing `/advisor/dars/upload` contract, but the backend/source integration still needs to become reliable.
 - Supabase project values are not yet filled into iOS (`SupabaseService.swift` has blank public URL/anon key). Until those are set, iOS intentionally keeps using local-only auth.
 - The Python API/local server is still required for trusted OpenAI work (chat streaming, transcript parse, DARS extraction) until those are deployed as Supabase Edge Functions or another hosted API.
+- `README.md` and legal/privacy copy are stale: they still say Fcounselors/local-only in places and do not fully reflect transcript/chat data sent to the backend/OpenAI.
+- `backend/app/services/supabase_catalog_sync.py` currently expects the wrong `pathways.json` shape, so `pathways_courses` would sync as zero rows until fixed.
+- Root `.env` is ignored by Git but exists locally with a real OpenAI key; rotate/remove it before sharing the machine or using this repo in demos. Several `.DS_Store` files are tracked and should be removed from Git.
+- `IPHONEOS_DEPLOYMENT_TARGET` in the Xcode project is currently `26.4`, while older notes say iOS 17+. If iOS 17 support is intended, lower the deployment target.
 
 ---
 
@@ -180,14 +185,40 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 | **Malformed matrix repair** | Renderer now repairs common malformed model output like `\beginarrayccc|c ... \endarray` into parseable `array` syntax before display, so streamed matrix examples are less likely to show raw LaTeX. |
 | **Example-first tutoring** | Backend tutor prompt now says that when a student asks for an example problem, the advisor should provide a concrete example immediately before asking follow-up questions. This addresses the chat response that asked the user to send a matrix instead of generating one. |
 
+### Session 15 — Full Repository Audit (Codex)
+| Finding | Detail |
+|---|---|
+| **Confirmed remaining DARS frontend gap** | Backend DARS ingestion exists, but Swift has no `DarsAuditResponse`/category/section models, no `APIService.uploadDarsAudit`, and no DARS import/rendering UI yet. |
+| **Chat memory is implemented** | `ChatMemory` model, `ChatHistoryStore.memories`, memory inference/capture, `ChatMemoryEditorView`, and `chat_memories` request payload are present. Backend injects `chat_memories` into private chat context. |
+| **Graph/resource rendering is implemented** | `MarkdownBody` parses fenced `graph` blocks into `GraphDiagramView`; YouTube links become `ResourceLinkCard`. Backend tutor prompt asks for graph blocks on visual graph/CS topics. |
+| **Supabase catalog sync bug found** | `supabase_catalog_sync._pathway_rows()` handles a flat dict, but actual `backend/data/pathways.json` is `{source,total_courses,pathways:[...]}` with nested sections. Fix before relying on `pathways_courses` sync. |
+| **Catalog data status** | `vt_full_catalog.json` has only 2 subjects and no unique course/program/requirement data; `vt_programs.json` is empty. Runtime falls back to `vt_catalog_202601.json` and COE JSON files for most catalog data. |
+| **Repo hygiene issues found** | Root `.env` is ignored but contains a live OpenAI key; rotate/remove it. `.DS_Store` files are tracked in several directories despite ignore rules. |
+| **Docs/config drift found** | `README.md` still references Fcounselors paths/endpoints and omits current DARS/audit/Supabase/chat-memory behavior. Settings legal copy still says data is local-only even though backend/OpenAI calls process transcript/chat context. |
+| **Validation** | Python source compile passed with `PYTHONPYCACHEPREFIX=/private/tmp`; JSON parsed with `jq`; Xcode `project.pbxproj` and scheme plist linted; workspace XML and `Hoki.icon/icon.json` parsed. Full Swift build was not run during this audit. |
+
+### Session 16 — DARS Frontend Completion (Codex)
+| Change | Detail |
+|---|---|
+| **Swift DARS models** | Added `DarsAuditResponse`, `DarsCategory`, and `DarsSection` in `Models.swift`, matching backend snake_case fields. |
+| **DARS upload API method** | Added `APIService.uploadDarsAudit(fileData:mimeType:fileName:)` and generalized multipart upload handling for transcript and DARS uploads. Server `detail` errors now surface as readable messages. |
+| **DARS view model** | Added `DarsAuditViewModel` in `PlanViewModel.swift` with upload/loading/error/clear state. |
+| **DARS-first Audit tab** | `DegreeAuditView` now leads with "Official Audit" and an "Official DARS / CollegeSource" import card before the local CS fallback audit. |
+| **Import UI** | Added PDF/PNG/JPG `fileImporter` support in `ContentView.swift`, with security-scoped file reads and MIME type mapping. |
+| **Render UI** | Added official audit summary, GPA metrics, DARS category cards with Complete/In Progress/Unfulfilled/Planned bars, warnings, section cards, and a clear/replace flow. |
+| **Backend not-ready state** | If the backend/source API is unavailable or returns an error, the DARS card stays usable and shows a dedicated "DARS backend not ready" message. |
+| **Validation** | `xcodebuild` reached Swift compilation with no Swift diagnostics, then failed at the existing `Hoki.icon` `actool` crash. `git diff --check` passed and project plist lint passed. |
+
 ---
 
 ## Next Steps
 
 ### For Codex (backend)
 - [x] **`transcript_notes` in chat stream** — `POST /chat/stream` body includes `transcript_notes: [String]` and backend injects them into the system prompt under "Transcript Parsing Notes" as private context.
-- [ ] **DARS parser hardening** — once the user exports a real DARS PDF or screenshot, test `POST /advisor/dars/upload` against it and tune extraction for official section text
+- [ ] **Official CollegeSource/uAchieve source integration** — frontend is ready, but the reliable backend/API source for school degree-audit data is still unsolved and likely needs school support
+- [ ] **DARS parser hardening** — once the user exports a real DARS PDF or screenshot or gets official source access, test `POST /advisor/dars/upload` against it and tune extraction for official section text
 - [ ] **Supabase live setup** — create/link the Supabase project, apply `backend/supabase/migrations/001_initial_schema.sql`, set backend env vars, and run `python backend/scripts/sync_catalog_to_supabase.py`
+- [ ] **Fix Supabase Pathways sync** — update `_pathway_rows()` for the nested `pathways[].sections[].courses[]` shape before running catalog sync for production
 - [ ] **Supabase client config** — fill `SupabaseConfig.url` and `SupabaseConfig.anonKey` in iOS after project creation; never put service-role key in iOS
 - [ ] **Hosted AI compute** — move chat/transcript/DARS trusted OpenAI endpoints off local `uvicorn` (Supabase Edge Functions or hosted API) and point `APIService.baseURL` to that hosted endpoint
 - [ ] **Persist API outputs to Supabase** — after auth/user IDs are wired from iOS, save transcript uploads, chat sessions/messages, chat memories, degree audits, and DARS audits into the new tables
@@ -195,19 +226,28 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 - [ ] **CS theory elective approved list** — same; `cs_theory_elective` bucket currently always open
 - [ ] **Multi-major support** — audit service currently throws `ValueError` for non-CS majors
 - [ ] **Audit context in chat** — inject audit bucket summary into `POST /chat/stream` system prompt so the bot can answer "what do I still need?" with live audit data
+- [ ] **Catalog data refresh** — rebuild/replace `vt_full_catalog.json` and `vt_programs.json`; current files are mostly empty, so runtime relies on legacy/COE fallbacks
+- [ ] **Secret hygiene** — rotate the OpenAI key that exists in local root `.env`, keep secrets in untracked env files only, and avoid committing or sharing them
+- [ ] **Repo cleanup** — remove tracked `.DS_Store` files and keep `.gitignore` enforcement clean
+- [ ] **Docs refresh** — update `README.md` for Hokie Advisor paths, current endpoints, DARS, Supabase, chat memory, and local-vs-hosted architecture
 - [x] **Transfer credit backend semantics** — `T`/`TR` now count as awarded credit in audit and chat context
 - [x] **Transcript parser notes to chat** — raw transcript parse warnings are hidden from UI but sent to chat as private context
 
 ### For Claude (frontend)
-- [ ] **DARS upload/import UI** — allow user to import official uAchieve/DARS PDF or screenshot and call `POST /advisor/dars/upload`; render DARS category bars matching Complete/In Progress/Unfulfilled/Planned (reference: screenshot of uachieve.es.cloud.vt.edu showing pie chart + horizontal category bars)
+- [x] **DARS upload/import UI** — added Swift DARS models, multipart API call to `POST /advisor/dars/upload`, file importer for PDF/PNG/JPG, and category/section rendering matching Complete/In Progress/Unfulfilled/Planned.
 - [x] **Consume `planned_courses`** — done: `TranscriptResponse.planned_courses`, `AppState.plannedCourses`, `plannedCoursesSection` in TranscriptView, semester-aware active/upcoming split
 - [ ] **Expandable `AuditBucketCard`** — tappable to reveal all `matchedCourses` + full `notes` list (currently capped at 4 courses / 1 note)
 - [ ] **Home screen audit preview** — inline card showing % complete from last audit (needs audit result accessible outside of `DegreeAuditView`)
 - [x] **LaTeX rendering in chat** — lightweight native renderer for inline/display math and common matrix environments. Future upgrade could replace it with full MathJax/KaTeX rendering if needed.
+- [x] **Graph rendering in chat** — fenced `graph` blocks render as native `GraphDiagramView`; tutor prompt asks for graph blocks for graph theory/path/tree topics.
+- [x] **YouTube/resource cards in chat** — YouTube links in assistant messages render as compact resource cards.
 - [x] **Chat history / session save** — sessions auto-saved to Documents/chat_sessions.json on every assistant reply and on tab switch. `ChatHistorySheet` lets users browse, resume, and delete past chats.
+- [x] **Chat memory** — user messages can infer saved memories, users can edit memories in Profile, and `chat_memories` are sent to backend as private personalization context.
 - [x] **Swipe down to dismiss keyboard** — shared gesture + native interactive scroll dismissal across chat, profile/settings, onboarding, login, transcript, and chat memory editor. Chat input has a small drag handle above the prompt.
 - [ ] **Face ID / Touch ID** for `appPasswordHash`
 - [ ] **Dynamic chips post-audit** — after audit loads, surface chips like "Why do I need to retake CS 2114?"
+- [ ] **Privacy/legal copy refresh** — Settings legal sheets still claim data is local-only; update copy before production to reflect backend/OpenAI processing and Supabase plans.
+- [ ] **Deployment target check** — Xcode project currently targets iOS `26.4`; lower it if iOS 17+ remains the desired support range.
 
 ### Done ✓
 - [x] Hardcoded "CS '26" badge → dynamic major + grad year badges
@@ -215,7 +255,10 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 - [x] Grad year syncs from transcript import AND manual entry
 - [x] TranscriptView stuck-in-sheet bug — ✕ dismiss button added
 - [x] Degree Audit backend + frontend (fully functional for CS B.S.)
+- [x] Official DARS frontend path — import UI and response rendering are ready for the backend/source API contract
 - [x] Semester-aware transcript UI — future registered courses no longer appear as "currently enrolled"; `planned_courses` wired end-to-end
+- [x] Chat history and chat memory are local-device persisted and included in advisor context
+- [x] Native chat rendering now covers code blocks, lightweight LaTeX, graph blocks, and YouTube resource cards
 
 ---
 
@@ -223,9 +266,10 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 
 ```
 Stack:
-  iOS:      SwiftUI, Xcode 16, PBXFileSystemSynchronizedRootGroup
+  iOS:      SwiftUI, Xcode 16/26 project format, PBXFileSystemSynchronizedRootGroup
             @EnvironmentObject AppState, @AppStorage for persistence
-            Targets iOS 17+ (uses .sensoryFeedback, two-param .onChange)
+            Handoff historically said iOS 17+, but project currently sets
+            IPHONEOS_DEPLOYMENT_TARGET = 26.4 in project.pbxproj.
   Backend:  FastAPI + OpenAI, Python 3.11+, uvicorn on port 8000
 
 API endpoints:
@@ -237,7 +281,8 @@ API endpoints:
                             Body: {major, transcript[], in_progress_courses[]}
                             Returns: DegreeAuditResponse (see Models.swift)
   POST /chat/stream       — SSE chat, token-by-token
-                            Body may include transcript_notes[] for private LLM context
+                            Body may include transcript_notes[] and chat_memories[]
+                            for private LLM context
   POST /chat              — legacy non-streaming fallback
   POST /advisor/plan      — course plan AI recommendation (backend only, not in UI)
   POST /transcript/upload — multipart file → TranscriptResponse
@@ -262,6 +307,10 @@ DARS/uAchieve response shape:
     title, status, matched_courses[], missing_items[], notes[]
   Status values:
     complete, in_progress, unfulfilled, planned, unknown
+  Frontend:
+    Models.swift has DarsAuditResponse/DarsCategory/DarsSection.
+    APIService.uploadDarsAudit posts multipart to /advisor/dars/upload.
+    DegreeAuditView renders official DARS first, local CS audit second.
 
 AppState key computed properties:
   calculatedGPA         — Double?, weighted GPA (P/CR/TR/T excluded)
@@ -280,9 +329,9 @@ Backend transcript grade semantics:
   including C-or-better gates. Placeholder transfer courses like CS 1XXX should count only
   as elective/free credit, not as a named core requirement.
 
-AppStorage keys:
+AppStorage keys currently used:
   onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash,
-  howHeardAboutUs, graduationYear, appearanceMode, transcriptData, transcriptImported
+  howHeardAboutUs, graduationYear, appearanceMode
 
 Grad year flow:
   @AppStorage("graduationYear") — shared key, default "" in ALL views (not "2027")
@@ -329,7 +378,7 @@ LaTeX chat rendering:
 ## /compact
 
 ```
-/compact Project: Hokie Advisor — SwiftUI iOS academic advising app for Virginia Tech. Repo: /Users/rehobothkebede/GitHub/Fcounselors. Xcode 16, bundle com.hokieadvisor.HokieAdvisor, iOS 17+.
+/compact Project: Hokie Advisor — SwiftUI iOS academic advising app for Virginia Tech. Repo: /Users/rehobothkebede/GitHub/Fcounselors. Xcode 16/26 project format, bundle com.hokieadvisor.HokieAdvisor. Historical target note said iOS 17+, but project.pbxproj currently sets IPHONEOS_DEPLOYMENT_TARGET = 26.4.
 
 TWO-AGENT WORKFLOW: Claude = iOS frontend (ios/HokieAdvisor/HokieAdvisor/), Codex = backend (backend/). HANDOFF.md is the comms channel — read it at session start, update it at session end.
 
@@ -376,11 +425,13 @@ Session 10 — Codex native LaTeX chat rendering:
 - ContentView MarkdownBody now parses inline $...$ / \(...\), display $$...$$ / \[...\], and matrix environments.
 - Added LaTeXMathView + LaTeXFormatter for lightweight native rendering of matrices, simple fractions, and common symbols. Not a full TeX engine.
 - Backend tutor prompt now asks the advisor/tutor to use LaTeX for math, linear algebra, matrices, calculus, proofs, algorithms, and recurrences.
+- MarkdownBody also parses fenced `graph` blocks into native GraphDiagramView and YouTube links into resource cards. Backend tutor prompt requests graph blocks for visual graph/CS topics.
 - Verified backend compile. CLI xcodebuild still stops at existing Hoki.icon actool crash before full Swift diagnostics.
 
 Session 11 — Claude chat history:
 - ChatMessage is now Codable. New ChatSession struct (Identifiable, Codable) in Models.swift: id, title, date, messages[].
 - New ChatHistoryStore.swift: @MainActor ObservableObject, persists sessions to Documents/chat_sessions.json. upsert() inserts/updates sorted newest-first. delete(at:) for swipe-delete. Loads on init.
+- ChatMemory model and memory persistence are now present too: ChatHistoryStore persists chat_memories.json, infers memories from user messages, exposes memoryContext, and SettingsView has ChatMemoryEditorView. ChatViewModel sends chat_memories[] to backend; backend chat.py/ai_service inject them as private personalization context.
 - ChatViewModel: currentSessionID UUID, configure(store:), autoSave() (strips isStreaming), loadSession() (auto-saves current first), clearConversation() (saves before clearing, mints new sessionID). sendMessage() calls autoSave() after each successful stream.
 - ChatView: @EnvironmentObject chatHistory. Header has clock.arrow.circlepath button → ChatHistorySheet. Pencil/compose button replaces trash (saves + starts new). onDisappear calls autoSave() (preserves partial conversation on tab switch). configure() called in onAppear.
 - ChatHistorySheet: List of sessions with title, date, message count. Swipe-to-delete. Tap to resume. "New Chat" toolbar item. Empty state. Injected as .environmentObject.
@@ -392,9 +443,23 @@ Session 12 — Codex swipe-to-dismiss keyboard UX:
 - Added swipe-down dismissal and .scrollDismissesKeyboard(.interactively) to chat, profile/settings, onboarding prompts, login, transcript, and chat memory editor. This covers text keyboards and number-pad fields like grad year.
 - Validation: xcodebuild with DerivedData in /private/tmp reached Swift compilation but failed at existing Hoki.icon actool crash; no Swift diagnostics appeared before that asset failure.
 
-Next for Claude: DARS import UI + DARS category bar rendering, expandable AuditBucketCard, home screen audit preview.
-Next for Codex: test/tune DARS parser against real exported audit, statistics + theory elective course lists, multi-major support, audit context in chat.
+Session 15 — Codex full repository audit:
+- Reviewed all project-owned files excluding .git/.venv. Confirmed DARS frontend is still absent: no Swift DARS models, no APIService.uploadDarsAudit, no import/render UI.
+- Confirmed chat memory, graph rendering, and YouTube resource cards are implemented.
+- Found Supabase catalog sync bug: supabase_catalog_sync._pathway_rows() expects a flat dict, but backend/data/pathways.json is nested as pathways[].sections[].courses[], so pathways_courses would sync as zero rows.
+- Found catalog data drift: vt_full_catalog.json has only 2 subjects and no courses/programs/requirements; vt_programs.json is empty. Runtime mostly relies on vt_catalog_202601.json and backend/data/coe/*.json.
+- Found repo hygiene/docs drift: root .env is ignored but contains a real OpenAI key (rotate/remove before sharing); .DS_Store files are tracked; README and Settings legal/privacy copy are stale about Hokie Advisor naming, current endpoints, and local-only data claims.
+- Validation in audit: Python source py_compile passed with PYTHONPYCACHEPREFIX=/private/tmp; JSON parsed with jq; Xcode project.pbxproj and scheme plist linted; workspace XML and Hoki.icon/icon.json parsed. Full Swift build was not run.
 
-VT Burgundy: #861F41. AppStorage keys: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, howHeardAboutUs, graduationYear, appearanceMode, transcriptData, transcriptImported.
-Endpoints: POST /advisor/dars/upload (official DARS import), POST /advisor/audit (local CS fallback), POST /chat/stream, POST /transcript/upload.
+Session 16 — Codex DARS frontend completion:
+- Added Swift DARS models in Models.swift, APIService.uploadDarsAudit multipart upload, and DarsAuditViewModel in PlanViewModel.swift.
+- DegreeAuditView now leads with "Official Audit" and an "Official DARS / CollegeSource" import card before the local CS fallback audit.
+- Added PDF/PNG/JPG file import, official summary/GPA cards, Complete/In Progress/Unfulfilled/Planned category bars, section cards, warnings, replace/clear, and backend-not-ready error state.
+- Build validation reached Swift compilation with no Swift diagnostics, then failed at the known Hoki.icon actool crash. git diff --check and project plist lint passed.
+
+Next frontend: expandable AuditBucketCard, home screen audit preview, privacy/legal copy refresh, deployment target check, Face ID/Touch ID, dynamic post-audit chips.
+Next backend: solve official CollegeSource/uAchieve source/API integration with school support, test/tune DARS parser against real exported audit/source output, fix Supabase Pathways sync, live Supabase setup/config, persist API outputs to Supabase, statistics + theory elective course lists, multi-major support, audit context in chat, catalog data refresh, README/secret/.DS_Store cleanup.
+
+VT Burgundy: #861F41. AppStorage keys currently used: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, howHeardAboutUs, graduationYear, appearanceMode.
+Endpoints: POST /advisor/dars/upload (official DARS import), POST /advisor/audit (local CS fallback), POST /chat/stream (supports transcript_notes[] + chat_memories[]), POST /transcript/upload.
 ```

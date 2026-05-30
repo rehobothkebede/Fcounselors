@@ -5,6 +5,7 @@ enum APIError: LocalizedError {
     case invalidURL
     case networkError(Error)
     case serverError(Int)
+    case serverMessage(Int, String)
     case decodingError(Error)
 
     var errorDescription: String? {
@@ -12,9 +13,14 @@ enum APIError: LocalizedError {
         case .invalidURL:          return "Invalid server URL."
         case .networkError(let e): return e.localizedDescription
         case .serverError(let c):  return "Server returned error \(c)."
+        case .serverMessage(_, let message): return message
         case .decodingError:       return "Could not read server response."
         }
     }
+}
+
+private struct APIErrorBody: Decodable {
+    let detail: String?
 }
 
 final class APIService {
@@ -74,8 +80,23 @@ final class APIService {
         try await post(path: "/tutoring/recommend", body: request)
     }
 
+    static func uploadDarsAudit(fileData: Data, mimeType: String, fileName: String) async throws -> DarsAuditResponse {
+        try await uploadMultipart(path: "/advisor/dars/upload", fileData: fileData, mimeType: mimeType, fileName: fileName)
+    }
+
     static func uploadTranscript(fileData: Data, mimeType: String, fileName: String) async throws -> TranscriptResponse {
-        guard let url = URL(string: "\(baseURL)/transcript/upload") else { throw APIError.invalidURL }
+        try await uploadMultipart(path: "/transcript/upload", fileData: fileData, mimeType: mimeType, fileName: fileName)
+    }
+
+    // MARK: - Private
+
+    private static func uploadMultipart<Response: Decodable>(
+        path: String,
+        fileData: Data,
+        mimeType: String,
+        fileName: String
+    ) async throws -> Response {
+        guard let url = URL(string: "\(baseURL)\(path)") else { throw APIError.invalidURL }
         let boundary = UUID().uuidString
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
@@ -99,12 +120,10 @@ final class APIService {
         let response: URLResponse
         do { (data, response) = try await session.data(for: req) } catch { throw APIError.networkError(error) }
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-            throw APIError.serverError(http.statusCode)
+            throw error(from: data, statusCode: http.statusCode)
         }
-        do { return try JSONDecoder().decode(TranscriptResponse.self, from: data) } catch { throw APIError.decodingError(error) }
+        do { return try JSONDecoder().decode(Response.self, from: data) } catch { throw APIError.decodingError(error) }
     }
-
-    // MARK: - Private
 
     private static func post<Body: Encodable, Response: Decodable>(
         path: String,
@@ -121,8 +140,17 @@ final class APIService {
         do { (data, response) = try await URLSession.shared.data(for: req) } catch { throw APIError.networkError(error) }
 
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-            throw APIError.serverError(http.statusCode)
+            throw error(from: data, statusCode: http.statusCode)
         }
         do { return try JSONDecoder().decode(Response.self, from: data) } catch { throw APIError.decodingError(error) }
+    }
+
+    private static func error(from data: Data, statusCode: Int) -> APIError {
+        if let body = try? JSONDecoder().decode(APIErrorBody.self, from: data),
+           let detail = body.detail,
+           !detail.isEmpty {
+            return .serverMessage(statusCode, detail)
+        }
+        return .serverError(statusCode)
     }
 }

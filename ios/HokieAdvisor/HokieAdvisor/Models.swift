@@ -59,6 +59,76 @@ struct AuditBucket: Decodable, Identifiable {
     }
 }
 
+// MARK: - Official DARS / uAchieve Audit
+
+struct DarsAuditResponse: Decodable {
+    let studentName: String?
+    let studentID: String?
+    let program: String?
+    let programCode: String?
+    let catalogYear: String?
+    let graduationDate: String?
+    let preparedOn: String?
+    let jobID: String?
+    let auditType: String?
+    let universityGPA: Double?
+    let inMajorGPA: Double?
+    let categories: [DarsCategory]
+    let sections: [DarsSection]
+    let warnings: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case categories, sections, warnings, program
+        case studentName = "student_name"
+        case studentID = "student_id"
+        case programCode = "program_code"
+        case catalogYear = "catalog_year"
+        case graduationDate = "graduation_date"
+        case preparedOn = "prepared_on"
+        case jobID = "job_id"
+        case auditType = "audit_type"
+        case universityGPA = "university_gpa"
+        case inMajorGPA = "in_major_gpa"
+    }
+}
+
+struct DarsCategory: Decodable, Identifiable {
+    let id: String
+    let title: String
+    let status: String
+    let completeHours: Double?
+    let inProgressHours: Double?
+    let unfulfilledHours: Double?
+    let plannedHours: Double?
+    let requiredHours: Double?
+    let gpa: Double?
+    let notes: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case id, title, status, gpa, notes
+        case completeHours = "complete_hours"
+        case inProgressHours = "in_progress_hours"
+        case unfulfilledHours = "unfulfilled_hours"
+        case plannedHours = "planned_hours"
+        case requiredHours = "required_hours"
+    }
+}
+
+struct DarsSection: Decodable, Identifiable {
+    var id: String { "\(title)-\(status)" }
+    let title: String
+    let status: String
+    let matchedCourses: [String]
+    let missingItems: [String]
+    let notes: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case title, status, notes
+        case matchedCourses = "matched_courses"
+        case missingItems = "missing_items"
+    }
+}
+
 // MARK: - Chat
 
 struct ChatMessage: Identifiable, Codable {

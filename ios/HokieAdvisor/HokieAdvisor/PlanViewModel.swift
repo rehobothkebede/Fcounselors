@@ -30,3 +30,29 @@ final class DegreeAuditViewModel: ObservableObject {
         isAuditLoading = false
     }
 }
+
+@MainActor
+final class DarsAuditViewModel: ObservableObject {
+    @Published var audit: DarsAuditResponse? = nil
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
+    @Published var importedFileName: String? = nil
+
+    func upload(fileData: Data, mimeType: String, fileName: String) async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            audit = try await APIService.uploadDarsAudit(fileData: fileData, mimeType: mimeType, fileName: fileName)
+            importedFileName = fileName
+        } catch {
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    func clear() {
+        audit = nil
+        errorMessage = nil
+        importedFileName = nil
+    }
+}
