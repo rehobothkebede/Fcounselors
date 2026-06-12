@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var showPrivacy = false
     @State private var showTranscriptImport = false
     @State private var showMemoryEditor = false
+    @State private var resetError = ""
 
     var body: some View {
         NavigationStack {
@@ -78,25 +79,19 @@ struct SettingsView: View {
         }
         .alert("Reset Account", isPresented: $showResetAlert) {
             Button("Reset & Restart", role: .destructive) {
-                appState.transcriptCourses = []
-                appState.inProgressCourses = []
-                appState.plannedCourses = []
-                appState.transcriptNotes = []
-                appState.inProgressGrades = [:]
-                appState.hasTranscript = false
-                appState.passingAllClasses = nil
-                appState.strugglingCourses = []
-                appState.major = ""
-                chatHistory.deleteAll()
-                Task { await SupabaseAuthService.shared.signOut() }
-                appPasswordHash = ""
-                vtEmail = ""
-                vtPID = ""
-                onboardingComplete = false
+                resetAccount()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("This will erase all your data and return you to the setup screen.")
+        }
+        .alert("Could Not Delete Remote Account", isPresented: Binding(
+            get: { !resetError.isEmpty },
+            set: { if !$0 { resetError = "" } }
+        )) {
+            Button("OK", role: .cancel) { resetError = "" }
+        } message: {
+            Text(resetError)
         }
     }
 
@@ -161,6 +156,36 @@ struct SettingsView: View {
         .padding(24)
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 32))
+    }
+
+    private func resetAccount() {
+        Task {
+            do {
+                try await SupabaseAuthService.shared.deleteAccount()
+                clearLocalAccountData()
+            } catch {
+                resetError = error.localizedDescription
+            }
+        }
+    }
+
+    private func clearLocalAccountData() {
+        appState.transcriptCourses = []
+        appState.inProgressCourses = []
+        appState.plannedCourses = []
+        appState.transcriptNotes = []
+        appState.inProgressGrades = [:]
+        appState.hasTranscript = false
+        appState.passingAllClasses = nil
+        appState.strugglingCourses = []
+        appState.major = ""
+        chatHistory.deleteAll()
+        appPasswordHash = ""
+        vtEmail = ""
+        vtPID = ""
+        studentName = ""
+        graduationYear = ""
+        onboardingComplete = false
     }
 
     private var initials: String {

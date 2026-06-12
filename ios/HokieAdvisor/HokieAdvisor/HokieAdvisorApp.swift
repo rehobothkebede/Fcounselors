@@ -52,6 +52,13 @@ struct HokieAdvisorApp: App {
             .background(WindowAppearanceSetter(mode: appearanceMode))
             .animation(.easeInOut(duration: 0.35), value: onboardingComplete)
             .animation(.easeInOut(duration: 0.35), value: isAuthenticated)
+            .onOpenURL { url in
+                Task {
+                    if (try? await SupabaseAuthService.shared.handleAuthRedirect(url)) == true {
+                        isAuthenticated = true
+                    }
+                }
+            }
         }
     }
 }

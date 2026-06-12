@@ -18,12 +18,30 @@ def _read_json(path: str, default: Any) -> Any:
         return json.load(f)
 
 
+def _read_legacy_catalog() -> dict[str, Any]:
+    candidates = sorted(
+        filename
+        for filename in os.listdir(DATA_DIR)
+        if filename.startswith("vt_catalog_") and filename.endswith(".json")
+    )
+    if not candidates:
+        return {}
+    return _read_json(os.path.join(DATA_DIR, candidates[-1]), {})
+
+
 def sync_catalog_to_supabase(client: SupabaseClient) -> dict[str, int]:
     """Push local catalog JSON files into Supabase lookup tables."""
     counts: dict[str, int] = {}
 
     full_catalog = _read_json(VT_FULL_CATALOG_PATH, {})
+    legacy_catalog = _read_legacy_catalog()
     subjects = full_catalog.get("subjects") or _read_json(VT_SUBJECTS_PATH, [])
+    if legacy_catalog:
+        legacy_subjects = [
+            {"code": subject, "name": subject, "url": ""}
+            for subject in legacy_catalog.get("meta", {}).get("subjects", [])
+        ]
+        subjects = _dedupe_by_conflict([*subjects, *legacy_subjects], "code")
     programs = full_catalog.get("programs") or _read_json(VT_PROGRAMS_PATH, [])
     unique_courses = full_catalog.get("unique_courses") or {}
     requirements = full_catalog.get("program_requirements") or {}
@@ -57,6 +75,8 @@ def sync_catalog_to_supabase(client: SupabaseClient) -> dict[str, int]:
                 "raw": course,
                 "source": "vt_full_catalog",
             })
+    if legacy_catalog:
+        course_rows.extend(_legacy_catalog_course_rows(legacy_catalog))
     counts["catalog_courses"] = _upsert_chunks(client, "catalog_courses", course_rows, "subject,code")
 
     program_rows = [
@@ -137,8 +157,51 @@ def _program_key(program: dict[str, Any]) -> str:
     return str(raw).lower().strip().replace(" ", "-")
 
 
+def _legacy_catalog_course_rows(catalog: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for subject, value in catalog.items():
+        if subject == "meta" or not isinstance(value, dict):
+            continue
+        for course in value.get("courses", []):
+            if not isinstance(course, dict) or not course.get("code"):
+                continue
+            rows.append({
+                "subject": str(subject).upper(),
+                "code": course.get("code"),
+                "name": course.get("name") or "",
+                "credits": _coerce_credits(course.get("credits")),
+                "description": course.get("description") or "",
+                "prerequisites": course.get("prerequisites") or "",
+                "raw": course,
+                "source": "vt_catalog",
+            })
+    return rows
+
+
 def _pathway_rows(pathways: Any) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
+    if isinstance(pathways, dict) and isinstance(pathways.get("pathways"), list):
+        for pathway in pathways["pathways"]:
+            concept = pathway.get("concept")
+            for section in pathway.get("sections", []):
+                for course in section.get("courses", []):
+                    if not isinstance(course, dict) or not course.get("code"):
+                        continue
+                    rows.append({
+                        "concept": str(concept),
+                        "code": course.get("code"),
+                        "name": course.get("name") or course.get("title") or "",
+                        "credits": _coerce_credits(course.get("credits")),
+                        "raw": {
+                            **course,
+                            "pathway_name": pathway.get("name"),
+                            "section_id": section.get("id"),
+                            "section_name": section.get("name"),
+                        },
+                        "source": "pathways_json",
+                    })
+        return rows
+
     if isinstance(pathways, dict):
         items = pathways.items()
     else:

@@ -4,8 +4,9 @@ import Security
 enum SupabaseConfig {
     // The anon key is safe to ship in the app when RLS policies are correct.
     // Never put the service-role key in iOS.
-    static let url = ""
-    static let anonKey = ""
+    static let url = "https://gcmwrrrspkgawiwisunq.supabase.co"
+    static let anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbXdycnJzcGtnYXdpd2lzdW5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTMxNzIsImV4cCI6MjA5NTk4OTE3Mn0.Cn5OE9r9iNlF-XFg4NNfmaT6FiNy4NRPnHtCOrrZRYM"
+    static let authRedirectURL = "hokieadvisor://auth/callback"
 
     static var isConfigured: Bool {
         !url.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -18,6 +19,7 @@ enum SupabaseAuthError: LocalizedError {
     case notConfigured
     case invalidURL
     case missingSession
+    case missingUser
     case keychain(OSStatus)
     case server(String)
     case network(Error)
@@ -31,6 +33,8 @@ enum SupabaseAuthError: LocalizedError {
             return "Invalid Supabase URL."
         case .missingSession:
             return "Supabase did not return a session. Check whether email confirmation is required."
+        case .missingUser:
+            return "Supabase did not return the authenticated user."
         case .keychain:
             return "Could not securely store the Supabase session."
         case .server(let message):
@@ -60,6 +64,11 @@ struct SupabaseSession: Codable {
 }
 
 struct SupabaseUser: Codable {
+    let id: UUID
+    let email: String?
+}
+
+struct SupabaseUserResponse: Codable {
     let id: UUID
     let email: String?
 }
@@ -130,6 +139,9 @@ actor SupabaseAuthService {
         let payload: [String: Any] = [
             "email": email,
             "password": password,
+            "options": [
+                "email_redirect_to": SupabaseConfig.authRedirectURL,
+            ],
             "data": [
                 "full_name": fullName,
                 "vt_email": email,
@@ -148,7 +160,7 @@ actor SupabaseAuthService {
 
         if let session = response.session {
             try saveSession(session)
-            try await upsertProfile(
+            try await ensureProfile(
                 session: session,
                 fullName: fullName,
                 vtEmail: email,
@@ -164,6 +176,37 @@ actor SupabaseAuthService {
     }
 
     func signIn(email: String, password: String) async throws -> SupabaseSession {
+        try await signIn(email: email, password: password, profile: nil)
+    }
+
+    func signIn(
+        email: String,
+        password: String,
+        fullName: String,
+        vtPID: String,
+        major: String,
+        graduationYear: String,
+        appearanceMode: String
+    ) async throws -> SupabaseSession {
+        try await signIn(
+            email: email,
+            password: password,
+            profile: SupabaseProfileDraft(
+                fullName: fullName,
+                vtEmail: email,
+                vtPID: vtPID,
+                major: major,
+                graduationYear: graduationYear,
+                appearanceMode: appearanceMode
+            )
+        )
+    }
+
+    private func signIn(
+        email: String,
+        password: String,
+        profile: SupabaseProfileDraft?
+    ) async throws -> SupabaseSession {
         guard SupabaseConfig.isConfigured else { throw SupabaseAuthError.notConfigured }
         let response: SupabaseAuthResponse = try await request(
             path: "/auth/v1/token?grant_type=password",
@@ -172,6 +215,9 @@ actor SupabaseAuthService {
         )
         guard let session = response.session else { throw SupabaseAuthError.missingSession }
         try saveSession(session)
+        if let profile {
+            try await ensureProfile(session: session, profile: profile)
+        }
         return session
     }
 
@@ -186,6 +232,58 @@ actor SupabaseAuthService {
 
     func signOut() {
         KeychainStore.delete(service: sessionKey)
+    }
+
+    func deleteAccount() async throws {
+        guard SupabaseConfig.isConfigured else { throw SupabaseAuthError.notConfigured }
+        guard let session = try currentSession() else {
+            signOut()
+            return
+        }
+
+        guard let url = URL(string: "\(SupabaseConfig.url)/functions/v1/account") else {
+            throw SupabaseAuthError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(session.accessToken)", forHTTPHeaderField: "Authorization")
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            throw SupabaseAuthError.network(error)
+        }
+
+        try validate(data: data, response: response)
+        signOut()
+    }
+
+    func handleAuthRedirect(_ url: URL) throws -> Bool {
+        guard url.scheme == "hokieadvisor",
+              url.host == "auth",
+              url.path == "/callback" else {
+            return false
+        }
+
+        let values = Self.authValues(from: url)
+        guard let accessToken = values["access_token"],
+              let refreshToken = values["refresh_token"] else {
+            return false
+        }
+
+        let session = SupabaseSession(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expiresIn: values["expires_in"].flatMap(Int.init),
+            tokenType: values["token_type"] ?? "bearer",
+            user: nil
+        )
+        try saveSession(session)
+        return true
     }
 
     private func upsertProfile(
@@ -215,6 +313,78 @@ actor SupabaseAuthService {
             prefer: "resolution=merge-duplicates,return=minimal",
             query: "on_conflict=id"
         )
+    }
+
+    private func ensureProfile(session: SupabaseSession, profile: SupabaseProfileDraft) async throws {
+        try await ensureProfile(
+            session: session,
+            fullName: profile.fullName,
+            vtEmail: profile.vtEmail,
+            vtPID: profile.vtPID,
+            major: profile.major,
+            graduationYear: profile.graduationYear,
+            appearanceMode: profile.appearanceMode
+        )
+    }
+
+    private func ensureProfile(
+        session: SupabaseSession,
+        fullName: String,
+        vtEmail: String,
+        vtPID: String,
+        major: String,
+        graduationYear: String,
+        appearanceMode: String
+    ) async throws {
+        let sessionWithUser: SupabaseSession
+        if session.user?.id != nil {
+            sessionWithUser = session
+        } else {
+            let user = try await currentUser(accessToken: session.accessToken)
+            sessionWithUser = SupabaseSession(
+                accessToken: session.accessToken,
+                refreshToken: session.refreshToken,
+                expiresIn: session.expiresIn,
+                tokenType: session.tokenType,
+                user: SupabaseUser(id: user.id, email: user.email)
+            )
+        }
+
+        try await upsertProfile(
+            session: sessionWithUser,
+            fullName: fullName,
+            vtEmail: vtEmail,
+            vtPID: vtPID,
+            major: major,
+            graduationYear: graduationYear,
+            appearanceMode: appearanceMode
+        )
+    }
+
+    private func currentUser(accessToken: String) async throws -> SupabaseUserResponse {
+        guard let url = URL(string: "\(SupabaseConfig.url)/auth/v1/user") else {
+            throw SupabaseAuthError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            throw SupabaseAuthError.network(error)
+        }
+
+        try validate(data: data, response: response)
+        do {
+            return try JSONDecoder().decode(SupabaseUserResponse.self, from: data)
+        } catch {
+            throw SupabaseAuthError.decoding(error)
+        }
     }
 
     private func saveSession(_ session: SupabaseSession) throws {
@@ -294,6 +464,30 @@ actor SupabaseAuthService {
         let text = String(data: data, encoding: .utf8) ?? "Supabase returned \(http.statusCode)."
         throw SupabaseAuthError.server(text)
     }
+
+    private static func authValues(from url: URL) -> [String: String] {
+        var values: [String: String] = [:]
+        mergeAuthValues(url.query, into: &values)
+        mergeAuthValues(url.fragment, into: &values)
+        return values
+    }
+
+    private static func mergeAuthValues(_ rawValue: String?, into values: inout [String: String]) {
+        guard let rawValue, !rawValue.isEmpty else { return }
+        let components = URLComponents(string: "?\(rawValue)")
+        components?.queryItems?.forEach { item in
+            values[item.name] = item.value
+        }
+    }
+}
+
+private struct SupabaseProfileDraft {
+    let fullName: String
+    let vtEmail: String
+    let vtPID: String
+    let major: String
+    let graduationYear: String
+    let appearanceMode: String
 }
 
 private struct SupabaseErrorBody: Decodable {

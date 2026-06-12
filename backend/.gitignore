@@ -1,7 +1,0 @@
-.env
-__pycache__/
-*.pyc
-.venv/
-.vscode/
-.DS_Store
-data/courses/*.json

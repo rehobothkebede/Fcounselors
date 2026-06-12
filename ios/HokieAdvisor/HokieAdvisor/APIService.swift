@@ -27,19 +27,20 @@ final class APIService {
     // Change this to your Mac's local IP when running on a physical device.
     // For the iOS Simulator, http://localhost:8000 works fine.
     static let baseURL = "http://127.0.0.1:8000"
+    static let chatFunctionURL = "https://gcmwrrrspkgawiwisunq.supabase.co/functions/v1/chat"
 
     static func fetchDegreeAudit(request: DegreeAuditRequest) async throws -> DegreeAuditResponse {
         try await post(path: "/advisor/audit", body: request)
     }
 
     static func sendChat(request: ChatRequest) async throws -> ChatResponse {
-        try await post(path: "/chat", body: request)
+        try await post(urlString: chatFunctionURL, body: request, headers: supabaseFunctionHeaders())
     }
 
     static func streamChat(request: ChatRequest) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             Task {
-                guard let url = URL(string: "\(baseURL)/chat/stream") else {
+                guard let url = URL(string: "\(chatFunctionURL)/stream") else {
                     continuation.finish(throwing: APIError.invalidURL)
                     return
                 }
@@ -47,6 +48,9 @@ final class APIService {
                 req.httpMethod = "POST"
                 req.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 req.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+                for (key, value) in supabaseFunctionHeaders() {
+                    req.setValue(value, forHTTPHeaderField: key)
+                }
                 do {
                     req.httpBody = try JSONEncoder().encode(request)
                 } catch {
@@ -90,6 +94,13 @@ final class APIService {
 
     // MARK: - Private
 
+    private static func supabaseFunctionHeaders() -> [String: String] {
+        [
+            "apikey": SupabaseConfig.anonKey,
+            "Authorization": "Bearer \(SupabaseConfig.anonKey)",
+        ]
+    }
+
     private static func uploadMultipart<Response: Decodable>(
         path: String,
         fileData: Data,
@@ -130,9 +141,29 @@ final class APIService {
         body: Body
     ) async throws -> Response {
         guard let url = URL(string: "\(baseURL)\(path)") else { throw APIError.invalidURL }
+        return try await post(url: url, body: body)
+    }
+
+    private static func post<Body: Encodable, Response: Decodable>(
+        urlString: String,
+        body: Body,
+        headers: [String: String] = [:]
+    ) async throws -> Response {
+        guard let url = URL(string: urlString) else { throw APIError.invalidURL }
+        return try await post(url: url, body: body, headers: headers)
+    }
+
+    private static func post<Body: Encodable, Response: Decodable>(
+        url: URL,
+        body: Body,
+        headers: [String: String] = [:]
+    ) async throws -> Response {
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        for (key, value) in headers {
+            req.setValue(value, forHTTPHeaderField: key)
+        }
         do { req.httpBody = try JSONEncoder().encode(body) } catch { throw APIError.decodingError(error) }
 
         let data: Data

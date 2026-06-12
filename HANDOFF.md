@@ -8,7 +8,7 @@
 
 ## Current State
 
-App builds in Xcode. Backend (`uvicorn`) runs locally on port 8000.
+App builds in Xcode. Chat now runs through Supabase Edge Functions; backend (`uvicorn`) still runs locally on port 8000 for transcript/DARS/audit work that has not moved to hosted compute yet.
 
 **What's fully working end-to-end:**
 - Transcript import → AI parse → AppState population → GPA/credits/courses displayed
@@ -18,20 +18,21 @@ App builds in Xcode. Backend (`uvicorn`) runs locally on port 8000.
 - Backend has a new official-audit ingestion path: `POST /advisor/dars/upload` parses a uAchieve/DARS PDF or screenshot into DARS-shaped categories (`University GPA`, `Minimum Hours`, `Major`, `General Ed`, `In Major GPA`, `Electives`, `Minor(s)`).
 - Frontend now has a DARS-first Audit tab flow: Swift DARS models, `APIService.uploadDarsAudit`, PDF/PNG/JPG file import, official DARS summary cards, category status bars, section cards, and backend-error handling.
 - Transcript parser warnings/notes are no longer shown in TranscriptView, but are preserved in `AppState.transcriptNotes` and sent to chat as private LLM context.
-- Backend is now prepared for Supabase as the primary persistence stack: env config, service-role REST client, health/status hooks, SQL schema/RLS migration, and a local JSON catalog sync script are in place.
-- Supabase auth/storage bootstrap is now started: migration `002_auth_storage_bootstrap.sql` creates profiles from Auth metadata and adds private transcript/DARS storage buckets; iOS has a lightweight Supabase Auth client that signs up/signs in when `SupabaseConfig` is configured.
+- Supabase is now the live auth/storage backend for the app. The iOS app has the hosted project URL/anon key, Supabase Auth signup/signin, profile upsert, email-confirmation deep link handling, and Keychain session storage.
+- Supabase Edge Functions are deployed for chat (`chat`) and account deletion/reset (`account`). The `account` function deletes the authenticated Supabase Auth user with the service-role key server-side, causing user-owned `profiles` rows to cascade-delete.
+- Supabase catalog sync has been fixed for the current local data shapes and run against the hosted project. Last confirmed sync counts: `catalog_subjects: 7`, `catalog_courses: 541`, `pathways_courses: 1134`, `coe_courses: 757`.
 
 **Known gaps / open work:**
 - Statistics elective + CS theory elective approved course lists not in catalog data yet — those two audit buckets stay "open" until data is added
 - `TranscriptView` subtitle still says "CS course history" — should be major-agnostic once multi-major support lands
 - LaTeX rendering in chat now has lightweight native support for inline `$...$`, `\(...\)`, display `$$...$$`, `\[...\]`, and common matrix environments. It is not a full TeX engine.
 - Official CollegeSource/uAchieve API access is still unsolved and likely needs school support. The frontend is ready for the existing `/advisor/dars/upload` contract, but the backend/source integration still needs to become reliable.
-- Supabase project values are not yet filled into iOS (`SupabaseService.swift` has blank public URL/anon key). Until those are set, iOS intentionally keeps using local-only auth.
-- The Python API/local server is still required for trusted OpenAI work (chat streaming, transcript parse, DARS extraction) until those are deployed as Supabase Edge Functions or another hosted API.
+- Supabase email confirmation must use the mobile redirect `hokieadvisor://auth/callback`. The app has the iOS URL scheme registered in `ios/HokieAdvisor/Info.plist`, but the Supabase Dashboard URL Configuration must also allow that redirect. Old confirmation emails may still point to `localhost:3000`; resend confirmation after changing dashboard settings.
+- The Python API/local server is still required for transcript parse and DARS extraction until those are deployed as Supabase Edge Functions or another hosted API. Chat is already pointed at the deployed Supabase `chat` function.
 - `README.md` and legal/privacy copy are stale: they still say Fcounselors/local-only in places and do not fully reflect transcript/chat data sent to the backend/OpenAI.
-- `backend/app/services/supabase_catalog_sync.py` currently expects the wrong `pathways.json` shape, so `pathways_courses` would sync as zero rows until fixed.
 - Root `.env` is ignored by Git but exists locally with a real OpenAI key; rotate/remove it before sharing the machine or using this repo in demos. Several `.DS_Store` files are tracked and should be removed from Git.
 - `IPHONEOS_DEPLOYMENT_TARGET` in the Xcode project is currently `26.4`, while older notes say iOS 17+. If iOS 17 support is intended, lower the deployment target.
+- Swift builds currently succeed, but `SupabaseService.swift` emits Swift 6 actor-isolation warnings under the current target settings. These are warnings now, but should be cleaned before moving to Swift 6 language mode.
 
 ---
 
@@ -209,6 +210,37 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 | **Backend not-ready state** | If the backend/source API is unavailable or returns an error, the DARS card stays usable and shows a dedicated "DARS backend not ready" message. |
 | **Validation** | `xcodebuild` reached Swift compilation with no Swift diagnostics, then failed at the existing `Hoki.icon` `actool` crash. `git diff --check` passed and project plist lint passed. |
 
+### Session 17 — Supabase Auth Redirect, Profile Recreation, and Real Account Reset (Codex)
+| Change | Detail |
+|---|---|
+| **Root cause of localhost confirmation page** | Supabase confirmation emails were redirecting to `http://localhost:3000`, which only makes sense for a web app. Safari showed "can't connect to localhost" after confirmation because no local web server was running. |
+| **Mobile auth callback added** | Added a custom iOS URL scheme and callback path: `hokieadvisor://auth/callback`. New file: `ios/HokieAdvisor/Info.plist`. Xcode now uses this plist instead of an auto-generated one. |
+| **Deep link handling** | `HokieAdvisorApp.swift` now listens for `.onOpenURL`; `SupabaseAuthService.handleAuthRedirect(_:)` parses Supabase auth tokens from query/fragment and saves the session in Keychain. |
+| **Signup redirect target** | `SupabaseService.swift` now sends `options.email_redirect_to = hokieadvisor://auth/callback` on signup. Supabase Dashboard must also allow this redirect. Old emails may still point to localhost; resend after changing dashboard URL settings. |
+| **Local Supabase config updated** | `backend/supabase/config.toml` now uses `site_url = "hokieadvisor://auth/callback"` and includes that URL in `additional_redirect_urls`. |
+| **Profiles vs Auth clarified** | `profiles` is not the actual account. The real account is in Supabase Auth (`auth.users`). Deleting a row from `profiles` manually does not delete the Auth user, so signing up again with the same email may not fire the `auth.users` trigger again. |
+| **Profile recreation guardrail** | Signup/signin now calls `ensureProfile(...)`, which fetches `/auth/v1/user` if needed and upserts the `profiles` row. This fixes the case where the Auth user exists but the profile row was manually deleted. |
+| **Existing-user onboarding recovery** | If signup returns an "already exists" style Supabase error, onboarding attempts signin with the same credentials and upserts the profile instead of leaving the user stuck. |
+| **Real remote Reset Account** | Settings "Reset Account" now calls `SupabaseAuthService.deleteAccount()` before clearing local state. This hits a trusted Supabase Edge Function and deletes the actual Auth user; profile rows cascade-delete through the DB FK. |
+| **New Edge Function** | Added and deployed `backend/supabase/functions/account/index.ts`. It accepts authenticated `DELETE`, verifies the bearer token via `/auth/v1/user`, then deletes that user through `/auth/v1/admin/users/{id}` using `SUPABASE_SERVICE_ROLE_KEY` inside Supabase only. No service-role key is shipped in iOS. |
+| **Function config** | Added `[functions.account]` to `backend/supabase/config.toml` with `verify_jwt = false` because the function performs its own user-token verification before admin deletion. |
+| **Deployment** | Deployed `account` to project `gcmwrrrspkgawiwisunq` with `supabase functions deploy account --project-ref gcmwrrrspkgawiwisunq`. Secrets list confirmed `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY` are present. |
+| **Smoke test** | Unauthenticated `DELETE https://gcmwrrrspkgawiwisunq.supabase.co/functions/v1/account` returned `401 {"detail":"Missing bearer token."}`, confirming the function is live and not crashing. |
+| **Validation** | `plutil -lint ios/HokieAdvisor/Info.plist` passed. `xcodebuild -project ios/HokieAdvisor/HokieAdvisor.xcodeproj -scheme HokieAdvisor -destination generic/platform=iOS CODE_SIGNING_ALLOWED=NO build` succeeded. Remaining warnings: missing `AccentColor` asset and Swift 6 actor-isolation warnings in `SupabaseService.swift`. |
+| **Testing note** | For a clean user test: deploy/run the latest iOS build, create account, confirm email via fresh email, verify row appears in `profiles`, then use Reset Account and verify both Auth user and profile row are gone. If an old broken Auth user remains and login is impossible, delete that one once from Supabase Dashboard `Authentication > Users` and retry fresh. |
+
+### Session 18 — Supabase Chat Function + Catalog Sync Fix (Codex)
+| Change | Detail |
+|---|---|
+| **API grants migration** | Added `backend/supabase/migrations/003_api_role_grants.sql` because the hosted project was created with automatic table exposure disabled. RLS still controls row-level access; the migration grants API roles access to the intended tables. |
+| **CLI config** | Added `backend/supabase/config.toml` so Supabase CLI commands know the local project layout. |
+| **Catalog sync fixed** | `backend/app/services/supabase_catalog_sync.py` now reads legacy `vt_catalog_*.json` course data and the nested `pathways[].sections[].courses[]` shape in `backend/data/pathways.json`. |
+| **Catalog sync completed** | Hosted project `gcmwrrrspkgawiwisunq` was populated with `catalog_subjects: 7`, `catalog_courses: 541`, `pathways_courses: 1134`, and `coe_courses: 757`. `catalog_programs`/`catalog_requirements` remain `0` because the local source files are empty. |
+| **Chat Edge Function implemented** | Replaced the default Supabase `chat` function template with `backend/supabase/functions/chat/index.ts`. It calls OpenAI from Supabase secrets, supports JSON and `/stream`, adds transcript/in-progress/notes/memory context, and pulls CS course context from Supabase `coe_courses`. |
+| **iOS chat routed to Supabase** | `APIService.streamChat` and `sendChat` now call `https://gcmwrrrspkgawiwisunq.supabase.co/functions/v1/chat` with the public Supabase anon key. Other API features still use local FastAPI. |
+| **Deployment/validation** | `supabase functions deploy chat` succeeded. Smoke tests returned `STATUS 200` for both `/functions/v1/chat` and `/functions/v1/chat/stream`. |
+| **Security note** | User accidentally showed an OpenAI key in a screenshot. Treat it as exposed: revoke/rotate in OpenAI, then run `supabase secrets set OPENAI_API_KEY=...` and update local `backend/.env` if still used. |
+
 ---
 
 ## Next Steps
@@ -217,10 +249,13 @@ If Xcode complains about Assets.xcassets: recreate a minimal `Assets.xcassets/Co
 - [x] **`transcript_notes` in chat stream** — `POST /chat/stream` body includes `transcript_notes: [String]` and backend injects them into the system prompt under "Transcript Parsing Notes" as private context.
 - [ ] **Official CollegeSource/uAchieve source integration** — frontend is ready, but the reliable backend/API source for school degree-audit data is still unsolved and likely needs school support
 - [ ] **DARS parser hardening** — once the user exports a real DARS PDF or screenshot or gets official source access, test `POST /advisor/dars/upload` against it and tune extraction for official section text
-- [ ] **Supabase live setup** — create/link the Supabase project, apply `backend/supabase/migrations/001_initial_schema.sql`, set backend env vars, and run `python backend/scripts/sync_catalog_to_supabase.py`
-- [ ] **Fix Supabase Pathways sync** — update `_pathway_rows()` for the nested `pathways[].sections[].courses[]` shape before running catalog sync for production
-- [ ] **Supabase client config** — fill `SupabaseConfig.url` and `SupabaseConfig.anonKey` in iOS after project creation; never put service-role key in iOS
-- [ ] **Hosted AI compute** — move chat/transcript/DARS trusted OpenAI endpoints off local `uvicorn` (Supabase Edge Functions or hosted API) and point `APIService.baseURL` to that hosted endpoint
+- [x] **Supabase live setup** — hosted project is linked at `gcmwrrrspkgawiwisunq`; iOS has URL/anon key; Edge Functions are deployed for chat and account deletion.
+- [ ] **Supabase Dashboard auth redirect** — ensure `hokieadvisor://auth/callback` is saved under Authentication URL Configuration / Additional Redirect URLs. Resend confirmation emails after this change.
+- [ ] **Retest account lifecycle on physical iPhone** — create account, confirm email, verify `profiles` row, tap Reset Account, verify Auth user/profile row delete, then recreate with same credentials.
+- [x] **Fix Supabase Pathways sync** — `_pathway_rows()` now handles nested `pathways[].sections[].courses[]`; catalog sync has been run against hosted Supabase.
+- [x] **Supabase client config** — `SupabaseConfig.url` and `anonKey` are filled in iOS. Service-role key remains server-side only.
+- [ ] **Hosted AI compute** — chat is deployed and validated as a Supabase Edge Function; transcript parse, tutoring, degree audit, and DARS extraction still need hosted compute before local `uvicorn` can be fully retired.
+- [ ] **Swift 6 cleanup** — fix actor-isolation warnings in `SupabaseService.swift` before enabling Swift 6 language mode.
 - [ ] **Persist API outputs to Supabase** — after auth/user IDs are wired from iOS, save transcript uploads, chat sessions/messages, chat memories, degree audits, and DARS audits into the new tables
 - [ ] **Statistics elective approved list** — add to `computer_science.json` so `statistics_elective` bucket resolves
 - [ ] **CS theory elective approved list** — same; `cs_theory_elective` bucket currently always open
@@ -270,9 +305,21 @@ Stack:
             @EnvironmentObject AppState, @AppStorage for persistence
             Handoff historically said iOS 17+, but project currently sets
             IPHONEOS_DEPLOYMENT_TARGET = 26.4 in project.pbxproj.
-  Backend:  FastAPI + OpenAI, Python 3.11+, uvicorn on port 8000
+  Backend:  FastAPI + OpenAI, Python 3.11+, uvicorn on port 8000 for local
+            transcript/DARS/audit work that has not moved to hosted compute yet.
+  Supabase: Hosted project gcmwrrrspkgawiwisunq. Auth/storage/Postgres are live.
+            Edge Functions deployed: chat, account.
 
 API endpoints:
+  Supabase Edge Functions:
+  POST/stream https://gcmwrrrspkgawiwisunq.supabase.co/functions/v1/chat
+                            Deployed chat advisor endpoint used by iOS APIService.
+  DELETE      https://gcmwrrrspkgawiwisunq.supabase.co/functions/v1/account
+                            Authenticated account deletion. Requires user bearer token.
+                            Deletes auth.users row via service-role key server-side;
+                            profiles cascade-delete through FK.
+
+  Local/FastAPI endpoints:
   GET  /admin/supabase/status — Supabase config + database reachability check
   POST /advisor/dars/upload — Official DARS/uAchieve audit ingestion
                             Multipart file: PDF/PNG/JPG
@@ -332,6 +379,18 @@ Backend transcript grade semantics:
 AppStorage keys currently used:
   onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash,
   howHeardAboutUs, graduationYear, appearanceMode
+
+Supabase auth facts:
+  iOS public config lives in SupabaseService.swift:
+    url = https://gcmwrrrspkgawiwisunq.supabase.co
+    anonKey = public anon JWT only
+    authRedirectURL = hokieadvisor://auth/callback
+  Never place SUPABASE_SERVICE_ROLE_KEY in iOS. It is only used inside trusted
+  backend/Edge Function code.
+  Email confirmation deep link requires:
+    ios/HokieAdvisor/Info.plist with CFBundleURLTypes for scheme hokieadvisor
+    HokieAdvisorApp.onOpenURL handler
+    Supabase Dashboard auth redirect allowlist containing hokieadvisor://auth/callback
 
 Grad year flow:
   @AppStorage("graduationYear") — shared key, default "" in ALL views (not "2027")
@@ -458,8 +517,8 @@ Session 16 — Codex DARS frontend completion:
 - Build validation reached Swift compilation with no Swift diagnostics, then failed at the known Hoki.icon actool crash. git diff --check and project plist lint passed.
 
 Next frontend: expandable AuditBucketCard, home screen audit preview, privacy/legal copy refresh, deployment target check, Face ID/Touch ID, dynamic post-audit chips.
-Next backend: solve official CollegeSource/uAchieve source/API integration with school support, test/tune DARS parser against real exported audit/source output, fix Supabase Pathways sync, live Supabase setup/config, persist API outputs to Supabase, statistics + theory elective course lists, multi-major support, audit context in chat, catalog data refresh, README/secret/.DS_Store cleanup.
+Next backend: solve official CollegeSource/uAchieve source/API integration with school support, test/tune DARS parser against real exported audit/source output, migrate transcript/tutoring/audit/DARS endpoints to hosted compute, persist API outputs to Supabase, statistics + theory elective course lists, multi-major support, audit context in chat, catalog data refresh, README/secret/.DS_Store cleanup.
 
 VT Burgundy: #861F41. AppStorage keys currently used: onboardingComplete, studentName, vtEmail, vtPID, appPasswordHash, howHeardAboutUs, graduationYear, appearanceMode.
-Endpoints: POST /advisor/dars/upload (official DARS import), POST /advisor/audit (local CS fallback), POST /chat/stream (supports transcript_notes[] + chat_memories[]), POST /transcript/upload.
+Endpoints: Supabase `/functions/v1/chat` and `/functions/v1/chat/stream` are live for chat. Local FastAPI still owns POST /advisor/dars/upload (official DARS import), POST /advisor/audit (local CS fallback), and POST /transcript/upload.
 ```

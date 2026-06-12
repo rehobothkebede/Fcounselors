@@ -135,7 +135,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+*.env
 .envrc
 .venv
 env/
@@ -207,3 +207,6 @@ xcuserdata/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project generated data
+backend/data/courses/*.json

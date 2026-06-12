@@ -22,6 +22,7 @@ Run the migrations in order in the Supabase SQL editor, or apply them with the
 Supabase CLI:
 
 ```bash
+cd backend
 supabase link --project-ref YOUR_PROJECT_REF
 supabase db push
 ```
@@ -30,6 +31,7 @@ Migration order:
 
 1. `migrations/001_initial_schema.sql`
 2. `migrations/002_auth_storage_bootstrap.sql`
+3. `migrations/003_api_role_grants.sql`
 
 The schema includes:
 

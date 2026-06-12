@@ -467,6 +467,21 @@ struct OnboardingView: View {
                 appearanceMode: appearanceMode
             )
             advance()
+        } catch SupabaseAuthError.server(let message) where message.localizedCaseInsensitiveContains("already") {
+            do {
+                _ = try await SupabaseAuthService.shared.signIn(
+                    email: storedEmail,
+                    password: passwordInput,
+                    fullName: storedName,
+                    vtPID: storedPID,
+                    major: appState.major,
+                    graduationYear: storedGraduationYear,
+                    appearanceMode: appearanceMode
+                )
+                advance()
+            } catch {
+                passwordError = error.localizedDescription
+            }
         } catch SupabaseAuthError.missingSession {
             // Email confirmation can intentionally suppress a session.
             advance()
