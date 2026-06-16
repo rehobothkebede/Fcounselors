@@ -20,6 +20,8 @@ final class AppState: ObservableObject {
     @Published var strugglingCourses: [String] = []
     @Published var transcriptNotes: [String] = []
     @Published var preferredColorScheme: ColorScheme? = nil
+    @Published var latestDegreeAudit: DegreeAuditResponse? = nil
+    @Published var latestDarsAudit: DarsAuditResponse? = nil
 
     // MARK: - Semester Awareness
 
@@ -137,7 +139,10 @@ final class AppState: ObservableObject {
     var semesterGroups: [SemesterGroup] {
         let grouped = Dictionary(grouping: transcriptCourses) { $0.semester ?? "Unknown" }
         let sortedKeys = grouped.keys.sorted { sortSemester($0) > sortSemester($1) }
-        return sortedKeys.map { SemesterGroup(semester: $0, courses: grouped[$0]!) }
+        return sortedKeys.compactMap { semester in
+            guard let courses = grouped[semester] else { return nil }
+            return SemesterGroup(semester: semester, courses: courses)
+        }
     }
 
     private func sortSemester(_ s: String) -> Int {

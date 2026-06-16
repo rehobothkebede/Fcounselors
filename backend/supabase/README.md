@@ -1,8 +1,9 @@
 # Supabase Backend Setup
 
 This folder contains the Supabase foundation for Hokie Advisor. Supabase is the
-production persistence/auth/storage layer; the Python API is still needed for
-trusted AI work until those endpoints are moved to hosted compute.
+production persistence/auth/storage layer, and hosted Edge Functions now handle
+the iOS app's chat, transcript, DARS, audit, tutoring, and account-deletion
+flows. The Python API remains a local development fallback and parity surface.
 
 ## Environment
 
@@ -32,6 +33,13 @@ Migration order:
 1. `migrations/001_initial_schema.sql`
 2. `migrations/002_auth_storage_bootstrap.sql`
 3. `migrations/003_api_role_grants.sql`
+4. `migrations/004_user_owned_child_integrity.sql`
+
+Migration `004_user_owned_child_integrity.sql` adds composite parent/child
+ownership constraints and RLS checks for transcript courses, chat messages, and
+transcript-linked degree audits. It also adds indexes for common user-scoped
+restore and sync queries. Apply it to hosted Supabase only during an approved
+deployment window because it mutates remote constraints, indexes, and policies.
 
 The schema includes:
 
@@ -75,9 +83,8 @@ enum SupabaseConfig {
 Never place `SUPABASE_SERVICE_ROLE_KEY` in the iOS app. That key belongs only in
 trusted server jobs.
 
-When `SupabaseConfig` is blank, the app keeps using local-only auth so local
-Xcode work is not blocked. Once configured, onboarding signs the student up with
-Supabase Auth and stores the returned session in Keychain.
+The app currently uses the hosted Hokie Advisor Supabase project. Onboarding and
+login use Supabase Auth and store the returned session in Keychain.
 
 ## Sync Existing Catalog Data
 
@@ -117,14 +124,15 @@ Supabase should own:
 - uploaded transcript and DARS files
 - public catalog lookup tables
 
-Trusted AI operations still need hosted compute because the OpenAI key cannot be
-shipped to iOS:
+Trusted AI operations run in Supabase Edge Functions because the OpenAI key
+cannot be shipped to iOS:
 
 - transcript parsing
 - advisor chat streaming
 - DARS image/PDF extraction
-- deterministic audit fallback until it is rewritten against Supabase data
+- deterministic audit fallback
+- tutoring support
 
-The next production step is to deploy those operations as Supabase Edge
-Functions or as a hosted API, then point `APIService.baseURL` at that hosted
-endpoint instead of `127.0.0.1`.
+The iOS app sends the signed-in user's bearer token to these functions when a
+session is available. Anonymous calls still work where appropriate, but hosted
+persistence is tied to the verified user returned by Supabase Auth.

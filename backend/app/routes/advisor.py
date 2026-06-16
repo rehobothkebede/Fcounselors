@@ -3,6 +3,7 @@ import asyncio
 from typing import Optional
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from pydantic import BaseModel
+from app.routes.errors import error_detail
 from app.services.ai_service import recommend_courses
 from app.services.dars_audit_service import parse_dars_audit
 from app.services.degree_audit_service import run_degree_audit
@@ -126,7 +127,7 @@ def get_plan(request: PlanRequest):
     }
     """
     if not request.major:
-        raise HTTPException(status_code=400, detail="major cannot be empty")
+        raise HTTPException(status_code=400, detail=error_detail("PLAN_MAJOR_REQUIRED", "major cannot be empty"))
 
     # 1. Load timetable courses (cached)
     subject = resolve_subject_for_major(request.major)
@@ -154,7 +155,7 @@ def get_plan(request: PlanRequest):
             major_requirements=major_requirements,
         )
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+        raise HTTPException(status_code=502, detail=error_detail("PLAN_AI_REQUEST_FAILED", f"AI service error: {str(e)}"))
 
     return PlanResponse(**result)
 
@@ -163,7 +164,7 @@ def get_plan(request: PlanRequest):
 def get_degree_audit(request: DegreeAuditRequest):
     """Audit a student's transcript against the local CS B.S. catalog data."""
     if not request.major:
-        raise HTTPException(status_code=400, detail="major cannot be empty")
+        raise HTTPException(status_code=400, detail=error_detail("AUDIT_MAJOR_REQUIRED", "major cannot be empty"))
 
     try:
         result = run_degree_audit(
@@ -172,10 +173,10 @@ def get_degree_audit(request: DegreeAuditRequest):
             in_progress_courses=request.in_progress_courses,
         )
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=error_detail("AUDIT_INVALID_REQUEST", str(e)))
     except Exception as e:
         logger.exception("Degree audit failed")
-        raise HTTPException(status_code=500, detail=f"Degree audit failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=error_detail("AUDIT_FAILED", f"Degree audit failed: {str(e)}"))
 
     return DegreeAuditResponse(**result)
 
@@ -187,23 +188,26 @@ async def upload_dars_audit(file: UploadFile = File(...)):
     if content_type not in _ALLOWED_AUDIT_TYPES:
         raise HTTPException(
             status_code=415,
-            detail=f"Unsupported file type '{content_type}'. Upload a DARS PDF, PNG, or JPG.",
+            detail=error_detail(
+                "DARS_UNSUPPORTED_FILE_TYPE",
+                f"Unsupported file type '{content_type}'. Upload a DARS PDF, PNG, or JPG.",
+            ),
         )
 
     file_bytes = await file.read()
     if len(file_bytes) > _MAX_AUDIT_BYTES:
-        raise HTTPException(status_code=413, detail="File too large. Maximum size is 12 MB.")
+        raise HTTPException(status_code=413, detail=error_detail("DARS_FILE_TOO_LARGE", "File too large. Maximum size is 12 MB."))
     if len(file_bytes) == 0:
-        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+        raise HTTPException(status_code=400, detail=error_detail("DARS_FILE_EMPTY", "Uploaded file is empty."))
 
     try:
         result = await asyncio.to_thread(parse_dars_audit, file_bytes, content_type)
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=error_detail("DARS_PARSE_FAILED", str(e)))
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=502, detail=error_detail("DARS_AI_REQUEST_FAILED", str(e)))
     except Exception as e:
         logger.exception("DARS audit parse failed")
-        raise HTTPException(status_code=500, detail=f"DARS audit parse failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=error_detail("DARS_PARSE_FAILED", f"DARS audit parse failed: {str(e)}"))
 
     return DarsAuditResponse(**result)

@@ -1,7 +1,7 @@
 import Foundation
 import Security
 
-enum SupabaseConfig {
+nonisolated enum SupabaseConfig {
     // The anon key is safe to ship in the app when RLS policies are correct.
     // Never put the service-role key in iOS.
     static let url = "https://gcmwrrrspkgawiwisunq.supabase.co"
@@ -15,7 +15,7 @@ enum SupabaseConfig {
     }
 }
 
-enum SupabaseAuthError: LocalizedError {
+nonisolated enum SupabaseAuthError: LocalizedError {
     case notConfigured
     case invalidURL
     case missingSession
@@ -47,7 +47,7 @@ enum SupabaseAuthError: LocalizedError {
     }
 }
 
-struct SupabaseSession: Codable {
+nonisolated struct SupabaseSession: Codable {
     let accessToken: String
     let refreshToken: String
     let expiresIn: Int?
@@ -63,17 +63,17 @@ struct SupabaseSession: Codable {
     }
 }
 
-struct SupabaseUser: Codable {
+nonisolated struct SupabaseUser: Codable {
     let id: UUID
     let email: String?
 }
 
-struct SupabaseUserResponse: Codable {
+nonisolated struct SupabaseUserResponse: Codable {
     let id: UUID
     let email: String?
 }
 
-struct SupabaseAuthResponse: Codable {
+nonisolated struct SupabaseAuthResponse: Codable {
     let accessToken: String?
     let refreshToken: String?
     let expiresIn: Int?
@@ -100,7 +100,7 @@ struct SupabaseAuthResponse: Codable {
     }
 }
 
-struct SupabaseProfilePayload: Encodable {
+nonisolated struct SupabaseProfilePayload: Encodable {
     let id: UUID
     let vtPID: String
     let vtEmail: String
@@ -228,6 +228,26 @@ actor SupabaseAuthService {
         } catch {
             throw SupabaseAuthError.decoding(error)
         }
+    }
+
+    func validatedCurrentSession() async throws -> SupabaseSession? {
+        guard let session = try currentSession() else { return nil }
+        let user: SupabaseUserResponse
+        do {
+            user = try await currentUser(accessToken: session.accessToken)
+        } catch {
+            return try await refreshSession(session)
+        }
+
+        let validated = SupabaseSession(
+            accessToken: session.accessToken,
+            refreshToken: session.refreshToken,
+            expiresIn: session.expiresIn,
+            tokenType: session.tokenType,
+            user: SupabaseUser(id: user.id, email: user.email)
+        )
+        try saveSession(validated)
+        return validated
     }
 
     func signOut() {
@@ -387,6 +407,31 @@ actor SupabaseAuthService {
         }
     }
 
+    private func refreshSession(_ session: SupabaseSession) async throws -> SupabaseSession {
+        let response: SupabaseAuthResponse = try await request(
+            path: "/auth/v1/token?grant_type=refresh_token",
+            method: "POST",
+            body: ["refresh_token": session.refreshToken]
+        )
+        guard let refreshed = response.session else { throw SupabaseAuthError.missingSession }
+
+        if refreshed.user?.id != nil {
+            try saveSession(refreshed)
+            return refreshed
+        }
+
+        let user = try await currentUser(accessToken: refreshed.accessToken)
+        let enriched = SupabaseSession(
+            accessToken: refreshed.accessToken,
+            refreshToken: refreshed.refreshToken,
+            expiresIn: refreshed.expiresIn,
+            tokenType: refreshed.tokenType,
+            user: SupabaseUser(id: user.id, email: user.email)
+        )
+        try saveSession(enriched)
+        return enriched
+    }
+
     private func saveSession(_ session: SupabaseSession) throws {
         let data = try JSONEncoder().encode(session)
         try KeychainStore.save(data, service: sessionKey)
@@ -481,7 +526,7 @@ actor SupabaseAuthService {
     }
 }
 
-private struct SupabaseProfileDraft {
+private nonisolated struct SupabaseProfileDraft {
     let fullName: String
     let vtEmail: String
     let vtPID: String
@@ -490,7 +535,7 @@ private struct SupabaseProfileDraft {
     let appearanceMode: String
 }
 
-private struct SupabaseErrorBody: Decodable {
+nonisolated struct SupabaseErrorBody: Decodable {
     let msg: String?
     let message: String?
     let errorDescription: String?
@@ -501,7 +546,7 @@ private struct SupabaseErrorBody: Decodable {
     }
 }
 
-private enum KeychainStore {
+private nonisolated enum KeychainStore {
     static func save(_ data: Data, service: String) throws {
         delete(service: service)
         let query: [String: Any] = [

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+from app.routes.errors import error_detail
 from app.services.scraper_service import (
     load_courses,
     load_unique_courses,
@@ -46,7 +47,10 @@ def get_program_requirements(major: str):
     if not data.get("required_courses") and not data.get("electives"):
         raise HTTPException(
             status_code=404,
-            detail=f"No requirements found for '{major}'. Run the scraper or check the major name.",
+            detail=error_detail(
+                "COURSES_REQUIREMENTS_NOT_FOUND",
+                f"No requirements found for '{major}'. Run the scraper or check the major name.",
+            ),
         )
     return data
 
@@ -76,6 +80,9 @@ def get_courses(
     if courses is None:
         raise HTTPException(
             status_code=404,
-            detail=f"No cached data for '{subject}'. Run `python scraper/vt_scraper.py` to populate the cache.",
+            detail=error_detail(
+                "COURSES_CACHE_MISSING",
+                f"No cached data for '{subject}'. Run `python scraper/vt_scraper.py` to populate the cache.",
+            ),
         )
     return {"subject": subject, "count": len(courses), "unique": unique, "courses": courses}

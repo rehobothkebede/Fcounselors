@@ -1,6 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from app.routes.errors import error_detail
 from app.services.ai_service import recommend_tutoring
 
 router = APIRouter(prefix="/tutoring", tags=["Tutoring"])
@@ -31,7 +32,10 @@ def get_tutoring_recommendations(request: TutoringRequest):
     Generate tutoring and academic support recommendations for a struggling student.
     """
     if not request.struggling_courses:
-        raise HTTPException(status_code=400, detail="struggling_courses cannot be empty")
+        raise HTTPException(
+            status_code=400,
+            detail=error_detail("TUTORING_COURSES_REQUIRED", "struggling_courses cannot be empty"),
+        )
 
     try:
         result = recommend_tutoring(
@@ -40,6 +44,9 @@ def get_tutoring_recommendations(request: TutoringRequest):
             major=request.major,
         )
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+        raise HTTPException(
+            status_code=502,
+            detail=error_detail("TUTORING_AI_REQUEST_FAILED", f"AI service error: {str(e)}"),
+        )
 
     return TutoringResponse(**result)

@@ -18,7 +18,7 @@ struct TranscriptView: View {
                     loadingView.padding(.horizontal, 20)
                 } else if let error = vm.errorMessage {
                     statusCard(icon: "exclamationmark.triangle.fill", iconColor: .orange,
-                               title: "Could not parse transcript", subtitle: error)
+                               title: vm.errorTitle, subtitle: error)
                         .padding(.horizontal, 20)
                     primaryButton(title: "Try Again", icon: "arrow.up.doc.fill") {
                         vm.reset(); showFilePicker = true
@@ -41,12 +41,12 @@ struct TranscriptView: View {
                     uploadPrompt.padding(.horizontal, 20)
                 }
 
-                Spacer(minLength: 110)
+                Spacer(minLength: HokieChrome.contentBottomInset)
             }
         }
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.interactively)
-        .background(Color(.systemBackground))
+        .hokieScreenBackground()
         .swipeDownToDismissKeyboard()
         .fileImporter(
             isPresented: $showFilePicker,
@@ -64,6 +64,7 @@ struct TranscriptView: View {
             appState.hasTranscript = true
             appState.passingAllClasses = nil
             appState.strugglingCourses = []
+            appState.latestDegreeAudit = nil
             if let inferred = inferredGradYear(from: result.courses) {
                 graduationYear = String(inferred)
             }
@@ -73,26 +74,32 @@ struct TranscriptView: View {
     // MARK: - Header
 
     private var transcriptHeader: some View {
-        HStack(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Transcript")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
-                Text("Your CS course history, automatically parsed")
-                    .font(.subheadline).foregroundStyle(.secondary)
+        HokiePageHeader(
+            title: "Transcript",
+            eyebrow: "Course record",
+            subtitle: "Upload once, then let the app read your CS path.",
+            symbol: "doc.text.fill",
+            accent: .vtOrange,
+            stat: transcriptHeaderStat
+        ) {
+            Button { dismiss() } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .black))
+                    .foregroundStyle(.primary.opacity(0.82))
+                    .frame(width: 38, height: 38)
+                    .glassCapsule(strokeOpacity: 0.08)
             }
-            Spacer()
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 28))
-                    .foregroundStyle(Color(.tertiaryLabel))
-                    .symbolRenderingMode(.hierarchical)
-            }
+            .accessibilityLabel("Close transcript import")
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 20)
         .padding(.top, 20)
-        .padding(.bottom, 4)
+    }
+
+    private var transcriptHeaderStat: HokieHeaderStat {
+        if appState.hasTranscript {
+            return HokieHeaderStat(value: "\(appState.transcriptCourses.count)", label: "courses parsed", icon: "checkmark.seal.fill")
+        }
+        return HokieHeaderStat(value: "PDF", label: "PNG or JPG", icon: "arrow.up.doc.fill")
     }
 
     // MARK: - Upload Prompt
@@ -102,30 +109,36 @@ struct TranscriptView: View {
             Button {
                 vm.reset(); showFilePicker = true
             } label: {
-                VStack(spacing: 16) {
-                    Image(systemName: "arrow.up.doc.fill")
-                        .font(.system(size: 44, weight: .semibold))
-                        .foregroundStyle(.white)
-                    VStack(spacing: 4) {
+                HStack(spacing: 16) {
+                    HokieIconTile(symbol: "arrow.up.doc.fill", color: .vtBurgundy, size: 58)
+
+                    VStack(alignment: .leading, spacing: 6) {
                         Text("Upload Transcript")
-                            .font(.title3.bold()).fontDesign(.rounded).foregroundStyle(.white)
+                            .font(.title3.weight(.black))
+                            .fontDesign(.rounded)
+                            .foregroundStyle(.primary)
                         Text("PDF, PNG, or JPG")
-                            .font(.subheadline).foregroundStyle(.white.opacity(0.75))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
                     }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.headline.weight(.black))
+                        .foregroundStyle(Color.vtOrange.opacity(0.8))
                 }
-                .frame(maxWidth: .infinity).frame(height: 200)
-                .background(Color.vtBurgundy)
-                .clipShape(RoundedRectangle(cornerRadius: 32))
+                .padding(20)
+                .frame(maxWidth: .infinity)
+                .glassSurface(cornerRadius: 30)
             }
+            .buttonStyle(.plain)
 
             VStack(spacing: 14) {
                 featureRow(icon: "brain.head.profile", text: "AI-powered parsing — no manual entry needed")
                 featureRow(icon: "calendar.badge.checkmark", text: "Feeds directly into your course plan")
-                featureRow(icon: "lock.fill", text: "Processed securely, never stored")
+                featureRow(icon: "lock.fill", text: "Used only to build your planning workspace")
             }
             .padding(20)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 28))
+            .glassSurface(cornerRadius: 28)
         }
     }
 
@@ -143,9 +156,10 @@ struct TranscriptView: View {
                 Text(title).font(.body.bold())
             }
             .frame(maxWidth: .infinity).padding(.vertical, 18)
-            .background(Color.vtBurgundy).foregroundStyle(.white)
-            .clipShape(Capsule())
+            .foregroundStyle(Color.vtBurgundy)
+            .glassCapsule(strokeOpacity: 0.08)
         }
+        .buttonStyle(.plain)
     }
 
     private var reuploadButton: some View {
@@ -156,6 +170,7 @@ struct TranscriptView: View {
             appState.inProgressCourses = []
             appState.plannedCourses = []
             appState.transcriptNotes = []
+            appState.latestDegreeAudit = nil
             showFilePicker = true
         } label: {
             HStack(spacing: 8) {
@@ -164,9 +179,9 @@ struct TranscriptView: View {
             }
             .foregroundStyle(Color.vtBurgundy)
             .frame(maxWidth: .infinity).padding(.vertical, 16)
-            .background(Color.vtBurgundy.opacity(0.1))
-            .clipShape(Capsule())
+            .glassCapsule(strokeOpacity: 0.08)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Success Banner
@@ -191,8 +206,7 @@ struct TranscriptView: View {
             }
         }
         .padding(18)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .glassSurface(cornerRadius: 24)
     }
 
     // MARK: - In-Progress Courses
@@ -213,8 +227,7 @@ struct TranscriptView: View {
                 .font(.caption).foregroundStyle(.tertiary)
         }
         .padding(20)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 28))
+        .glassSurface(cornerRadius: 28)
     }
 
     private var plannedCoursesSection: some View {
@@ -228,9 +241,11 @@ struct TranscriptView: View {
             ForEach(courses) { course in
                 HStack(spacing: 10) {
                     Text(course.code)
-                        .font(.caption.bold()).foregroundStyle(.white)
+                        .font(.caption.weight(.black))
+                        .foregroundStyle(Color.vtOrange)
                         .padding(.horizontal, 10).padding(.vertical, 5)
-                        .background(Color.blue).clipShape(Capsule())
+                        .background(Color.vtOrange.opacity(0.12), in: Capsule())
+                        .overlay(Capsule().stroke(Color.vtOrange.opacity(0.18), lineWidth: 1))
                     VStack(alignment: .leading, spacing: 2) {
                         Text(course.name).font(.subheadline.bold()).lineLimit(1)
                         if let sem = course.semester {
@@ -245,8 +260,7 @@ struct TranscriptView: View {
                 .font(.caption).foregroundStyle(.tertiary)
         }
         .padding(20)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 28))
+        .glassSurface(cornerRadius: 28)
     }
 
     private func inProgressCourseRow(course: InProgressCourse) -> some View {
@@ -256,9 +270,11 @@ struct TranscriptView: View {
         return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Text(course.code)
-                    .font(.caption.bold()).foregroundStyle(.white)
+                    .font(.caption.weight(.black))
+                    .foregroundStyle(Color.vtBurgundy)
                     .padding(.horizontal, 10).padding(.vertical, 5)
-                    .background(Color.vtBurgundy).clipShape(Capsule())
+                    .background(Color.vtBurgundy.opacity(0.12), in: Capsule())
+                    .overlay(Capsule().stroke(Color.vtBurgundy.opacity(0.18), lineWidth: 1))
                 Text(course.name).font(.subheadline.bold()).lineLimit(1)
             }
             HStack(spacing: 8) {
@@ -268,12 +284,23 @@ struct TranscriptView: View {
                     Button {
                         appState.inProgressGrades[course.code] = isSelected ? nil : grade
                     } label: {
-                        Text(grade).font(.subheadline.bold())
-                            .frame(maxWidth: .infinity).padding(.vertical, 10)
-                            .background(isSelected ? color : color.opacity(0.1))
+                        Text(grade).font(.subheadline.weight(.black))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
                             .foregroundStyle(isSelected ? .white : color)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .background {
+                                if isSelected {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(color.gradient)
+                                        .shadow(color: color.opacity(0.16), radius: 8, x: 0, y: 4)
+                                } else {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(color.opacity(0.08))
+                                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(color.opacity(0.12), lineWidth: 1))
+                                }
+                            }
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -304,8 +331,7 @@ struct TranscriptView: View {
             }
         }
         .padding(20)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 28))
+        .glassSurface(cornerRadius: 28)
     }
 
     private func statusToggle(title: String, icon: String, isSelected: Bool,
@@ -317,10 +343,20 @@ struct TranscriptView: View {
             }
             .font(.subheadline)
             .frame(maxWidth: .infinity).padding(.vertical, 14)
-            .background(isSelected ? color : color.opacity(0.1))
             .foregroundStyle(isSelected ? .white : color)
-            .clipShape(Capsule())
+            .background {
+                if isSelected {
+                    Capsule()
+                        .fill(color.gradient)
+                        .shadow(color: color.opacity(0.16), radius: 8, x: 0, y: 4)
+                } else {
+                    Capsule()
+                        .fill(color.opacity(0.08))
+                        .overlay(Capsule().stroke(color.opacity(0.14), lineWidth: 1))
+                }
+            }
         }
+        .buttonStyle(.plain)
     }
 
     private var strugglingCoursesInput: some View {
@@ -341,8 +377,9 @@ struct TranscriptView: View {
                             }
                         }
                         .padding(.horizontal, 12).padding(.vertical, 6)
-                        .background(Color.orange).foregroundStyle(.white)
-                        .clipShape(Capsule())
+                        .foregroundStyle(Color.vtOrange)
+                        .background(Color.vtOrange.opacity(0.12), in: Capsule())
+                        .overlay(Capsule().stroke(Color.vtOrange.opacity(0.18), lineWidth: 1))
                     }
                 }
             }
@@ -351,8 +388,7 @@ struct TranscriptView: View {
                 TextField("e.g. CS 3114", text: $newStrugglingCourse)
                     .font(.subheadline)
                     .padding(.horizontal, 16).padding(.vertical, 12)
-                    .background(Color(.tertiarySystemBackground))
-                    .clipShape(Capsule())
+                    .glassCapsule(strokeOpacity: 0.06)
                     .submitLabel(.done)
                     .onSubmit { addStrugglingCourse() }
 
@@ -360,7 +396,7 @@ struct TranscriptView: View {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
                         .foregroundStyle(newStrugglingCourse.trimmingCharacters(in: .whitespaces).isEmpty
-                            ? Color.gray.opacity(0.4) : Color.orange)
+                            ? Color.hokieStone.opacity(0.45) : Color.vtOrange)
                 }
                 .disabled(newStrugglingCourse.trimmingCharacters(in: .whitespaces).isEmpty)
             }
@@ -410,8 +446,7 @@ struct TranscriptView: View {
                 .font(.caption).foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity).frame(height: 200)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .glassSurface(cornerRadius: 32)
     }
 
     // MARK: - Grad Year Inference
@@ -433,12 +468,14 @@ struct TranscriptView: View {
     private func handlePickedFile(_ pickerResult: Result<[URL], Error>) {
         switch pickerResult {
         case .failure(let error):
+            vm.errorTitle = "File picker failed"
             vm.errorMessage = error.localizedDescription
         case .success(let urls):
             guard let url = urls.first else { return }
             let accessing = url.startAccessingSecurityScopedResource()
             defer { if accessing { url.stopAccessingSecurityScopedResource() } }
             guard let data = try? Data(contentsOf: url) else {
+                vm.errorTitle = "File read failed"
                 vm.errorMessage = "Could not read the selected file."
                 return
             }
@@ -505,15 +542,20 @@ struct TranscriptCourseCard: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 8) {
                     Text(course.code)
-                        .font(.caption.bold()).foregroundStyle(.white)
+                        .font(.caption.weight(.black))
+                        .foregroundStyle(Color.vtBurgundy)
                         .padding(.horizontal, 10).padding(.vertical, 4)
-                        .background(Color.vtBurgundy).clipShape(Capsule())
+                        .background(Color.vtBurgundy.opacity(0.12), in: Capsule())
+                        .overlay(Capsule().stroke(Color.vtBurgundy.opacity(0.18), lineWidth: 1))
 
                     if let grade = course.grade {
+                        let badgeColor = gradeColor(grade)
                         Text(grade)
-                            .font(.caption.bold()).foregroundStyle(.white)
+                            .font(.caption.weight(.black))
+                            .foregroundStyle(badgeColor)
                             .padding(.horizontal, 10).padding(.vertical, 4)
-                            .background(gradeColor(grade)).clipShape(Capsule())
+                            .background(badgeColor.opacity(0.12), in: Capsule())
+                            .overlay(Capsule().stroke(badgeColor.opacity(0.18), lineWidth: 1))
                     }
                 }
                 Text(course.name).font(.subheadline.bold()).lineLimit(2)
@@ -524,8 +566,7 @@ struct TranscriptCourseCard: View {
             Spacer()
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .glassSurface(cornerRadius: 20)
     }
 
     private func gradeColor(_ grade: String) -> Color {

@@ -15,6 +15,16 @@ logger = logging.getLogger(__name__)
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+
+class TranscriptParseError(Exception):
+    """User-facing transcript parsing failure with a stable app error code."""
+
+    def __init__(self, code: str, message: str, status_code: int = 422):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.status_code = status_code
+
 _EXTRACT_PROMPT_TEMPLATE = """You are parsing a Virginia Tech student academic transcript.
 
 Current date: {current_date}
@@ -113,7 +123,7 @@ def _extract_from_text(text: str) -> dict:
             temperature=0,
             response_format={"type": "json_object"},
         )
-        return json.loads(response.choices[0].message.content)
+        return _decode_model_json(response.choices[0].message.content)
 
     return _call_with_retry(_call)
 
@@ -139,9 +149,34 @@ def _extract_from_image(image_bytes: bytes, mime_type: str) -> dict:
             temperature=0,
             response_format={"type": "json_object"},
         )
-        return json.loads(response.choices[0].message.content)
+        return _decode_model_json(response.choices[0].message.content)
 
     return _call_with_retry(_call)
+
+
+def _decode_model_json(content: str | None) -> dict:
+    if not content:
+        raise TranscriptParseError(
+            "TRANSCRIPT_AI_EMPTY_RESPONSE",
+            "The transcript parser returned an empty response. Please try again.",
+            status_code=502,
+        )
+    try:
+        decoded = json.loads(content)
+    except json.JSONDecodeError as e:
+        logger.warning("Transcript model returned invalid JSON: %s", e)
+        raise TranscriptParseError(
+            "TRANSCRIPT_AI_INVALID_JSON",
+            "The transcript parser returned a malformed response. Please try again.",
+            status_code=502,
+        ) from e
+    if not isinstance(decoded, dict):
+        raise TranscriptParseError(
+            "TRANSCRIPT_AI_INVALID_SCHEMA",
+            "The transcript parser returned an unexpected response shape. Please try again.",
+            status_code=502,
+        )
+    return decoded
 
 
 def parse_transcript(file_bytes: bytes, content_type: str) -> dict:
@@ -150,15 +185,29 @@ def parse_transcript(file_bytes: bytes, content_type: str) -> dict:
     content_type: "application/pdf", "image/png", or "image/jpeg"
     Returns: {"courses": [...], "warnings": [...]}
     """
+    if not OPENAI_API_KEY:
+        raise TranscriptParseError(
+            "OPENAI_API_KEY_MISSING",
+            "OpenAI is not configured on the transcript server.",
+            status_code=503,
+        )
+
     if content_type == "application/pdf":
         text = _pdf_to_text(file_bytes)
         if not text.strip():
-            raise ValueError("Could not extract text from PDF — it may be a scanned image. Try uploading as PNG or JPG.")
+            raise TranscriptParseError(
+                "TRANSCRIPT_PDF_NO_TEXT",
+                "Could not extract text from this PDF. If it is a scanned transcript, upload a PNG or JPG instead.",
+            )
         result = _extract_from_text(text)
     elif content_type in ("image/png", "image/jpeg", "image/jpg"):
         result = _extract_from_image(file_bytes, content_type)
     else:
-        raise ValueError(f"Unsupported file type: {content_type}. Upload a PDF, PNG, or JPG.")
+        raise TranscriptParseError(
+            "TRANSCRIPT_UNSUPPORTED_FILE_TYPE",
+            f"Unsupported file type: {content_type}. Upload a PDF, PNG, or JPG.",
+            status_code=415,
+        )
 
     result.setdefault("courses", [])
     result.setdefault("in_progress_courses", [])
@@ -185,9 +234,9 @@ def _pdf_to_text(file_bytes: bytes) -> str:
 
 def _normalize_transcript_result(result: dict) -> None:
     """Normalize parser output and move future no-grade courses into planned_courses."""
-    result["courses"] = [_normalize_completed_course(c) for c in result.get("courses", [])]
-    result["in_progress_courses"] = [_normalize_open_course(c) for c in result.get("in_progress_courses", [])]
-    result["planned_courses"] = [_normalize_open_course(c) for c in result.get("planned_courses", [])]
+    result["courses"] = [_normalize_completed_course(c, result["warnings"]) for c in result.get("courses", [])]
+    result["in_progress_courses"] = [_normalize_open_course(c, result["warnings"]) for c in result.get("in_progress_courses", [])]
+    result["planned_courses"] = [_normalize_open_course(c, result["warnings"]) for c in result.get("planned_courses", [])]
 
     still_in_progress = []
     for course in result["in_progress_courses"]:
@@ -206,19 +255,32 @@ def _normalize_transcript_result(result: dict) -> None:
     result["planned_courses"] = _dedupe_courses(result["planned_courses"])
 
 
-def _normalize_completed_course(course: dict) -> dict:
+def _normalize_completed_course(course: dict, warnings: list[str]) -> dict:
     normalized = dict(course)
     normalized["code"] = _normalize_code(str(normalized.get("code", "")))
+    _ensure_course_name(normalized, warnings)
     if normalized.get("grade"):
         normalized["grade"] = _normalize_grade(str(normalized["grade"]))
     return normalized
 
 
-def _normalize_open_course(course: dict) -> dict:
+def _normalize_open_course(course: dict, warnings: list[str]) -> dict:
     normalized = dict(course)
     normalized["code"] = _normalize_code(str(normalized.get("code", "")))
+    _ensure_course_name(normalized, warnings)
     normalized.pop("grade", None)
     return normalized
+
+
+def _ensure_course_name(course: dict, warnings: list[str]) -> None:
+    name = str(course.get("name") or "").strip()
+    if name:
+        course["name"] = name
+        return
+
+    code = str(course.get("code") or "Unknown course").strip() or "Unknown course"
+    course["name"] = "Untitled course"
+    warnings.append(f"{code} did not include a course title in the parser response.")
 
 
 def _normalize_grade(grade: str) -> str:

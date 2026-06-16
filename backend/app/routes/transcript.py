@@ -2,8 +2,9 @@ import asyncio
 from typing import List, Optional
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from pydantic import BaseModel
-from app.services.transcript_service import parse_transcript
+from pydantic import BaseModel, ValidationError
+from app.routes.errors import error_detail
+from app.services.transcript_service import TranscriptParseError, parse_transcript
 
 router = APIRouter(prefix="/transcript", tags=["Transcript"])
 
@@ -50,26 +51,46 @@ async def upload_transcript(file: UploadFile = File(...)):
     if content_type not in _ALLOWED_TYPES:
         raise HTTPException(
             status_code=415,
-            detail=f"Unsupported file type '{content_type}'. Upload a PDF, PNG, or JPG.",
+            detail=error_detail(
+                "TRANSCRIPT_UNSUPPORTED_FILE_TYPE",
+                f"Unsupported file type '{content_type}'. Upload a PDF, PNG, or JPG.",
+            ),
         )
 
     file_bytes = await file.read()
     if len(file_bytes) > _MAX_BYTES:
-        raise HTTPException(status_code=413, detail="File too large. Maximum size is 10 MB.")
+        raise HTTPException(
+            status_code=413,
+            detail=error_detail("TRANSCRIPT_FILE_TOO_LARGE", "File too large. Maximum size is 10 MB."),
+        )
     if len(file_bytes) == 0:
-        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+        raise HTTPException(
+            status_code=400,
+            detail=error_detail("TRANSCRIPT_FILE_EMPTY", "Uploaded file is empty."),
+        )
 
     try:
         result = await asyncio.to_thread(parse_transcript, file_bytes, content_type)
+    except TranscriptParseError as e:
+        raise HTTPException(status_code=e.status_code, detail=error_detail(e.code, e.message))
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=error_detail("TRANSCRIPT_PARSE_FAILED", str(e)))
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=502, detail=error_detail("TRANSCRIPT_AI_REQUEST_FAILED", str(e)))
 
-    return TranscriptResponse(
-        courses=[TranscriptCourse(**c) for c in result["courses"]],
-        in_progress_courses=[InProgressCourse(**c) for c in result["in_progress_courses"]],
-        planned_courses=[PlannedCourse(**c) for c in result.get("planned_courses", [])],
-        course_count=len(result["courses"]),
-        warnings=result["warnings"],
-    )
+    try:
+        return TranscriptResponse(
+            courses=[TranscriptCourse(**c) for c in result["courses"]],
+            in_progress_courses=[InProgressCourse(**c) for c in result["in_progress_courses"]],
+            planned_courses=[PlannedCourse(**c) for c in result.get("planned_courses", [])],
+            course_count=len(result["courses"]),
+            warnings=result["warnings"],
+        )
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=502,
+            detail=error_detail(
+                "TRANSCRIPT_AI_INVALID_SCHEMA",
+                "The transcript parser returned course data the app could not read. Please try again.",
+            ),
+        ) from e

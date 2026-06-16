@@ -48,3 +48,23 @@ entrypoint = "./functions/chat/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/account/index.ts"
+
+[functions.transcript]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/transcript/index.ts"
+
+[functions.dars]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/dars/index.ts"
+
+[functions.audit]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/audit/index.ts"
+
+[functions.tutoring]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/tutoring/index.ts"

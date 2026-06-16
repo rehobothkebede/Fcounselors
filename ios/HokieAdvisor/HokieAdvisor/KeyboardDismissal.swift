@@ -1,9 +1,24 @@
 import SwiftUI
 import UIKit
+import Combine
 
 extension UIApplication {
     func dismissKeyboard() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
+private struct KeyboardVisibilityModifier: ViewModifier {
+    let onChange: (Bool) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                onChange(true)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                onChange(false)
+            }
     }
 }
 
@@ -24,27 +39,11 @@ private struct SwipeDownKeyboardDismissModifier: ViewModifier {
 }
 
 extension View {
+    func onKeyboardVisibilityChange(_ onChange: @escaping (Bool) -> Void) -> some View {
+        modifier(KeyboardVisibilityModifier(onChange: onChange))
+    }
+
     func swipeDownToDismissKeyboard() -> some View {
         modifier(SwipeDownKeyboardDismissModifier())
-    }
-}
-
-struct KeyboardDismissHandle: View {
-    var body: some View {
-        Capsule()
-            .fill(Color(.tertiaryLabel).opacity(0.45))
-            .frame(width: 42, height: 5)
-            .padding(.top, 8)
-            .padding(.bottom, 2)
-            .contentShape(Rectangle())
-            .gesture(
-                DragGesture(minimumDistance: 6)
-                    .onEnded { value in
-                        if value.translation.height > 10 {
-                            UIApplication.shared.dismissKeyboard()
-                        }
-                    }
-            )
-            .accessibilityHidden(true)
     }
 }

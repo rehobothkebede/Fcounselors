@@ -2,6 +2,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from app.routes.errors import error_detail
 from app.services.ai_service import chat_with_advisor, chat_stream_with_advisor
 from app.services.coe_service import get_coe_context_for_major, resolve_full_major_name
 
@@ -37,7 +38,7 @@ class ChatResponse(BaseModel):
 @router.post("", response_model=ChatResponse)
 def chat(request: ChatRequest):
     """
-    Send a conversation to the Fcounselors AI (tutor / advisor).
+    Send a conversation to the Hokie Advisor AI (tutor / advisor).
     Pass the full message history so the bot retains context across turns.
 
     Optional: include `major` (e.g. "Computer Science", "ECE") to inject
@@ -52,7 +53,7 @@ def chat(request: ChatRequest):
     }
     """
     if not request.messages:
-        raise HTTPException(status_code=400, detail="messages cannot be empty")
+        raise HTTPException(status_code=400, detail=error_detail("CHAT_MESSAGES_REQUIRED", "messages cannot be empty"))
 
     messages = [m.model_dump() for m in request.messages]
     course_context = ""
@@ -71,7 +72,7 @@ def chat(request: ChatRequest):
             chat_memories=request.chat_memories,
         )
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+        raise HTTPException(status_code=502, detail=error_detail("CHAT_AI_REQUEST_FAILED", f"AI service error: {str(e)}"))
 
     return ChatResponse(reply=reply)
 
@@ -80,7 +81,7 @@ def chat(request: ChatRequest):
 def chat_stream(request: ChatRequest):
     """Stream the AI advisor response token by token via Server-Sent Events."""
     if not request.messages:
-        raise HTTPException(status_code=400, detail="messages cannot be empty")
+        raise HTTPException(status_code=400, detail=error_detail("CHAT_MESSAGES_REQUIRED", "messages cannot be empty"))
 
     messages = [m.model_dump() for m in request.messages]
     course_context = ""
@@ -99,7 +100,7 @@ def chat_stream(request: ChatRequest):
             chat_memories=request.chat_memories,
         )
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+        raise HTTPException(status_code=502, detail=error_detail("CHAT_AI_REQUEST_FAILED", f"AI service error: {str(e)}"))
 
     return StreamingResponse(
         generator,

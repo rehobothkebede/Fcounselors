@@ -16,20 +16,30 @@ final class ChatViewModel: ObservableObject {
 
     private(set) var currentSessionID: UUID = UUID()
     private weak var historyStore: ChatHistoryStore?
+    private var activeRequestID: UUID?
+
+    var isReadyForMessage: Bool {
+        !isLoading
+            && !messages.contains(where: { $0.isStreaming })
+    }
 
     var canSend: Bool {
-        !inputText.trimmingCharacters(in: .whitespaces).isEmpty
-            && !isLoading
-            && !messages.contains(where: { $0.isStreaming })
+        canSend(text: inputText)
+    }
+
+    func canSend(text: String) -> Bool {
+        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && isReadyForMessage
     }
 
     func configure(store: ChatHistoryStore) {
         historyStore = store
     }
 
-    func sendMessage() async {
-        let text = inputText.trimmingCharacters(in: .whitespaces)
-        guard !text.isEmpty else { return }
+    @discardableResult
+    func sendMessage(textOverride: String? = nil) async -> Bool {
+        let sourceText = textOverride ?? inputText
+        let text = sourceText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard canSend(text: text) else { return false }
 
         inputText = ""
         errorMessage = nil
@@ -52,10 +62,12 @@ final class ChatViewModel: ObservableObject {
         )
 
         let streamID = UUID()
+        activeRequestID = streamID
         var streamStarted = false
 
         do {
             for try await token in APIService.streamChat(request: chatRequest) {
+                guard activeRequestID == streamID else { return false }
                 if !streamStarted {
                     streamStarted = true
                     isLoading = false
@@ -65,23 +77,30 @@ final class ChatViewModel: ObservableObject {
                     messages[idx].content += token
                 }
             }
+            guard activeRequestID == streamID else { return false }
             if let idx = messages.firstIndex(where: { $0.id == streamID }) {
                 messages[idx].isStreaming = false
             }
+            activeRequestID = nil
             autoSave()
+            isLoading = false
+            return true
         } catch {
+            guard activeRequestID == streamID else { return false }
+            activeRequestID = nil
             isLoading = false
             messages.removeAll { $0.id == streamID }
             if messages.last?.role == "user" { messages.removeLast() }
             errorMessage = error.localizedDescription
             inputText = text
+            return false
         }
-
-        isLoading = false
     }
 
     func loadSession(_ session: ChatSession) {
         autoSave()
+        activeRequestID = nil
+        isLoading = false
         currentSessionID = session.id
         messages = session.messages.map {
             ChatMessage(id: $0.id, role: $0.role, content: $0.content, isStreaming: false)
@@ -111,7 +130,10 @@ final class ChatViewModel: ObservableObject {
     }
 
     private func resetConversation() {
+        activeRequestID = nil
+        isLoading = false
         messages = []
+        inputText = ""
         errorMessage = nil
         currentSessionID = UUID()
     }

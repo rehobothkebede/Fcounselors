@@ -9,7 +9,8 @@ struct SettingsView: View {
     @AppStorage("vtEmail") private var vtEmail = ""
     @AppStorage("vtPID") private var vtPID = ""
     @AppStorage("onboardingComplete") private var onboardingComplete = true
-    @AppStorage("appPasswordHash") private var appPasswordHash = ""
+    @AppStorage("authSessionActive") private var authSessionActive = false
+    @AppStorage("pendingSignupEmail") private var pendingSignupEmail = ""
 
     @State private var showClearDataAlert = false
     @State private var showResetAlert = false
@@ -18,12 +19,21 @@ struct SettingsView: View {
     @State private var showTranscriptImport = false
     @State private var showMemoryEditor = false
     @State private var resetError = ""
+    @State private var scrollOffset: CGFloat = 0
+    @State private var profileSyncTask: Task<Void, Never>? = nil
+    @State private var suppressProfileSync = false
+
+    private var compactTitleProgress: CGFloat {
+        min(max((scrollOffset - 82) / 34, 0), 1)
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    profileCard.padding(.top, 8)
+                    profileHeader
+                        .padding(.top, 12)
+                    profileCard
                     settingsGroup(title: "Appearance") { appearanceSection }
                     settingsGroup(title: "Academic") { academicSection }
                     settingsGroup(title: "Transcript") { transcriptSection }
@@ -36,15 +46,22 @@ struct SettingsView: View {
                         .multilineTextAlignment(.center)
                         .padding(.bottom, 4)
 
-                    Spacer(minLength: 110)
+                    Spacer(minLength: HokieChrome.contentBottomInset)
                 }
                 .padding(.horizontal, 20)
             }
             .scrollIndicators(.hidden)
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y
+            } action: { _, offset in
+                guard abs(offset - scrollOffset) > 0.5 else { return }
+                scrollOffset = offset
+            }
             .scrollDismissesKeyboard(.interactively)
-            .background(Color(.systemBackground))
-            .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.large)
+            .hokieScreenBackground()
+            .toolbar(.hidden, for: .navigationBar)
+            .transparentNavigationChrome()
+            .overlay(alignment: .top) { compactTitleOverlay }
         }
         .swipeDownToDismissKeyboard()
         .sheet(isPresented: $showTranscriptImport) {
@@ -62,15 +79,7 @@ struct SettingsView: View {
         }
         .alert("Clear All Data", isPresented: $showClearDataAlert) {
             Button("Clear Everything", role: .destructive) {
-                appState.transcriptCourses = []
-                appState.inProgressCourses = []
-                appState.plannedCourses = []
-                appState.transcriptNotes = []
-                appState.inProgressGrades = [:]
-                appState.hasTranscript = false
-                appState.passingAllClasses = nil
-                appState.strugglingCourses = []
-                chatHistory.deleteAll()
+                clearLocalAccountData(deleteLocalChatCache: true)
                 Task { await SupabaseAuthService.shared.signOut() }
             }
             Button("Cancel", role: .cancel) {}
@@ -93,9 +102,47 @@ struct SettingsView: View {
         } message: {
             Text(resetError)
         }
+        .onChange(of: studentName) { _, _ in scheduleProfileSync() }
+        .onChange(of: graduationYear) { _, _ in scheduleProfileSync() }
+        .onChange(of: appearanceMode) { _, _ in scheduleProfileSync() }
+        .onChange(of: appState.major) { _, _ in scheduleProfileSync() }
+        .onDisappear {
+            flushProfileSync()
+        }
     }
 
     // MARK: - Profile Card
+
+    private var compactTitleOverlay: some View {
+        HokieCompactPill(
+            title: "Profile",
+            symbol: "person.crop.circle.fill",
+            accent: .vtOrange,
+            progress: compactTitleProgress
+        )
+        .padding(.top, 8)
+    }
+
+    private var profileHeader: some View {
+        HokiePageHeader(
+            title: "Profile",
+            eyebrow: "Student hub",
+            subtitle: "Account, theme, transcript, and memory controls.",
+            symbol: "person.crop.circle.fill",
+            accent: .vtOrange,
+            stat: profileHeaderStat
+        )
+    }
+
+    private var profileHeaderStat: HokieHeaderStat {
+        if !graduationYear.isEmpty {
+            return HokieHeaderStat(value: "'\(String(graduationYear.suffix(2)))", label: "grad year", icon: "graduationcap.fill")
+        }
+        if !vtPID.isEmpty {
+            return HokieHeaderStat(value: vtPID.uppercased(), label: "pid", icon: "person.text.rectangle.fill")
+        }
+        return HokieHeaderStat(value: initials, label: "local profile", icon: "person.fill")
+    }
 
     private var profileCard: some View {
         VStack(spacing: 16) {
@@ -121,55 +168,68 @@ struct SettingsView: View {
                 }
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
+            VStack(spacing: 8) {
                 HStack(spacing: 8) {
-                    Text("Virginia Tech")
-                        .font(.caption.bold()).foregroundStyle(.white)
-                        .padding(.horizontal, 14).padding(.vertical, 7)
-                        .background(Color.vtBurgundy).clipShape(Capsule())
-
-                    if !appState.major.isEmpty {
-                        Text(appState.major)
-                            .font(.caption.bold()).foregroundStyle(Color.vtBurgundy)
-                            .padding(.horizontal, 14).padding(.vertical, 7)
-                            .background(Color.vtBurgundy.opacity(0.1)).clipShape(Capsule())
-                    }
-
+                    profileChip("Virginia Tech", foreground: .white, fill: .vtBurgundy)
+                    Spacer(minLength: 8)
                     if !graduationYear.isEmpty {
-                        Text("'\(String(graduationYear.suffix(2)))")
-                            .font(.caption.bold()).foregroundStyle(Color.blue)
-                            .padding(.horizontal, 14).padding(.vertical, 7)
-                            .background(Color.blue.opacity(0.1)).clipShape(Capsule())
+                        profileChip("'\(String(graduationYear.suffix(2)))", foreground: .vtOrange)
+                    }
+                }
+
+                HStack(spacing: 8) {
+                    if !appState.major.isEmpty {
+                        profileChip(appState.major, foreground: .vtBurgundy)
                     }
 
                     if !vtPID.isEmpty {
-                        Text("PID: \(vtPID)")
-                            .font(.caption.bold()).foregroundStyle(Color(.systemGray))
-                            .padding(.horizontal, 14).padding(.vertical, 7)
-                            .background(Color(.systemGray4)).clipShape(Capsule())
+                        profileChip("PID: \(vtPID)", foreground: .hokieStone)
+                    }
+
+                    if appState.major.isEmpty && vtPID.isEmpty {
+                        profileChip("Local profile", foreground: .hokieStone)
                     }
                 }
-                .padding(.horizontal, 4)
+                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(24)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .glassSurface(cornerRadius: 32)
+    }
+
+    private func profileChip(_ text: String, foreground: Color, fill: Color? = nil) -> some View {
+        Text(text)
+            .font(.caption.weight(.black))
+            .foregroundStyle(foreground)
+            .lineLimit(1)
+            .minimumScaleFactor(0.78)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 7)
+            .background(fill ?? foreground.opacity(0.10), in: Capsule())
+            .overlay(Capsule().stroke(foreground.opacity(fill == nil ? 0.16 : 0.22), lineWidth: 1))
     }
 
     private func resetAccount() {
         Task {
             do {
                 try await SupabaseAuthService.shared.deleteAccount()
-                clearLocalAccountData()
+                clearLocalAccountData(deleteLocalChatCache: true)
             } catch {
                 resetError = error.localizedDescription
             }
         }
     }
 
-    private func clearLocalAccountData() {
+    private func signOut() {
+        profileSyncTask?.cancel()
+        Task { await SupabaseAuthService.shared.signOut() }
+        clearLocalAccountData(deleteLocalChatCache: false)
+    }
+
+    private func clearLocalAccountData(deleteLocalChatCache: Bool) {
+        suppressProfileSync = true
+        profileSyncTask?.cancel()
         appState.transcriptCourses = []
         appState.inProgressCourses = []
         appState.plannedCourses = []
@@ -179,13 +239,67 @@ struct SettingsView: View {
         appState.passingAllClasses = nil
         appState.strugglingCourses = []
         appState.major = ""
-        chatHistory.deleteAll()
-        appPasswordHash = ""
+        appState.latestDegreeAudit = nil
+        appState.latestDarsAudit = nil
+        if deleteLocalChatCache {
+            chatHistory.deleteAll()
+        } else {
+            chatHistory.clearLoadedUser()
+        }
         vtEmail = ""
         vtPID = ""
         studentName = ""
         graduationYear = ""
+        pendingSignupEmail = ""
+        authSessionActive = false
         onboardingComplete = false
+    }
+
+    private func scheduleProfileSync() {
+        guard !suppressProfileSync,
+              authSessionActive,
+              onboardingComplete else { return }
+
+        let snapshot = currentProfileSnapshot
+        profileSyncTask?.cancel()
+        profileSyncTask = Task {
+            try? await Task.sleep(nanoseconds: 800_000_000)
+            guard !Task.isCancelled else { return }
+            await syncProfile(snapshot)
+        }
+    }
+
+    private func flushProfileSync() {
+        guard !suppressProfileSync,
+              authSessionActive,
+              onboardingComplete else { return }
+
+        let snapshot = currentProfileSnapshot
+        profileSyncTask?.cancel()
+        profileSyncTask = nil
+        Task { await syncProfile(snapshot) }
+    }
+
+    private var currentProfileSnapshot: SupabaseProfileSnapshot {
+        SupabaseProfileSnapshot(
+            fullName: studentName.trimmingCharacters(in: .whitespacesAndNewlines),
+            vtPID: vtPID.trimmingCharacters(in: .whitespacesAndNewlines),
+            vtEmail: vtEmail.trimmingCharacters(in: .whitespacesAndNewlines),
+            major: appState.major.trimmingCharacters(in: .whitespacesAndNewlines),
+            graduationYear: graduationYear.trimmingCharacters(in: .whitespacesAndNewlines),
+            appearanceMode: appearanceMode
+        )
+    }
+
+    private func syncProfile(_ snapshot: SupabaseProfileSnapshot) async {
+        guard let session = try? await SupabaseAuthService.shared.validatedCurrentSession(),
+              let userID = session.user?.id else { return }
+
+        try? await SupabaseUserDataService.shared.upsertProfile(
+            snapshot,
+            userID: userID,
+            accessToken: session.accessToken
+        )
     }
 
     private var initials: String {
@@ -199,13 +313,16 @@ struct SettingsView: View {
 
     private var appearanceSection: some View {
         row(icon: "moon.stars.fill", iconColor: .purple, label: "Theme") {
-            Picker("", selection: $appearanceMode) {
-                Text("System").tag("system")
-                Text("Light").tag("light")
-                Text("Dark").tag("dark")
-            }
-            .pickerStyle(.segmented)
-            .frame(width: 170)
+            HokieSegmentedControl(
+                selection: $appearanceMode,
+                options: [
+                    (value: "system", title: "System"),
+                    (value: "light", title: "Light"),
+                    (value: "dark", title: "Dark"),
+                ],
+                accent: .vtOrange
+            )
+            .frame(width: 188)
         }
     }
 
@@ -235,6 +352,7 @@ struct SettingsView: View {
                         Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
                     }
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -259,6 +377,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .buttonStyle(.plain)
 
             if appState.hasTranscript {
                 divider
@@ -302,16 +421,18 @@ struct SettingsView: View {
     private var aboutSection: some View {
         VStack(spacing: 0) {
             Button { showTerms = true } label: {
-                row(icon: "doc.text", iconColor: Color(.systemGray), label: "Terms of Service") {
+                row(icon: "doc.text", iconColor: .hokieStone, label: "Terms of Service") {
                     Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
                 }
             }
+            .buttonStyle(.plain)
             divider
             Button { showPrivacy = true } label: {
-                row(icon: "hand.raised.fill", iconColor: Color(.systemGray), label: "Privacy Policy") {
+                row(icon: "hand.raised.fill", iconColor: .hokieStone, label: "Privacy Policy") {
                     Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
                 }
             }
+            .buttonStyle(.plain)
             divider
             row(icon: "info.circle.fill", iconColor: .blue, label: "Version") {
                 Text("1.0.0 (1)").font(.subheadline).foregroundStyle(.secondary)
@@ -323,17 +444,26 @@ struct SettingsView: View {
 
     private var dangerSection: some View {
         VStack(spacing: 0) {
+            Button { signOut() } label: {
+                row(icon: "rectangle.portrait.and.arrow.right", iconColor: .hokieStone, label: "Sign Out") {
+                    EmptyView()
+                }
+            }
+            .buttonStyle(.plain)
+            divider
             Button { showClearDataAlert = true } label: {
                 row(icon: "trash.fill", iconColor: .red, label: "Clear Transcript Data") {
                     EmptyView()
                 }
             }
+            .buttonStyle(.plain)
             divider
             Button { showResetAlert = true } label: {
                 row(icon: "arrow.counterclockwise", iconColor: .orange, label: "Reset Account & Restart") {
                     EmptyView()
                 }
             }
+            .buttonStyle(.plain)
         }
     }
 
@@ -346,13 +476,17 @@ struct SettingsView: View {
     private func settingsGroup<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             if !title.isEmpty {
-                Text(title)
-                    .font(.caption.bold()).foregroundStyle(.secondary)
-                    .textCase(.uppercase).tracking(0.5).padding(.leading, 4)
+                HStack(spacing: 8) {
+                    Text(title)
+                        .font(.caption.weight(.black))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                        .tracking(0.7)
+                }
+                .padding(.leading, 4)
             }
             VStack(spacing: 0) { content() }
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .glassSurface(cornerRadius: 24)
         }
     }
 
@@ -360,12 +494,7 @@ struct SettingsView: View {
     private func row<Trailing: View>(icon: String, iconColor: Color, label: String,
                                       @ViewBuilder trailing: () -> Trailing) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 30, height: 30)
-                .background(iconColor)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            HokieIconTile(symbol: icon, color: iconColor, size: 32)
 
             Text(label).font(.body).foregroundStyle(.primary)
             Spacer()
@@ -392,7 +521,7 @@ Hokie Advisor is a student academic planning tool designed to assist Virginia Te
 Course recommendations and advisor responses are AI-generated. Always verify recommendations against your official degree audit and consult your academic advisor before making enrollment decisions.
 
 **Your Data**
-Your transcript and academic data are stored locally on your device. Nothing is transmitted to third parties.
+Your transcript, audit uploads, chat messages, and academic context may be sent to Hokie Advisor backend services, Supabase, and OpenAI-powered services to provide parsing, advising, and account features. Do not upload information you are not comfortable processing through those services.
 
 **Disclaimer**
 Hokie Advisor is an independent student project and is not officially affiliated with or endorsed by Virginia Tech University.
@@ -409,20 +538,21 @@ We may update these terms at any time. Continued use of the app constitutes acce
 *Last updated: May 2026*
 
 **What We Collect**
-- Transcript data you upload (processed locally, not sent to external servers beyond the AI API call)
-- Your name, major, and graduation year (stored locally on your device via iOS app storage)
+- Transcript and audit files you choose to upload, plus parsed academic course data
+- Chat messages, saved chat history, and saved chat memories
+- Your name, major, graduation year, VT email, and account/profile details
 
 **How We Use It**
-Your data is used solely to generate personalized course plans and advisor responses within the app.
+Your data is used to parse academic records, generate personalized course plans, provide AI advisor responses, support account features, and improve your in-app academic workflow.
 
 **Data Sharing**
-We do not sell, share, or transmit your personal data to any third parties, except as necessary to generate AI responses (course code lists and your major are sent to the AI API — never your full name or personally identifiable information).
+We do not sell your personal data. Hokie Advisor transmits relevant data to backend services, Supabase, and OpenAI-powered services when needed for authentication, storage, transcript parsing, audit extraction, chat, and advising features.
 
 **Data Deletion**
-You can delete all stored data at any time via Settings → Clear All Data.
+You can delete local app data via Settings → Clear All Data. If you created a Supabase-backed account, Settings → Reset Account also requests deletion of the remote account.
 
 **Security**
-Data stored on your device is protected by iOS app sandboxing and your device passcode/Face ID.
+Data stored on your device is protected by iOS app sandboxing and your device passcode/Face ID. Remote processing and storage depend on the configured backend, Supabase project, and OpenAI service settings.
 
 **Contact**
 Questions about this policy? Reach out through the Virginia Tech CS department.
@@ -439,52 +569,119 @@ struct ChatMemoryEditorView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    HStack(spacing: 10) {
-                        TextField("Add something to remember...", text: $newMemory, axis: .vertical)
-                            .lineLimit(1...3)
-                        Button {
-                            chatHistory.addMemory(newMemory)
-                            newMemory = ""
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title3)
-                                .foregroundStyle(Color.vtBurgundy)
-                        }
-                        .disabled(newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    }
-                } footer: {
-                    Text("Examples: preferred name, tutoring style, recurring weak topics, course goals, or scheduling preferences.")
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    addMemoryCard
+                    savedMemorySection
+                    Spacer(minLength: 32)
                 }
-
-                Section("Saved") {
-                    if chatHistory.memories.isEmpty {
-                        Text("No saved memories yet.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(chatHistory.memories) { memory in
-                            EditableMemoryRow(memory: memory)
-                                .environmentObject(chatHistory)
-                        }
-                        .onDelete { offsets in
-                            chatHistory.deleteMemory(at: offsets)
-                        }
-                    }
-                }
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 36)
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Chat Memory")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                        .foregroundStyle(Color.vtBurgundy)
+            .scrollIndicators(.hidden)
+            .hokieScreenBackground()
+            .safeAreaInset(edge: .top) {
+                HokieSheetHeader(
+                    title: "Chat Memory",
+                    subtitle: "\(chatHistory.memories.count) saved note\(chatHistory.memories.count == 1 ? "" : "s")",
+                    symbol: "brain.head.profile",
+                    accent: .vtBurgundy
+                ) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .black))
+                            .foregroundStyle(Color.vtBurgundy)
+                            .frame(width: 34, height: 34)
+                            .glassCircle(strokeOpacity: 0.08)
+                    }
+                    .accessibilityLabel("Close")
+                    .buttonStyle(.plain)
+                }
+            }
+            .toolbar(.hidden, for: .navigationBar)
+            .transparentNavigationChrome()
+        }
+        .swipeDownToDismissKeyboard()
+    }
+
+    private var addMemoryCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                HokieIconTile(symbol: "plus.message.fill", color: .vtBurgundy, size: 38)
+
+                TextField("Add something to remember...", text: $newMemory, axis: .vertical)
+                    .lineLimit(1...3)
+                    .font(.subheadline.weight(.semibold))
+                    .textInputAutocapitalization(.sentences)
+                    .submitLabel(.done)
+
+                Button {
+                    addMemory()
+                } label: {
+                    Image(systemName: "arrow.up")
+                        .font(.caption.weight(.black))
+                        .foregroundStyle(canAddMemory ? Color.white : Color.secondary)
+                        .frame(width: 34, height: 34)
+                        .background(canAddMemory ? Color.vtBurgundy : Color.primary.opacity(0.08), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .disabled(!canAddMemory)
+                .accessibilityLabel("Add memory")
+            }
+
+            Text("Preferred name, tutoring style, weak topics, course goals, or scheduling preferences.")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(16)
+        .glassSurface(cornerRadius: 24)
+    }
+
+    private var savedMemorySection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Saved")
+                .font(.caption.weight(.black))
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(0.7)
+                .padding(.leading, 4)
+
+            if chatHistory.memories.isEmpty {
+                HStack(spacing: 12) {
+                    HokieIconTile(symbol: "brain.head.profile", color: .vtOrange, size: 38)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("No saved memories yet")
+                            .font(.subheadline.weight(.black))
+                        Text("New notes you add here will shape future advisor responses.")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(16)
+                .glassSurface(cornerRadius: 22)
+            } else {
+                VStack(spacing: 10) {
+                    ForEach(chatHistory.memories) { memory in
+                        EditableMemoryRow(memory: memory)
+                            .environmentObject(chatHistory)
+                    }
                 }
             }
         }
-        .swipeDownToDismissKeyboard()
+    }
+
+    private var canAddMemory: Bool {
+        !newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func addMemory() {
+        guard canAddMemory else { return }
+        chatHistory.addMemory(newMemory)
+        newMemory = ""
     }
 }
 
@@ -494,16 +691,35 @@ struct EditableMemoryRow: View {
     @State private var draft: String = ""
 
     var body: some View {
-        TextField("Memory", text: $draft, axis: .vertical)
-            .lineLimit(1...4)
-            .font(.subheadline)
-            .onAppear { draft = memory.content }
-            .onSubmit {
-                chatHistory.updateMemory(memory, content: draft)
+        HStack(alignment: .top, spacing: 12) {
+            HokieIconTile(symbol: "sparkles", color: .vtBurgundy, size: 34)
+
+            TextField("Memory", text: $draft, axis: .vertical)
+                .lineLimit(1...4)
+                .font(.subheadline.weight(.semibold))
+                .textInputAutocapitalization(.sentences)
+                .onAppear { draft = memory.content }
+                .onSubmit {
+                    chatHistory.updateMemory(memory, content: draft)
+                }
+                .onChange(of: draft) { _, value in
+                    chatHistory.updateMemory(memory, content: value)
+                }
+
+            Button {
+                chatHistory.deleteMemory(memory)
+            } label: {
+                Image(systemName: "trash.fill")
+                    .font(.caption.weight(.black))
+                    .foregroundStyle(Color.red.opacity(0.82))
+                    .frame(width: 32, height: 32)
+                    .glassCircle(strokeOpacity: 0.08)
             }
-            .onChange(of: draft) { _, value in
-                chatHistory.updateMemory(memory, content: value)
-            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Delete memory")
+        }
+        .padding(14)
+        .glassSurface(cornerRadius: 20)
     }
 }
 
@@ -522,13 +738,27 @@ struct LegalSheet: View {
                     .padding(20)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }.foregroundStyle(Color.vtBurgundy)
+            .hokieScreenBackground()
+            .safeAreaInset(edge: .top) {
+                HokieSheetHeader(
+                    title: title,
+                    subtitle: "Hokie Advisor policies",
+                    symbol: "doc.text.fill",
+                    accent: .vtBurgundy
+                ) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .black))
+                            .foregroundStyle(Color.vtBurgundy)
+                            .frame(width: 34, height: 34)
+                            .glassCircle(strokeOpacity: 0.08)
+                    }
+                    .accessibilityLabel("Close")
+                    .buttonStyle(.plain)
                 }
             }
+            .toolbar(.hidden, for: .navigationBar)
+            .transparentNavigationChrome()
         }
     }
 }

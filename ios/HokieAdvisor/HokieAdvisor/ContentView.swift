@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import UniformTypeIdentifiers
+import UIKit
 
 // MARK: - Markdown Helper
 
@@ -15,6 +16,602 @@ extension String {
 extension Color {
     static let vtBurgundy     = Color(red: 0.525, green: 0.122, blue: 0.255)
     static let vtBurgundyDark = Color(red: 0.315, green: 0.073, blue: 0.153)
+    static let vtOrange       = Color(red: 0.898, green: 0.459, blue: 0.122)
+    static let hokieStone     = Color(red: 0.459, green: 0.471, blue: 0.482)
+}
+
+enum HokieChrome {
+    static let floatingTabBottomPadding: CGFloat = -16
+    static let contentBottomInset: CGFloat = 150
+    static let chatComposerRestingBottom: CGFloat = 71
+    static let chatMessageRestingBottom: CGFloat = 249
+}
+
+// MARK: - Glass Surfaces
+
+private enum HokieGlassPalette {
+    static func surfaceFill(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(red: 0.118, green: 0.112, blue: 0.116).opacity(0.76)
+            : Color.white.opacity(0.54)
+    }
+
+    static func insetFill(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(red: 0.152, green: 0.146, blue: 0.151).opacity(0.70)
+            : Color.white.opacity(0.42)
+    }
+
+    static func sheen(for colorScheme: ColorScheme) -> Color {
+        Color.white.opacity(colorScheme == .dark ? 0.075 : 0.30)
+    }
+
+    static func shade(for colorScheme: ColorScheme) -> Color {
+        Color.black.opacity(colorScheme == .dark ? 0.10 : 0.018)
+    }
+
+    static func shadow(for colorScheme: ColorScheme) -> Color {
+        Color.black.opacity(colorScheme == .dark ? 0.22 : 0.08)
+    }
+
+    static func stroke(opacity: Double, for colorScheme: ColorScheme) -> Color {
+        if colorScheme == .dark {
+            return Color.white.opacity(max(opacity, 0.12))
+        }
+        return Color.black.opacity(max(opacity * 0.65, 0.055))
+    }
+}
+
+private struct HokieGlassRoundedBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    let cornerRadius: CGFloat
+    let strokeOpacity: Double
+    var inset = false
+    var elevated = true
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+
+        shape
+            .fill(inset ? HokieGlassPalette.insetFill(for: colorScheme) : HokieGlassPalette.surfaceFill(for: colorScheme))
+            .overlay {
+                LinearGradient(
+                    colors: [
+                        HokieGlassPalette.sheen(for: colorScheme),
+                        Color.white.opacity(0.02),
+                        HokieGlassPalette.shade(for: colorScheme),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .clipShape(shape)
+            }
+            .overlay {
+                shape.stroke(HokieGlassPalette.stroke(opacity: strokeOpacity, for: colorScheme), lineWidth: 1)
+            }
+            .shadow(
+                color: elevated ? HokieGlassPalette.shadow(for: colorScheme) : .clear,
+                radius: elevated ? 14 : 0,
+                x: 0,
+                y: elevated ? 8 : 0
+            )
+    }
+}
+
+private struct HokieGlassCapsuleBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    let strokeOpacity: Double
+    var elevated = true
+
+    var body: some View {
+        Capsule()
+            .fill(HokieGlassPalette.surfaceFill(for: colorScheme))
+            .overlay {
+                LinearGradient(
+                    colors: [
+                        HokieGlassPalette.sheen(for: colorScheme),
+                        Color.white.opacity(0.015),
+                        HokieGlassPalette.shade(for: colorScheme),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .clipShape(Capsule())
+            }
+            .overlay {
+                Capsule().stroke(HokieGlassPalette.stroke(opacity: strokeOpacity, for: colorScheme), lineWidth: 1)
+            }
+            .shadow(
+                color: elevated ? HokieGlassPalette.shadow(for: colorScheme) : .clear,
+                radius: elevated ? 14 : 0,
+                x: 0,
+                y: elevated ? 8 : 0
+            )
+    }
+}
+
+private struct HokieGlassCircleBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    let strokeOpacity: Double
+    var elevated = true
+
+    var body: some View {
+        Circle()
+            .fill(HokieGlassPalette.surfaceFill(for: colorScheme))
+            .overlay {
+                LinearGradient(
+                    colors: [
+                        HokieGlassPalette.sheen(for: colorScheme),
+                        Color.white.opacity(0.015),
+                        HokieGlassPalette.shade(for: colorScheme),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .clipShape(Circle())
+            }
+            .overlay {
+                Circle().stroke(HokieGlassPalette.stroke(opacity: strokeOpacity, for: colorScheme), lineWidth: 1)
+            }
+            .shadow(
+                color: elevated ? HokieGlassPalette.shadow(for: colorScheme) : .clear,
+                radius: elevated ? 14 : 0,
+                x: 0,
+                y: elevated ? 8 : 0
+            )
+    }
+}
+
+extension View {
+    func glassSurface(cornerRadius: CGFloat = 24, strokeOpacity: Double = 0.09) -> some View {
+        self
+            .background {
+                HokieGlassRoundedBackground(cornerRadius: cornerRadius, strokeOpacity: strokeOpacity)
+            }
+    }
+
+    func glassInset(cornerRadius: CGFloat = 16, strokeOpacity: Double = 0.06) -> some View {
+        self
+            .background {
+                HokieGlassRoundedBackground(
+                    cornerRadius: cornerRadius,
+                    strokeOpacity: strokeOpacity,
+                    inset: true,
+                    elevated: false
+                )
+            }
+    }
+
+    func glassCapsule(strokeOpacity: Double = 0.10) -> some View {
+        self
+            .background {
+                HokieGlassCapsuleBackground(strokeOpacity: strokeOpacity)
+            }
+    }
+
+    func glassCircle(strokeOpacity: Double = 0.10) -> some View {
+        self
+            .background {
+                HokieGlassCircleBackground(strokeOpacity: strokeOpacity)
+            }
+    }
+
+    func transparentNavigationChrome() -> some View {
+        self
+            .toolbarBackground(Color.clear, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(Color.clear, for: .tabBar)
+            .toolbarBackground(.hidden, for: .tabBar)
+            .background(NavigationBarTransparencyView().allowsHitTesting(false))
+    }
+
+    func hokieScreenBackground() -> some View {
+        self.background {
+            HokieAppBackground()
+                .ignoresSafeArea()
+        }
+    }
+}
+
+private struct NavigationBarTransparencyView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> Controller {
+        Controller()
+    }
+
+    func updateUIViewController(_ uiViewController: Controller, context: Context) {
+        uiViewController.clearNavigationChrome()
+    }
+
+    final class Controller: UIViewController {
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = .clear
+            view.isUserInteractionEnabled = false
+        }
+
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            clearNavigationChrome()
+        }
+
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            clearNavigationChrome()
+        }
+
+        func clearNavigationChrome() {
+            guard let navigationBar = navigationController?.navigationBar else { return }
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = .clear
+            appearance.backgroundEffect = nil
+            appearance.shadowColor = .clear
+
+            navigationBar.standardAppearance = appearance
+            navigationBar.compactAppearance = appearance
+            navigationBar.scrollEdgeAppearance = appearance
+            if #available(iOS 15.0, *) {
+                navigationBar.compactScrollEdgeAppearance = appearance
+            }
+            navigationBar.isTranslucent = true
+            navigationBar.backgroundColor = .clear
+            navigationBar.barTintColor = .clear
+            navigationBar.setBackgroundImage(UIImage(), for: .default)
+            navigationBar.shadowImage = UIImage()
+        }
+    }
+}
+
+// MARK: - Hokie Header System
+
+struct HokieHeaderStat {
+    let value: String
+    let label: String
+    let icon: String
+}
+
+struct HokiePageHeader<Trailing: View>: View {
+    let title: String
+    let eyebrow: String
+    let subtitle: String
+    let symbol: String
+    let accent: Color
+    var stat: HokieHeaderStat?
+    @ViewBuilder var trailing: () -> Trailing
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 14) {
+            VStack(spacing: 9) {
+                HokieSignalMark(symbol: symbol, accent: accent)
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [accent.opacity(0.85), Color.vtOrange.opacity(0.72)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 3, height: 42)
+                    .clipShape(Capsule())
+                    .accessibilityHidden(true)
+            }
+            .padding(.top, 2)
+
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .center, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(eyebrow.uppercased())
+                            .font(.system(size: 10, weight: .black, design: .monospaced))
+                            .tracking(1.4)
+                            .foregroundStyle(accent)
+
+                        Text(title)
+                            .font(.system(size: 36, weight: .black, design: .rounded))
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+
+                        Text(subtitle)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    Spacer(minLength: 8)
+                    trailing()
+                }
+
+                HStack(spacing: 9) {
+                    HokieSignalTrack(accent: accent)
+                        .frame(maxWidth: 118)
+
+                    if let stat {
+                        HStack(spacing: 7) {
+                            Image(systemName: stat.icon)
+                                .font(.caption.weight(.bold))
+                            Text(stat.value)
+                                .font(.caption.weight(.black))
+                            Text(stat.label)
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 7)
+                        .background(Color.primary.opacity(0.08), in: Capsule())
+                        .overlay(Capsule().stroke(accent.opacity(0.18), lineWidth: 1))
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 8)
+    }
+}
+
+extension HokiePageHeader where Trailing == EmptyView {
+    init(
+        title: String,
+        eyebrow: String,
+        subtitle: String,
+        symbol: String,
+        accent: Color,
+        stat: HokieHeaderStat? = nil
+    ) {
+        self.title = title
+        self.eyebrow = eyebrow
+        self.subtitle = subtitle
+        self.symbol = symbol
+        self.accent = accent
+        self.stat = stat
+        self.trailing = { EmptyView() }
+    }
+}
+
+struct HokieSignalMark: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    let symbol: String
+    let accent: Color
+
+    var body: some View {
+        let markShape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+
+        ZStack {
+            markShape
+                .fill(HokieGlassPalette.insetFill(for: colorScheme))
+                .overlay {
+                    LinearGradient(
+                        colors: [
+                            Color.vtBurgundy.opacity(0.62),
+                            accent.opacity(0.36),
+                            Color.white.opacity(0.06),
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .clipShape(markShape)
+                }
+                .overlay(
+                    markShape
+                        .stroke(Color.white.opacity(0.20), lineWidth: 1)
+                )
+                .overlay(alignment: .topLeading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.20))
+                        .frame(width: 22, height: 2)
+                        .padding(9)
+                }
+
+            Image(systemName: symbol)
+                .font(.system(size: 21, weight: .black))
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.16), radius: 5, x: 0, y: 3)
+        }
+        .frame(width: 54, height: 48)
+        .shadow(color: accent.opacity(0.14), radius: 12, x: 0, y: 7)
+        .accessibilityHidden(true)
+    }
+}
+
+struct HokieSignalTrack: View {
+    let accent: Color
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Capsule().fill(Color.vtBurgundy.opacity(0.78)).frame(width: 38)
+            Capsule().fill(accent.opacity(0.74)).frame(width: 20)
+            Capsule().fill(Color.hokieStone.opacity(0.48)).frame(width: 12)
+            Capsule().fill(Color.primary.opacity(0.10)).frame(maxWidth: .infinity)
+        }
+        .frame(height: 5)
+        .accessibilityHidden(true)
+    }
+}
+
+struct HokieSegmentedControl<Selection: Hashable>: View {
+    @Binding var selection: Selection
+    let options: [(value: Selection, title: String)]
+    var accent: Color = .vtBurgundy
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(Array(options.enumerated()), id: \.offset) { _, option in
+                let isSelected = selection == option.value
+
+                Button {
+                    withAnimation(.spring(response: 0.24, dampingFraction: 0.86)) {
+                        selection = option.value
+                    }
+                } label: {
+                    Text(option.title)
+                        .font(.caption.weight(.black))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.78)
+                        .foregroundStyle(isSelected ? Color.white : Color.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background {
+                            if isSelected {
+                                Capsule()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                accent.opacity(0.92),
+                                                Color.vtBurgundyDark.opacity(0.82),
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .overlay(Capsule().stroke(Color.white.opacity(0.16), lineWidth: 1))
+                                    .shadow(color: accent.opacity(0.16), radius: 8, x: 0, y: 4)
+                            }
+                        }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(4)
+        .glassCapsule(strokeOpacity: 0.08)
+        .sensoryFeedback(.selection, trigger: selection)
+    }
+}
+
+struct HokieIconTile: View {
+    let symbol: String
+    let color: Color
+    var size: CGFloat = 48
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
+
+        ZStack {
+            shape
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            color.opacity(0.96),
+                            Color.vtBurgundyDark.opacity(0.76),
+                            Color.vtOrange.opacity(0.24),
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    shape.stroke(Color.white.opacity(0.16), lineWidth: 1)
+                )
+                .overlay(alignment: .topLeading) {
+                    Circle()
+                        .fill(Color.white.opacity(0.18))
+                        .frame(width: size * 0.66, height: size * 0.66)
+                        .blur(radius: size * 0.24)
+                        .offset(x: -size * 0.22, y: -size * 0.24)
+                        .clipShape(shape)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    Circle()
+                        .fill(Color.vtOrange.opacity(0.16))
+                        .frame(width: size * 0.86, height: size * 0.86)
+                        .blur(radius: size * 0.26)
+                        .offset(x: size * 0.28, y: size * 0.26)
+                        .clipShape(shape)
+                }
+
+            Image(systemName: symbol)
+                .font(.system(size: size * 0.42, weight: .black))
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.14), radius: 4, x: 0, y: 2)
+        }
+        .frame(width: size, height: size)
+        .shadow(color: color.opacity(0.16), radius: 10, x: 0, y: 6)
+        .accessibilityHidden(true)
+    }
+}
+
+struct HokieCompactPill: View {
+    let title: String
+    let symbol: String
+    let accent: Color
+    var progress: CGFloat
+
+    var body: some View {
+        HStack(spacing: 7) {
+            HokieIconTile(symbol: symbol, color: accent, size: 22)
+            Text(title)
+                .font(.system(size: 14, weight: .black, design: .rounded))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background {
+            Capsule()
+                .fill(.regularMaterial)
+            HokieGlassCapsuleBackground(strokeOpacity: 0.18)
+        }
+        .overlay(Capsule().stroke(accent.opacity(0.18), lineWidth: 1))
+        .shadow(color: .black.opacity(0.10), radius: 12, x: 0, y: 7)
+        .opacity(Double(progress))
+        .scaleEffect(0.96 + (0.04 * progress))
+        .allowsHitTesting(false)
+        .accessibilityHidden(progress < 0.5)
+    }
+}
+
+struct HokieAppBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        ZStack {
+            (colorScheme == .dark
+                ? Color(red: 0.055, green: 0.012, blue: 0.018)
+                : Color(red: 0.992, green: 0.982, blue: 0.968))
+
+            LinearGradient(
+                colors: [
+                    Color.vtBurgundy.opacity(colorScheme == .dark ? 0.16 : 0.06),
+                    Color.vtOrange.opacity(colorScheme == .dark ? 0.08 : 0.045),
+                    Color.clear,
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            GeometryReader { proxy in
+                let width = proxy.size.width
+                let lineCount = max(5, Int(proxy.size.height / 120))
+                ZStack {
+                    ForEach(0..<lineCount, id: \.self) { index in
+                        Capsule()
+                            .fill(Color.primary.opacity(colorScheme == .dark ? 0.035 : 0.025))
+                            .frame(width: width * 0.82, height: 1)
+                            .rotationEffect(.degrees(-10))
+                            .offset(
+                                x: index.isMultiple(of: 2) ? -width * 0.18 : width * 0.12,
+                                y: CGFloat(index) * 118 + 34
+                            )
+                    }
+                }
+            }
+            .allowsHitTesting(false)
+        }
+    }
+}
+
+@MainActor
+func setTabWithoutPageTraversal(_ update: () -> Void) {
+    var transaction = Transaction(animation: nil)
+    transaction.disablesAnimations = true
+    UIView.performWithoutAnimation {
+        withTransaction(transaction) {
+            update()
+        }
+    }
 }
 
 // MARK: - Root View
@@ -22,23 +619,69 @@ extension Color {
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @State private var selectedTab = 0
+    @State private var isKeyboardVisible = false
+
+    init() {
+        _selectedTab = State(initialValue: Self.initialTabFromLaunchArguments())
+    }
+
+    private static func initialTabFromLaunchArguments() -> Int {
+        #if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let flagIndex = arguments.firstIndex(of: "-HokieInitialTab"),
+              arguments.indices.contains(flagIndex + 1) else {
+            return 0
+        }
+
+        switch arguments[flagIndex + 1].lowercased() {
+        case "0", "home":
+            return 0
+        case "1", "audit":
+            return 1
+        case "2", "advisor", "chat":
+            return 2
+        case "3", "profile", "settings":
+            return 3
+        default:
+            return 0
+        }
+        #else
+        return 0
+        #endif
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Group {
-                switch selectedTab {
-                case 0: HomeView(selectedTab: $selectedTab)
-                case 1: DegreeAuditView()
-                case 2: ChatView()
-                default: SettingsView()
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.bottom, 90)
+            TabView(selection: $selectedTab) {
+                HomeView(selectedTab: $selectedTab)
+                    .tag(0)
 
-            FloatingTabBar(selectedTab: $selectedTab)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 24)
+                DegreeAuditView()
+                    .tag(1)
+
+                ChatView()
+                    .tag(2)
+
+                SettingsView()
+                    .tag(3)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .ignoresSafeArea(.container, edges: .bottom)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            if !isKeyboardVisible {
+                FloatingTabBar(selectedTab: $selectedTab)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, HokieChrome.floatingTabBottomPadding)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .hokieScreenBackground()
+        .animation(.spring(response: 0.38, dampingFraction: 0.90, blendDuration: 0.08), value: isKeyboardVisible)
+        .onKeyboardVisibilityChange { visible in
+            withAnimation(.spring(response: 0.38, dampingFraction: 0.90, blendDuration: 0.08)) {
+                isKeyboardVisible = visible
+            }
         }
     }
 }
@@ -56,36 +699,48 @@ struct FloatingTabBar: View {
     ]
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: 4) {
             ForEach(0..<4, id: \.self) { i in
+                let isSelected = selectedTab == i
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedTab = i
-                    }
+                    setTabWithoutPageTraversal { selectedTab = i }
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: items[i].icon)
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                         Text(items[i].label)
-                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                            .font(.system(size: 9, weight: .semibold, design: .rounded))
                     }
-                    .foregroundStyle(selectedTab == i ? .white : Color.secondary)
+                    .foregroundStyle(isSelected ? .white : Color.secondary)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 11)
+                    .padding(.vertical, 10)
                     .background {
-                        if selectedTab == i {
-                            Capsule().fill(Color.vtBurgundy)
+                        if isSelected {
+                            RoundedRectangle(cornerRadius: 23, style: .continuous)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.vtBurgundy.opacity(0.92),
+                                            Color.vtBurgundyDark.opacity(0.86),
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 23, style: .continuous)
+                                        .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                                )
+                                .shadow(color: Color.vtBurgundy.opacity(0.24), radius: 12, x: 0, y: 6)
                         }
                     }
                 }
+                .buttonStyle(.plain)
             }
         }
-        .padding(5)
-        .background(
-            Capsule()
-                .fill(Color(.secondarySystemBackground))
-                .shadow(color: .black.opacity(0.12), radius: 24, x: 0, y: 8)
-        )
+        .padding(.horizontal, 7)
+        .padding(.vertical, 6)
+        .glassCapsule(strokeOpacity: 0.12)
         .sensoryFeedback(.selection, trigger: selectedTab)
     }
 }
@@ -99,31 +754,45 @@ struct DegreeAuditView: View {
     @StateObject private var tutoringVM = TutoringViewModel()
     @State private var showTutoringSheet = false
     @State private var showDarsImporter = false
+    @State private var scrollOffset: CGFloat = 0
+
+    private var compactTitleProgress: CGFloat {
+        min(max((scrollOffset - 82) / 34, 0), 1)
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                pageHeader(
-                    title: "Official Audit",
-                    subtitle: "DARS first, local CS check as backup"
-                )
-
-                darsImportSection.padding(.horizontal, 20)
-                transcriptStatusCard.padding(.horizontal, 20)
-                if appState.hasTranscript {
-                    auditSection.padding(.horizontal, 20)
-                    if appState.needsTutoringSupport {
-                        tutoringBanner.padding(.horizontal, 20)
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    auditHeader
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
+                    darsImportSection.padding(.horizontal, 20)
+                    transcriptStatusCard.padding(.horizontal, 20)
+                    if appState.hasTranscript {
+                        auditSection.padding(.horizontal, 20)
+                        if appState.needsTutoringSupport {
+                            tutoringBanner.padding(.horizontal, 20)
+                        }
+                    } else {
+                        auditEmptyState.padding(.horizontal, 20)
                     }
-                } else {
-                    auditEmptyState.padding(.horizontal, 20)
-                }
 
-                Spacer(minLength: 20)
+                    Spacer(minLength: HokieChrome.contentBottomInset)
+                }
             }
+            .scrollIndicators(.hidden)
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y
+            } action: { _, offset in
+                guard abs(offset - scrollOffset) > 0.5 else { return }
+                scrollOffset = offset
+            }
+            .hokieScreenBackground()
+            .toolbar(.hidden, for: .navigationBar)
+            .transparentNavigationChrome()
+            .overlay(alignment: .top) { compactTitleOverlay }
         }
-        .scrollIndicators(.hidden)
-        .background(Color(.systemBackground))
         .sheet(isPresented: $showTutoringSheet) { TutoringSheet(vm: tutoringVM) }
         .fileImporter(
             isPresented: $showDarsImporter,
@@ -132,16 +801,46 @@ struct DegreeAuditView: View {
             onCompletion: handlePickedDarsFile
         )
         .task(id: auditRefreshKey) {
+            let shouldUseCachedAudit = vm.audit == nil && appState.latestDegreeAudit != nil
+            loadCachedAuditsIfNeeded()
             guard appState.hasTranscript else { return }
-            await vm.runAudit(
-                transcript: appState.transcriptCourses,
-                major: appState.major,
-                inProgressCourses: appState.inProgressCourses.map(\.code)
-            )
+            if shouldUseCachedAudit { return }
+            await refreshAudit()
         }
     }
 
     // MARK: Subviews
+
+    private var compactTitleOverlay: some View {
+        HokieCompactPill(
+            title: "Audit",
+            symbol: "checklist.checked",
+            accent: .vtBurgundy,
+            progress: compactTitleProgress
+        )
+        .padding(.top, 8)
+    }
+
+    private var auditHeader: some View {
+        HokiePageHeader(
+            title: "Audit",
+            eyebrow: "Degree map",
+            subtitle: "DARS uploads, transcript checks, and requirement gaps in one lane.",
+            symbol: "checklist.checked",
+            accent: .vtBurgundy,
+            stat: auditHeaderStat
+        )
+    }
+
+    private var auditHeaderStat: HokieHeaderStat {
+        if darsVM.audit != nil {
+            return HokieHeaderStat(value: "DARS", label: "loaded", icon: "checkmark.seal.fill")
+        }
+        if appState.hasTranscript {
+            return HokieHeaderStat(value: "\(appState.transcriptCourses.count)", label: "courses", icon: "doc.text.fill")
+        }
+        return HokieHeaderStat(value: "Import", label: "needed", icon: "arrow.up.doc.fill")
+    }
 
     private var darsImportSection: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -153,12 +852,15 @@ struct DegreeAuditView: View {
                     darsVM.errorMessage = nil
                     showDarsImporter = true
                 },
-                onClear: { darsVM.clear() }
+                onClear: {
+                    darsVM.clear()
+                    appState.latestDarsAudit = nil
+                }
             )
 
             if darsVM.isLoading {
                 statusCard(icon: "hourglass", iconColor: .vtBurgundy,
-                           title: "Reading official audit",
+                           title: "Reading audit",
                            subtitle: "Parsing the uploaded DARS/uAchieve file")
             }
 
@@ -221,14 +923,13 @@ struct DegreeAuditView: View {
                 }
             }
             .font(.caption.bold())
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.vtOrange)
             .padding(.horizontal, 16).padding(.vertical, 8)
-            .background(Color.orange)
-            .clipShape(Capsule())
+            .glassCapsule(strokeOpacity: 0.08)
+            .buttonStyle(.plain)
         }
         .padding(18)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .glassSurface(cornerRadius: 24)
     }
 
     private var auditSection: some View {
@@ -237,22 +938,16 @@ struct DegreeAuditView: View {
                 SectionLabel(title: "Audit Results", icon: "checklist.checked", color: .vtBurgundy)
                 Spacer()
                 Button {
-                    Task {
-                        await vm.runAudit(
-                            transcript: appState.transcriptCourses,
-                            major: appState.major,
-                            inProgressCourses: appState.inProgressCourses.map(\.code)
-                        )
-                    }
+                    Task { await refreshAudit() }
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.caption.bold())
                         .foregroundStyle(Color.vtBurgundy)
                         .frame(width: 34, height: 34)
-                        .background(Color.vtBurgundy.opacity(0.1))
-                        .clipShape(Circle())
+                        .glassCircle(strokeOpacity: 0.08)
                 }
                 .disabled(vm.isAuditLoading)
+                .buttonStyle(.plain)
             }
 
             if vm.isAuditLoading && vm.audit == nil {
@@ -290,8 +985,7 @@ struct DegreeAuditView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(24)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .glassSurface(cornerRadius: 24)
     }
 
     private func auditBucketGroup(title: String, buckets: [AuditBucket]) -> some View {
@@ -317,6 +1011,32 @@ struct DegreeAuditView: View {
         return Array((priority + partial).prefix(14))
     }
 
+    private func refreshAudit() async {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-HokieVisualQA") {
+            vm.loadVisualQASampleAudit(major: appState.major)
+            appState.latestDegreeAudit = vm.audit
+            return
+        }
+        #endif
+
+        await vm.runAudit(
+            transcript: appState.transcriptCourses,
+            major: appState.major,
+            inProgressCourses: appState.inProgressCourses.map(\.code)
+        )
+        appState.latestDegreeAudit = vm.audit
+    }
+
+    private func loadCachedAuditsIfNeeded() {
+        if vm.audit == nil {
+            vm.loadCachedAudit(appState.latestDegreeAudit)
+        }
+        if darsVM.audit == nil {
+            darsVM.loadCachedAudit(appState.latestDarsAudit)
+        }
+    }
+
     private func handlePickedDarsFile(_ pickerResult: Result<[URL], Error>) {
         switch pickerResult {
         case .failure(let error):
@@ -335,7 +1055,9 @@ struct DegreeAuditView: View {
             case "png": mime = "image/png"
             default: mime = "image/jpeg"
             }
-            Task { await darsVM.upload(fileData: data, mimeType: mime, fileName: url.lastPathComponent) }
+            Task {
+                appState.latestDarsAudit = await darsVM.upload(fileData: data, mimeType: mime, fileName: url.lastPathComponent)
+            }
         }
     }
 }
@@ -378,8 +1100,7 @@ struct TutoringSheet: View {
                                 Text(response.encouragement.markdown)
                                     .font(.subheadline).lineSpacing(4)
                                     .padding(18).frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(Color.vtBurgundy.opacity(0.08))
-                                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                                    .glassSurface(cornerRadius: 24)
                             }
                             if !response.resources.isEmpty {
                                 VStack(alignment: .leading, spacing: 10) {
@@ -402,8 +1123,7 @@ struct TutoringSheet: View {
                                         }
                                     }
                                     .padding(18)
-                                    .background(Color(.secondarySystemBackground))
-                                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                                    .glassSurface(cornerRadius: 24)
                                 }
                             }
                         }
@@ -418,13 +1138,27 @@ struct TutoringSheet: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .navigationTitle("Academic Support")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }.foregroundStyle(Color.vtBurgundy)
+            .hokieScreenBackground()
+            .safeAreaInset(edge: .top) {
+                HokieSheetHeader(
+                    title: "Academic Support",
+                    subtitle: "Tutoring, resources, and next steps",
+                    symbol: "lifepreserver.fill",
+                    accent: .vtBurgundy
+                ) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .black))
+                            .foregroundStyle(Color.vtBurgundy)
+                            .frame(width: 34, height: 34)
+                            .glassCircle(strokeOpacity: 0.08)
+                    }
+                    .accessibilityLabel("Close")
+                    .buttonStyle(.plain)
                 }
             }
+            .toolbar(.hidden, for: .navigationBar)
+            .transparentNavigationChrome()
         }
     }
 }
@@ -454,32 +1188,14 @@ struct TutoringResourceCard: View {
             }
         }
         .padding(18).frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .glassSurface(cornerRadius: 20)
     }
 }
 
 // MARK: - Shared UI Helpers
 
-func pageHeader(title: String, subtitle: String) -> some View {
-    VStack(alignment: .leading, spacing: 4) {
-        Text(title)
-            .font(.system(size: 34, weight: .bold, design: .rounded))
-        Text(subtitle)
-            .font(.subheadline).foregroundStyle(.secondary)
-    }
-    .frame(maxWidth: .infinity, alignment: .leading)
-    .padding(.horizontal, 24)
-    .padding(.top, 16)
-}
-
 func circleIcon(_ icon: String, color: Color, size: CGFloat = 48) -> some View {
-    Image(systemName: icon)
-        .font(.system(size: size * 0.38, weight: .semibold))
-        .foregroundStyle(.white)
-        .frame(width: size, height: size)
-        .background(color)
-        .clipShape(Circle())
+    HokieIconTile(symbol: icon, color: color, size: size)
 }
 
 func statusCard(icon: String, iconColor: Color, title: String, subtitle: String) -> some View {
@@ -492,8 +1208,7 @@ func statusCard(icon: String, iconColor: Color, title: String, subtitle: String)
         Spacer()
     }
     .padding(18)
-    .background(Color(.secondarySystemBackground))
-    .clipShape(RoundedRectangle(cornerRadius: 24))
+    .glassSurface(cornerRadius: 24)
 }
 
 func gpaColor(_ gpa: Double) -> Color {
@@ -519,9 +1234,60 @@ struct SectionLabel: View {
     var color: Color = .primary
 
     var body: some View {
-        Label(title, systemImage: icon)
-            .font(.headline.bold()).fontDesign(.rounded)
-            .foregroundStyle(color)
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .font(.system(size: 13, weight: .black))
+                .foregroundStyle(color)
+                .frame(width: 22, height: 22)
+
+            Text(title)
+                .font(.headline.weight(.black))
+                .fontDesign(.rounded)
+                .foregroundStyle(.primary)
+        }
+    }
+}
+
+struct HokieSheetHeader<Trailing: View>: View {
+    let title: String
+    let subtitle: String
+    let symbol: String
+    let accent: Color
+    @ViewBuilder var trailing: () -> Trailing
+
+    var body: some View {
+        HStack(spacing: 12) {
+            HokieIconTile(symbol: symbol, color: accent, size: 38)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.headline.weight(.black))
+                    .fontDesign(.rounded)
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+
+            Spacer(minLength: 8)
+            trailing()
+        }
+        .padding(12)
+        .glassSurface(cornerRadius: 22, strokeOpacity: 0.08)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+    }
+}
+
+extension HokieSheetHeader where Trailing == EmptyView {
+    init(title: String, subtitle: String, symbol: String, accent: Color) {
+        self.title = title
+        self.subtitle = subtitle
+        self.symbol = symbol
+        self.accent = accent
+        self.trailing = { EmptyView() }
     }
 }
 
@@ -554,8 +1320,7 @@ struct AuditSummaryCard: View {
             }
         }
         .padding(18)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .glassSurface(cornerRadius: 24)
     }
 
     private func auditMetric(value: String, label: String) -> some View {
@@ -565,8 +1330,7 @@ struct AuditSummaryCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .glassInset(cornerRadius: 16)
     }
 }
 
@@ -578,7 +1342,7 @@ struct AuditBucketCard: View {
         case "complete": return .green
         case "attention": return .orange
         case "in_progress": return .blue
-        default: return Color(.systemGray)
+        default: return .hokieStone
         }
     }
 
@@ -631,8 +1395,7 @@ struct AuditBucketCard: View {
             }
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .glassSurface(cornerRadius: 20)
     }
 }
 
@@ -650,7 +1413,7 @@ struct DarsHeroCard: View {
             HStack(alignment: .top, spacing: 14) {
                 circleIcon("building.columns.fill", color: .vtBurgundy, size: 54)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Official DARS / CollegeSource")
+                    Text("DARS / CollegeSource")
                         .font(.system(size: 28, weight: .bold, design: .rounded))
                         .fixedSize(horizontal: false, vertical: true)
                     Text(audit == nil ? "Source-of-truth audit import" : loadedSubtitle)
@@ -666,11 +1429,11 @@ struct DarsHeroCard: View {
                         .font(.subheadline.bold())
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(isLoading ? Color(.tertiarySystemBackground) : Color.vtBurgundy)
-                        .foregroundStyle(isLoading ? Color(.tertiaryLabel) : .white)
-                        .clipShape(Capsule())
+                        .foregroundStyle(isLoading ? Color(.tertiaryLabel) : Color.vtBurgundy)
+                        .glassCapsule(strokeOpacity: 0.08)
                 }
                 .disabled(isLoading)
+                .buttonStyle(.plain)
 
                 if audit != nil {
                     Button(action: onClear) {
@@ -678,16 +1441,15 @@ struct DarsHeroCard: View {
                             .font(.subheadline.bold())
                             .foregroundStyle(Color.vtBurgundy)
                             .frame(width: 46, height: 46)
-                            .background(Color.vtBurgundy.opacity(0.1))
-                            .clipShape(Circle())
+                            .glassCircle(strokeOpacity: 0.08)
                     }
                     .accessibilityLabel("Clear DARS audit")
+                    .buttonStyle(.plain)
                 }
             }
         }
         .padding(20)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 26))
+        .glassSurface(cornerRadius: 26)
     }
 
     private var loadedSubtitle: String {
@@ -711,7 +1473,7 @@ struct DarsBackendStatusCard: View {
                 .font(.headline)
                 .padding(.top, 2)
             VStack(alignment: .leading, spacing: 4) {
-                Text("DARS backend not ready")
+                Text("Could not analyze audit")
                     .font(.subheadline.bold())
                 Text(message)
                     .font(.caption)
@@ -721,8 +1483,7 @@ struct DarsBackendStatusCard: View {
             Spacer()
         }
         .padding(16)
-        .background(Color.orange.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .glassSurface(cornerRadius: 20)
     }
 }
 
@@ -732,7 +1493,7 @@ struct DarsAuditSummaryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(audit.program ?? "Official Degree Audit")
+                Text(audit.program ?? "Degree Audit")
                     .font(.headline.bold())
                     .fontDesign(.rounded)
                     .fixedSize(horizontal: false, vertical: true)
@@ -755,8 +1516,7 @@ struct DarsAuditSummaryCard: View {
             }
         }
         .padding(18)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .glassSurface(cornerRadius: 24)
     }
 
     private func darsMetric(value: String, label: String) -> some View {
@@ -770,8 +1530,7 @@ struct DarsAuditSummaryCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .glassInset(cornerRadius: 16)
     }
 }
 
@@ -780,7 +1539,7 @@ struct DarsCategoryList: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Official Categories")
+            Text("Categories")
                 .font(.caption.bold())
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
@@ -840,8 +1599,7 @@ struct DarsCategoryCard: View {
             }
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .glassSurface(cornerRadius: 20)
     }
 
     private var statusColor: Color {
@@ -850,7 +1608,7 @@ struct DarsCategoryCard: View {
         case "in_progress": return .blue
         case "unfulfilled": return .red
         case "planned": return .purple
-        default: return Color(.systemGray)
+        default: return .hokieStone
         }
     }
 
@@ -895,7 +1653,7 @@ struct DarsProgressBar: View {
             HStack(spacing: 2) {
                 if segments.isEmpty {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(Color(.tertiarySystemBackground))
+                        .fill(Color.primary.opacity(0.08))
                 } else {
                     ForEach(Array(segments.enumerated()), id: \.offset) { _, segment in
                         RoundedRectangle(cornerRadius: 5)
@@ -907,8 +1665,7 @@ struct DarsProgressBar: View {
             }
         }
         .frame(height: 11)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 6))
+        .glassInset(cornerRadius: 6)
     }
 }
 
@@ -917,7 +1674,7 @@ struct DarsSectionList: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Official Sections")
+            Text("Sections")
                 .font(.caption.bold())
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
@@ -965,8 +1722,7 @@ struct DarsSectionCard: View {
             }
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .glassSurface(cornerRadius: 20)
     }
 
     private var statusColor: Color {
@@ -975,7 +1731,7 @@ struct DarsSectionCard: View {
         case "in_progress": return .blue
         case "unfulfilled": return .red
         case "planned": return .purple
-        default: return Color(.systemGray)
+        default: return .hokieStone
         }
     }
 
@@ -1002,8 +1758,8 @@ struct DarsPill: View {
             .minimumScaleFactor(0.75)
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
-            .background(color.opacity(0.1))
-            .clipShape(Capsule())
+            .background(color.opacity(0.10), in: Capsule())
+            .overlay(Capsule().stroke(color.opacity(0.16), lineWidth: 1))
     }
 }
 
@@ -1234,10 +1990,9 @@ struct ResourceLinkCard: View {
             HStack(spacing: 10) {
                 Image(systemName: "play.rectangle.fill")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.vtOrange)
                     .frame(width: 34, height: 34)
-                    .background(Color.red)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .glassCircle(strokeOpacity: 0.08)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title.trimmingCharacters(in: CharacterSet(charactersIn: "-* ")))
@@ -1255,8 +2010,7 @@ struct ResourceLinkCard: View {
                     .foregroundStyle(.secondary)
             }
             .padding(12)
-            .background(Color(.tertiarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .glassInset(cornerRadius: 14)
         }
     }
 }
@@ -1287,8 +2041,7 @@ struct GraphDiagramView: View {
             .frame(height: 210)
         }
         .padding(14)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .glassInset(cornerRadius: 16)
     }
 
     private func graphCanvas(size: CGSize) -> some View {
@@ -1326,7 +2079,7 @@ struct GraphDiagramView: View {
             .font(.caption.bold())
             .foregroundStyle(highlighted ? .white : .primary)
             .frame(width: 38, height: 38)
-            .background(highlighted ? Color.vtBurgundy : Color(.secondarySystemBackground))
+            .background(highlighted ? Color.vtBurgundy : Color.primary.opacity(0.08))
             .overlay(
                 Circle().stroke(highlighted ? Color.vtBurgundy : Color.secondary.opacity(0.35), lineWidth: 1)
             )
@@ -1434,8 +2187,7 @@ struct LaTeXMathView: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
         }
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .glassInset(cornerRadius: 14)
     }
 
     private func matrixView(_ matrix: LaTeXFormatter.Matrix) -> some View {
@@ -1753,8 +2505,7 @@ struct ReasoningCard: View {
     var body: some View {
         MarkdownBody(text: text)
             .padding(18).frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.blue.opacity(0.07))
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .glassSurface(cornerRadius: 24)
     }
 }
 
@@ -1768,8 +2519,7 @@ struct WarningCard: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(18).frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.orange.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .glassSurface(cornerRadius: 24)
     }
 }
 

@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from app.config import COE_DIR
+from app.routes.errors import error_detail
 from app.services.coe_service import load_coe_courses
 from app.services.supabase_service import (
     SupabaseNotConfigured,
@@ -37,11 +38,14 @@ def seed_coe(request: SeedCoeRequest):
     """
     subject = request.subject.upper().strip()
     if not subject.isalpha():
-        raise HTTPException(status_code=400, detail="Invalid subject code")
+        raise HTTPException(status_code=400, detail=error_detail("ADMIN_INVALID_SUBJECT", "Invalid subject code"))
 
     courses = request.data.get("courses", [])
     if not isinstance(courses, list):
-        raise HTTPException(status_code=400, detail="data.courses must be a list")
+        raise HTTPException(
+            status_code=400,
+            detail=error_detail("ADMIN_INVALID_COURSES_PAYLOAD", "data.courses must be a list"),
+        )
 
     os.makedirs(COE_DIR, exist_ok=True)
     dest = os.path.join(COE_DIR, f"{subject}.json")
@@ -51,7 +55,10 @@ def seed_coe(request: SeedCoeRequest):
             json.dump(request.data, f)
     except Exception as e:
         logger.error("Failed to write COE file %s: %s", dest, e)
-        raise HTTPException(status_code=500, detail=f"Failed to write file: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=error_detail("ADMIN_SEED_WRITE_FAILED", f"Failed to write file: {e}"),
+        )
 
     # Bust the lru_cache so the new data is picked up immediately
     load_coe_courses.cache_clear()

@@ -1,5 +1,4 @@
 import SwiftUI
-import CryptoKit
 
 struct OnboardingView: View {
     @EnvironmentObject var appState: AppState
@@ -7,7 +6,6 @@ struct OnboardingView: View {
     @AppStorage("studentName") private var storedName = ""
     @AppStorage("vtEmail") private var storedEmail = ""
     @AppStorage("vtPID") private var storedPID = ""
-    @AppStorage("appPasswordHash") private var storedPasswordHash = ""
     @AppStorage("howHeardAboutUs") private var storedHowHeard = ""
     @AppStorage("appearanceMode") private var appearanceMode = "system"
     @AppStorage("graduationYear") private var storedGraduationYear = ""
@@ -16,10 +14,6 @@ struct OnboardingView: View {
     @State private var nameInput = ""
     @State private var emailInput = ""
     @State private var emailError = ""
-    @State private var passwordInput = ""
-    @State private var confirmInput = ""
-    @State private var passwordError = ""
-    @State private var isCreatingAccount = false
     @State private var howHeardSelection = ""
     @State private var showTranscript = false
 
@@ -33,10 +27,11 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemBackground).ignoresSafeArea()
+            HokieAppBackground()
+                .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                if step > 0 && step <= 6 {
+                if step > 0 && step <= 5 {
                     progressHeader
                 }
 
@@ -44,11 +39,10 @@ struct OnboardingView: View {
                     if step == 0 { welcomeStep.transition(forStep: step) }
                     if step == 1 { nameStep.transition(forStep: step) }
                     if step == 2 { emailStep.transition(forStep: step) }
-                    if step == 3 { passwordStep.transition(forStep: step) }
-                    if step == 4 { howHeardStep.transition(forStep: step) }
-                    if step == 5 { appearanceStep.transition(forStep: step) }
-                    if step == 6 { transcriptStep.transition(forStep: step) }
-                    if step == 7 { doneStep.transition(forStep: step) }
+                    if step == 3 { howHeardStep.transition(forStep: step) }
+                    if step == 4 { appearanceStep.transition(forStep: step) }
+                    if step == 5 { transcriptStep.transition(forStep: step) }
+                    if step == 6 { doneStep.transition(forStep: step) }
                 }
                 .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
             }
@@ -57,6 +51,11 @@ struct OnboardingView: View {
         .sheet(isPresented: $showTranscript) {
             TranscriptView().environmentObject(appState)
         }
+        .onAppear {
+            nameInput = storedName
+            emailInput = storedPID.isEmpty ? storedEmail.components(separatedBy: "@").first ?? "" : storedPID
+            howHeardSelection = storedHowHeard
+        }
     }
 
     // MARK: - Progress Header
@@ -64,7 +63,7 @@ struct OnboardingView: View {
     private var progressHeader: some View {
         VStack(spacing: 10) {
             HStack(spacing: 5) {
-                ForEach(1...6, id: \.self) { i in
+                ForEach(1...5, id: \.self) { i in
                     Capsule()
                         .fill(i <= step ? Color.vtBurgundy : Color(.tertiarySystemFill))
                         .frame(height: 4)
@@ -73,7 +72,7 @@ struct OnboardingView: View {
             }
             .padding(.horizontal, 28)
 
-            Text("Step \(step) of 6")
+            Text("Step \(step) of 5")
                 .font(.caption2.bold()).foregroundStyle(.tertiary)
         }
         .padding(.top, 60)
@@ -86,19 +85,15 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             Spacer()
             VStack(spacing: 32) {
-                ZStack {
-                    Circle().fill(Color.vtBurgundy).frame(width: 120, height: 120)
-                    Image(systemName: "graduationcap.fill")
-                        .font(.system(size: 48, weight: .bold)).foregroundStyle(.white)
-                }
-
-                VStack(spacing: 10) {
-                    Text("Hokie Advisor")
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
-                    Text("Your personal Virginia Tech\nacademic advisor")
-                        .font(.title3).foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center).lineSpacing(4)
-                }
+                HokiePageHeader(
+                    title: "Hokie Advisor",
+                    eyebrow: "Start your path",
+                    subtitle: "A Virginia Tech academic cockpit for planning, audit checks, and course help.",
+                    symbol: "graduationcap.fill",
+                    accent: .vtOrange,
+                    stat: HokieHeaderStat(value: "Setup", label: "takes a minute", icon: "sparkles")
+                )
+                .padding(.horizontal, 28)
 
                 VStack(spacing: 10) {
                     featurePill("doc.text.fill", color: .vtBurgundy, text: "Transcript-powered course planning")
@@ -129,8 +124,7 @@ struct OnboardingView: View {
             TextField("Full name", text: $nameInput)
                 .font(.title3)
                 .padding(.horizontal, 20).padding(.vertical, 16)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(Capsule())
+                .glassCapsule(strokeOpacity: 0.08)
                 .submitLabel(.continue)
                 .onSubmit { if !trimmed.isEmpty { storedName = trimmed; advance() } }
         }
@@ -168,8 +162,7 @@ struct OnboardingView: View {
                         .font(.title3).foregroundStyle(.secondary)
                         .padding(.trailing, 24)
                 }
-                .background(Color(.secondarySystemBackground))
-                .clipShape(Capsule())
+                .glassCapsule(strokeOpacity: 0.08)
 
                 if !emailError.isEmpty {
                     Text(emailError).font(.caption).foregroundStyle(.red).padding(.leading, 12)
@@ -192,49 +185,7 @@ struct OnboardingView: View {
         return !pid.isEmpty && pid.count >= 2 && !pid.contains("@") && !pid.contains(" ")
     }
 
-    // MARK: - Step 3: Password
-
-    private var passwordStep: some View {
-        let canProceed = passwordInput.count >= 6 && confirmInput == passwordInput && !isCreatingAccount
-        return stepShell(icon: "lock.fill", iconColor: .orange,
-                  title: "Secure your account",
-                  subtitle: SupabaseConfig.isConfigured
-                    ? "Create your Hokie Advisor account."
-                    : "Create a password to protect your data. Stored securely on your device.",
-                  canProceed: canProceed,
-                  onContinue: {
-                      Task { await createAccountAndAdvance() }
-                  }) {
-            VStack(alignment: .leading, spacing: 12) {
-                SecureField("Password (min. 6 characters)", text: $passwordInput)
-                    .font(.title3)
-                    .padding(.horizontal, 20).padding(.vertical, 16)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
-
-                SecureField("Confirm password", text: $confirmInput)
-                    .font(.title3)
-                    .padding(.horizontal, 20).padding(.vertical, 16)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(Capsule())
-
-                if !passwordError.isEmpty {
-                    Text(passwordError).font(.caption).foregroundStyle(.red).padding(.leading, 12)
-                }
-                if isCreatingAccount {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                        Text("Creating account...")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.leading, 12)
-                }
-            }
-        }
-    }
-
-    // MARK: - Step 4: How Heard
+    // MARK: - Step 3: How Heard
 
     private var howHeardStep: some View {
         stepShell(icon: "megaphone.fill", iconColor: .purple,
@@ -267,8 +218,7 @@ struct OnboardingView: View {
                             }
                         }
                         .padding(16)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .glassSurface(cornerRadius: 20)
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(howHeardSelection == label ? Color.vtBurgundy : Color.clear, lineWidth: 2)
@@ -279,7 +229,7 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step 5: Appearance
+    // MARK: - Step 4: Appearance
 
     private let appearanceOptions: [(icon: String, label: String, tag: String)] = [
         ("circle.lefthalf.filled", "Use system setting", "system"),
@@ -317,8 +267,7 @@ struct OnboardingView: View {
                             }
                         }
                         .padding(16)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .glassSurface(cornerRadius: 20)
                         .overlay(
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(appearanceMode == opt.tag ? Color.vtBurgundy : Color.clear, lineWidth: 2)
@@ -329,7 +278,7 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Step 6: Transcript
+    // MARK: - Step 5: Transcript
 
     private var transcriptStep: some View {
         VStack(spacing: 0) {
@@ -363,9 +312,10 @@ struct OnboardingView: View {
                             Text("Import Transcript").font(.body.bold())
                         }
                         .frame(maxWidth: .infinity).padding(.vertical, 18)
-                        .background(Color.vtBurgundy).foregroundStyle(.white)
-                        .clipShape(Capsule())
+                        .foregroundStyle(Color.vtBurgundy)
+                        .glassCapsule(strokeOpacity: 0.08)
                     }
+                    .buttonStyle(.plain)
                     .padding(.horizontal, 12)
                 }
             }
@@ -381,7 +331,7 @@ struct OnboardingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: - Step 7: Done
+    // MARK: - Step 6: Done
 
     private var doneStep: some View {
         let hasTranscript = appState.hasTranscript
@@ -390,14 +340,11 @@ struct OnboardingView: View {
         return VStack(spacing: 0) {
             Spacer()
             VStack(spacing: 28) {
-                ZStack {
-                    Circle()
-                        .fill(hasTranscript ? Color.vtBurgundy : Color.orange.opacity(0.15))
-                        .frame(width: 120, height: 120)
-                    Image(systemName: hasTranscript ? "checkmark" : "doc.text.fill")
-                        .font(.system(size: hasTranscript ? 52 : 44, weight: .bold))
-                        .foregroundStyle(hasTranscript ? .white : Color.orange)
-                }
+                HokieIconTile(
+                    symbol: hasTranscript ? "checkmark" : "doc.text.fill",
+                    color: hasTranscript ? .vtBurgundy : .vtOrange,
+                    size: 120
+                )
 
                 VStack(spacing: 10) {
                     Text(hasTranscript ? "You're all set!" : "Almost there!")
@@ -417,14 +364,14 @@ struct OnboardingView: View {
                         completionPill("arrow.up.doc.fill", color: .orange,
                                        text: "Add your transcript in the Profile tab")
                     }
-                    completionPill("brain.head.profile", color: .blue, text: "AI Advisor ready to help")
+                    completionPill("brain.head.profile", color: .vtBurgundy, text: "Advisor ready to help")
                     completionPill("wand.and.stars", color: .vtBurgundy, text: "Generate your first course plan")
                 }
                 .padding(.horizontal, 12)
             }
             .padding(.horizontal, 28)
             Spacer()
-            bigButton("Let's Go, Hokies!") { onboardingComplete = true }
+            bigButton("Let's Go, Hokies!") { completeOnboarding() }
                 .padding(.horizontal, 32).padding(.bottom, 48)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -436,63 +383,25 @@ struct OnboardingView: View {
         withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { step += 1 }
     }
 
-    private func createAccountAndAdvance() async {
-        passwordError = ""
-        guard passwordInput.count >= 6 else {
-            passwordError = "Password must be at least 6 characters."
-            return
-        }
-        guard passwordInput == confirmInput else {
-            passwordError = "Passwords don't match."
-            return
-        }
-
-        storedPasswordHash = hashPassword(passwordInput)
-        guard SupabaseConfig.isConfigured else {
-            advance()
-            return
-        }
-
-        isCreatingAccount = true
-        defer { isCreatingAccount = false }
-
-        do {
-            _ = try await SupabaseAuthService.shared.signUp(
-                email: storedEmail,
-                password: passwordInput,
-                fullName: storedName,
-                vtPID: storedPID,
-                major: appState.major,
-                graduationYear: storedGraduationYear,
-                appearanceMode: appearanceMode
+    private func completeOnboarding() {
+        let snapshot = SupabaseProfileSnapshot(
+            fullName: storedName.trimmingCharacters(in: .whitespacesAndNewlines),
+            vtPID: storedPID.trimmingCharacters(in: .whitespacesAndNewlines),
+            vtEmail: storedEmail.trimmingCharacters(in: .whitespacesAndNewlines),
+            major: appState.major.trimmingCharacters(in: .whitespacesAndNewlines),
+            graduationYear: storedGraduationYear.trimmingCharacters(in: .whitespacesAndNewlines),
+            appearanceMode: appearanceMode
+        )
+        Task {
+            guard let session = try? await SupabaseAuthService.shared.validatedCurrentSession(),
+                  let userID = session.user?.id else { return }
+            try? await SupabaseUserDataService.shared.upsertProfile(
+                snapshot,
+                userID: userID,
+                accessToken: session.accessToken
             )
-            advance()
-        } catch SupabaseAuthError.server(let message) where message.localizedCaseInsensitiveContains("already") {
-            do {
-                _ = try await SupabaseAuthService.shared.signIn(
-                    email: storedEmail,
-                    password: passwordInput,
-                    fullName: storedName,
-                    vtPID: storedPID,
-                    major: appState.major,
-                    graduationYear: storedGraduationYear,
-                    appearanceMode: appearanceMode
-                )
-                advance()
-            } catch {
-                passwordError = error.localizedDescription
-            }
-        } catch SupabaseAuthError.missingSession {
-            // Email confirmation can intentionally suppress a session.
-            advance()
-        } catch {
-            passwordError = error.localizedDescription
         }
-    }
-
-    private func hashPassword(_ pw: String) -> String {
-        let digest = SHA256.hash(data: Data(pw.utf8))
-        return digest.map { String(format: "%02x", $0) }.joined()
+        onboardingComplete = true
     }
 
     @ViewBuilder
@@ -507,9 +416,7 @@ struct OnboardingView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     VStack(alignment: .leading, spacing: 14) {
-                        Image(systemName: icon)
-                            .font(.system(size: 28, weight: .bold)).foregroundStyle(.white)
-                            .frame(width: 60, height: 60).background(iconColor).clipShape(Circle())
+                        HokieIconTile(symbol: icon, color: iconColor, size: 60)
                         Text(title).font(.system(size: 30, weight: .bold, design: .rounded))
                         Text(subtitle).font(.body).foregroundStyle(.secondary).lineSpacing(4)
                     }
@@ -530,31 +437,30 @@ struct OnboardingView: View {
         Button(action: action) {
             Text(title).font(.body.bold())
                 .frame(maxWidth: .infinity).padding(.vertical, 18)
-                .background(enabled ? Color.vtBurgundy : Color(.tertiarySystemBackground))
-                .foregroundStyle(enabled ? .white : Color(.tertiaryLabel))
-                .clipShape(Capsule())
+                .foregroundStyle(enabled ? Color.vtBurgundy : Color(.tertiaryLabel))
+                .glassCapsule(strokeOpacity: enabled ? 0.08 : 0.04)
         }
         .disabled(!enabled)
+        .buttonStyle(.plain)
         .animation(.easeInOut(duration: 0.2), value: enabled)
     }
 
     private func featurePill(_ icon: String, color: Color, text: String) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon).font(.body.bold()).foregroundStyle(.white)
-                .frame(width: 36, height: 36).background(color).clipShape(Circle())
+            HokieIconTile(symbol: icon, color: color, size: 36)
             Text(text).font(.subheadline.bold())
             Spacer()
         }
-        .padding(14).background(Color(.secondarySystemBackground)).clipShape(Capsule())
+        .padding(14).glassCapsule(strokeOpacity: 0.08)
     }
 
     private func completionPill(_ icon: String, color: Color, text: String) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon).font(.body.bold()).foregroundStyle(color)
+            HokieIconTile(symbol: icon, color: color, size: 32)
             Text(text).font(.subheadline.bold())
             Spacer()
         }
-        .padding(14).background(Color(.secondarySystemBackground)).clipShape(Capsule())
+        .padding(14).glassCapsule(strokeOpacity: 0.08)
     }
 }
 

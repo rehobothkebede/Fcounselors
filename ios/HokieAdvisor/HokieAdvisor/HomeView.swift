@@ -6,57 +6,80 @@ struct HomeView: View {
     @Binding var selectedTab: Int
     @AppStorage("studentName") private var studentName = ""
     @AppStorage("graduationYear") private var graduationYear = ""
+    @State private var scrollOffset: CGFloat = 0
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                welcomeHeader.padding(.horizontal, 24).padding(.top, 16)
-                statsGrid.padding(.horizontal, 20)
-                quickActionsSection
-                if appState.hasTranscript { progressSection } else { transcriptNudge }
-                tipsSection
-                Spacer(minLength: 110)
-            }
-        }
-        .scrollIndicators(.hidden)
-        .background(Color(.systemBackground))
+    private var compactTitleProgress: CGFloat {
+        min(max((scrollOffset - 82) / 34, 0), 1)
     }
 
-    // MARK: - Welcome Header
-
-    private var welcomeHeader: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle().fill(Color.vtBurgundy).frame(width: 54, height: 54)
-                Text(initials)
-                    .font(.headline.bold()).foregroundStyle(.white)
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    homeHeader
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
+                    statsGrid.padding(.horizontal, 20)
+                    quickActionsSection
+                    if appState.hasTranscript { progressSection } else { transcriptNudge }
+                    tipsSection
+                    Spacer(minLength: HokieChrome.contentBottomInset)
+                }
             }
-            VStack(alignment: .leading, spacing: 3) {
-                Text(studentName.isEmpty ? "Welcome, Hokie!" : "\(greeting), \(firstName)!")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                Text(appState.major.isEmpty ? "Set your major in Profile" : appState.major)
-                    .font(.subheadline).foregroundStyle(.secondary)
+            .scrollIndicators(.hidden)
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y
+            } action: { _, offset in
+                guard abs(offset - scrollOffset) > 0.5 else { return }
+                scrollOffset = offset
             }
-            Spacer()
+            .hokieScreenBackground()
+            .toolbar(.hidden, for: .navigationBar)
+            .transparentNavigationChrome()
+            .overlay(alignment: .top) { compactTitleOverlay }
         }
+    }
+
+    private var compactTitleOverlay: some View {
+        HokieCompactPill(
+            title: "Home",
+            symbol: "house.fill",
+            accent: .vtOrange,
+            progress: compactTitleProgress
+        )
+        .padding(.top, 8)
+    }
+
+    private var homeHeader: some View {
+        HokiePageHeader(
+            title: "Home",
+            eyebrow: greeting,
+            subtitle: "Your academic cockpit for credits, GPA, and next moves.",
+            symbol: "sparkles",
+            accent: .vtOrange,
+            stat: homeStat
+        )
     }
 
     private var greeting: String {
-        let hour = Calendar.current.component(.hour, from: Date())
-        if hour < 12 { return "Good morning" }
-        if hour < 17 { return "Good afternoon" }
-        return "Good evening"
+        let first = studentName.components(separatedBy: " ").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return first.isEmpty ? "Ready for today" : "Ready, \(first)"
     }
 
-    private var firstName: String {
-        studentName.components(separatedBy: " ").first ?? studentName
-    }
+    private var homeStat: HokieHeaderStat {
+        if appState.hasTranscript {
+            return HokieHeaderStat(
+                value: "\(Int(appState.totalCredits))",
+                label: "credits logged",
+                icon: "books.vertical.fill"
+            )
+        }
 
-    private var initials: String {
-        let parts = studentName.components(separatedBy: " ").filter { !$0.isEmpty }
-        if parts.isEmpty { return "HK" }
-        if parts.count == 1 { return String(parts[0].prefix(2)).uppercased() }
-        return "\(parts[0].prefix(1))\(parts[1].prefix(1))".uppercased()
+        return HokieHeaderStat(
+            value: "Setup",
+            label: "import transcript",
+            icon: "arrow.up.doc.fill"
+        )
     }
 
     // MARK: - Stats Grid
@@ -93,25 +116,20 @@ struct HomeView: View {
 
     private func statCard(value: String, label: String, icon: String, color: Color) -> some View {
         VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.title3.bold()).foregroundStyle(.white)
-                .frame(width: 42, height: 42)
-                .background(color).clipShape(Circle())
-            Text(value).font(.title2.bold()).fontDesign(.rounded)
+            circleIcon(icon, color: color, size: 40)
+            Text(value).font(.title3.bold()).fontDesign(.rounded)
             Text(label).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 18)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .padding(.vertical, 16)
+        .glassSurface(cornerRadius: 22)
     }
 
     // MARK: - Quick Actions
 
     private var quickActionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Quick Actions")
-                .font(.headline.bold()).fontDesign(.rounded)
+            SectionLabel(title: "Quick Actions", icon: "bolt.fill", color: .vtOrange)
                 .padding(.horizontal, 24)
 
             VStack(spacing: 10) {
@@ -120,7 +138,7 @@ struct HomeView: View {
                                color: .vtBurgundy, tab: 1)
                 quickActionRow(icon: "bubble.left.and.bubble.right.fill", title: "Ask Your Advisor",
                                subtitle: "Chat with your AI academic advisor",
-                               color: .blue, tab: 2)
+                               color: .vtBurgundy, tab: 2)
             }
             .padding(.horizontal, 20)
         }
@@ -130,31 +148,32 @@ struct HomeView: View {
                                  color: Color, tab: Int) -> some View {
         Button {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { selectedTab = tab }
+            switchToTab(tab)
         } label: {
             HStack(spacing: 14) {
-                Image(systemName: icon)
-                    .font(.title3.bold()).foregroundStyle(.white)
-                    .frame(width: 48, height: 48)
-                    .background(color).clipShape(Circle())
+                circleIcon(icon, color: color, size: 46)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.subheadline.bold()).foregroundStyle(.primary)
-                    Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                    Text(title)
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.primary)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption.bold()).foregroundStyle(.tertiary)
             }
-            .padding(16)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .padding(15)
+            .glassSurface(cornerRadius: 24)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Transcript Nudge
 
     private var transcriptNudge: some View {
-        Button { selectedTab = 3 } label: {
+        Button { switchToTab(3) } label: {
             HStack(spacing: 14) {
                 circleIcon("doc.text.fill", color: .vtBurgundy)
                 VStack(alignment: .leading, spacing: 2) {
@@ -165,19 +184,22 @@ struct HomeView: View {
                 Spacer()
                 Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
             }
-            .padding(16)
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .padding(15)
+            .glassSurface(cornerRadius: 24)
         }
+        .buttonStyle(.plain)
         .padding(.horizontal, 20)
+    }
+
+    private func switchToTab(_ tab: Int) {
+        setTabWithoutPageTraversal { selectedTab = tab }
     }
 
     // MARK: - Progress Section
 
     private var progressSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Your Progress")
-                .font(.headline.bold()).fontDesign(.rounded)
+            SectionLabel(title: "Your Progress", icon: "chart.line.uptrend.xyaxis", color: .vtBurgundy)
                 .padding(.horizontal, 24)
 
             VStack(spacing: 10) {
@@ -192,9 +214,8 @@ struct HomeView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green).font(.title3)
                 }
-                .padding(16)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .padding(15)
+                .glassSurface(cornerRadius: 24)
 
                 if appState.needsTutoringSupport {
                     HStack(spacing: 14) {
@@ -206,9 +227,8 @@ struct HomeView: View {
                         }
                         Spacer()
                     }
-                    .padding(16)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .padding(15)
+                    .glassSurface(cornerRadius: 24)
                 }
             }
             .padding(.horizontal, 20)
@@ -219,8 +239,7 @@ struct HomeView: View {
 
     private var tipsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Hokie Tips")
-                .font(.headline.bold()).fontDesign(.rounded)
+            SectionLabel(title: "Hokie Tips", icon: "lightbulb.fill", color: .vtOrange)
                 .padding(.horizontal, 24)
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -249,18 +268,14 @@ struct HomeView: View {
 
     private func tipCard(icon: String, color: Color, title: String, body: String) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Image(systemName: icon)
-                .font(.title2.bold()).foregroundStyle(.white)
-                .frame(width: 44, height: 44)
-                .background(color).clipShape(Circle())
+            circleIcon(icon, color: color, size: 44)
             Text(title).font(.subheadline.bold())
             Text(body).font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(width: 190)
-        .padding(18)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .padding(16)
+        .glassSurface(cornerRadius: 22)
     }
 }
 

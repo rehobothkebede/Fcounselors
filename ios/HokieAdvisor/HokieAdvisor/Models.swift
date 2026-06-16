@@ -13,7 +13,7 @@ struct DegreeAuditRequest: Encodable {
     }
 }
 
-struct DegreeAuditResponse: Decodable {
+nonisolated struct DegreeAuditResponse: Decodable {
     let major: String
     let degree: String
     let catalogYear: String
@@ -36,7 +36,7 @@ struct DegreeAuditResponse: Decodable {
     }
 }
 
-struct AuditBucket: Decodable, Identifiable {
+nonisolated struct AuditBucket: Decodable, Identifiable {
     let id: String
     let title: String
     let status: String
@@ -61,7 +61,7 @@ struct AuditBucket: Decodable, Identifiable {
 
 // MARK: - Official DARS / uAchieve Audit
 
-struct DarsAuditResponse: Decodable {
+nonisolated struct DarsAuditResponse: Decodable {
     let studentName: String?
     let studentID: String?
     let program: String?
@@ -92,7 +92,7 @@ struct DarsAuditResponse: Decodable {
     }
 }
 
-struct DarsCategory: Decodable, Identifiable {
+nonisolated struct DarsCategory: Decodable, Identifiable {
     let id: String
     let title: String
     let status: String
@@ -114,7 +114,7 @@ struct DarsCategory: Decodable, Identifiable {
     }
 }
 
-struct DarsSection: Decodable, Identifiable {
+nonisolated struct DarsSection: Decodable, Identifiable {
     var id: String { "\(title)-\(status)" }
     let title: String
     let status: String
@@ -131,7 +131,7 @@ struct DarsSection: Decodable, Identifiable {
 
 // MARK: - Chat
 
-struct ChatMessage: Identifiable, Codable {
+nonisolated struct ChatMessage: Identifiable, Codable {
     let id: UUID
     let role: String
     var content: String
@@ -145,7 +145,7 @@ struct ChatMessage: Identifiable, Codable {
     }
 }
 
-struct ChatSession: Identifiable, Codable {
+nonisolated struct ChatSession: Identifiable, Codable {
     let id: UUID
     var title: String
     var date: Date
@@ -159,7 +159,7 @@ struct ChatSession: Identifiable, Codable {
     }
 }
 
-struct ChatMemory: Identifiable, Codable, Equatable {
+nonisolated struct ChatMemory: Identifiable, Codable, Equatable {
     let id: UUID
     var content: String
     var date: Date
@@ -206,7 +206,7 @@ struct ChatResponse: Decodable {
 
 // MARK: - Transcript
 
-struct TranscriptCourse: Decodable, Identifiable, Equatable {
+nonisolated struct TranscriptCourse: Decodable, Identifiable, Equatable {
     var id: String { "\(code)-\(semester ?? "")-\(grade ?? "")" }
     let code: String
     let name: String
@@ -215,7 +215,7 @@ struct TranscriptCourse: Decodable, Identifiable, Equatable {
     let semester: String?
 }
 
-struct InProgressCourse: Decodable, Identifiable, Equatable {
+nonisolated struct InProgressCourse: Decodable, Identifiable, Equatable {
     var id: String { code }
     let code: String
     let name: String
