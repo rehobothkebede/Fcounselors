@@ -188,7 +188,7 @@ def parse_transcript(file_bytes: bytes, content_type: str) -> dict:
     if not OPENAI_API_KEY:
         raise TranscriptParseError(
             "OPENAI_API_KEY_MISSING",
-            "OpenAI is not configured on the transcript server.",
+            "Transcript parsing is not configured on this server.",
             status_code=503,
         )
 

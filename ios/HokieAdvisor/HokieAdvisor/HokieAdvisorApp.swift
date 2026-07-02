@@ -39,6 +39,7 @@ struct HokieAdvisorApp: App {
     @State private var isAuthenticated = false
     @State private var didCheckSession = false
     @State private var configuredUserID: UUID?
+    @State private var restoredSnapshotUserID: UUID?
 
     init() {
         let navigationAppearance = UINavigationBarAppearance()
@@ -150,6 +151,7 @@ struct HokieAdvisorApp: App {
             authSessionActive = false
             chatHistory.clearLoadedUser()
             configuredUserID = nil
+            restoredSnapshotUserID = nil
         }
         didCheckSession = true
     }
@@ -161,6 +163,7 @@ struct HokieAdvisorApp: App {
         } else {
             chatHistory.clearLoadedUser()
             configuredUserID = nil
+            restoredSnapshotUserID = nil
         }
     }
 
@@ -169,6 +172,7 @@ struct HokieAdvisorApp: App {
         guard let session = try? await SupabaseAuthService.shared.validatedCurrentSession() else {
             chatHistory.clearLoadedUser()
             configuredUserID = nil
+            restoredSnapshotUserID = nil
             return
         }
         await configureAuthenticatedUserData(session: session)
@@ -177,16 +181,22 @@ struct HokieAdvisorApp: App {
     @MainActor
     private func configureAuthenticatedUserData(session: SupabaseSession) async {
         guard let userID = session.user?.id else { return }
-        guard configuredUserID != userID else { return }
 
-        await chatHistory.configure(userID: userID, accessToken: session.accessToken)
+        if configuredUserID != userID {
+            await chatHistory.configure(userID: userID, accessToken: session.accessToken)
+            configuredUserID = userID
+        }
+
+        guard restoredSnapshotUserID != userID else { return }
         if let snapshot = try? await SupabaseUserDataService.shared.fetchStudentSnapshot(
             userID: userID,
             accessToken: session.accessToken
         ) {
             apply(snapshot)
+            if snapshot.didFetchAllStudentData {
+                restoredSnapshotUserID = userID
+            }
         }
-        configuredUserID = userID
     }
 
     @MainActor
@@ -207,26 +217,32 @@ struct HokieAdvisorApp: App {
             }
         }
 
-        if let transcript = snapshot.transcript {
-            appState.transcriptCourses = transcript.courses
-            appState.inProgressCourses = transcript.inProgressCourses
-            appState.plannedCourses = transcript.plannedCourses
-            appState.transcriptNotes = transcript.notes
-            appState.inProgressGrades = [:]
-            appState.hasTranscript = !transcript.courses.isEmpty ||
-                !transcript.inProgressCourses.isEmpty ||
-                !transcript.plannedCourses.isEmpty
-        } else {
-            appState.transcriptCourses = []
-            appState.inProgressCourses = []
-            appState.plannedCourses = []
-            appState.transcriptNotes = []
-            appState.inProgressGrades = [:]
-            appState.hasTranscript = false
+        if snapshot.didFetchTranscript {
+            if let transcript = snapshot.transcript {
+                appState.transcriptCourses = transcript.courses
+                appState.inProgressCourses = transcript.inProgressCourses
+                appState.plannedCourses = transcript.plannedCourses
+                appState.transcriptNotes = transcript.notes
+                appState.inProgressGrades = [:]
+                appState.hasTranscript = !transcript.courses.isEmpty ||
+                    !transcript.inProgressCourses.isEmpty ||
+                    !transcript.plannedCourses.isEmpty
+            } else {
+                appState.transcriptCourses = []
+                appState.inProgressCourses = []
+                appState.plannedCourses = []
+                appState.transcriptNotes = []
+                appState.inProgressGrades = [:]
+                appState.hasTranscript = false
+            }
         }
 
-        appState.latestDegreeAudit = snapshot.degreeAudit
-        appState.latestDarsAudit = snapshot.darsAudit
+        if snapshot.didFetchDegreeAudit {
+            appState.latestDegreeAudit = snapshot.degreeAudit
+        }
+        if snapshot.didFetchDarsAudit {
+            appState.latestDarsAudit = snapshot.darsAudit
+        }
     }
 
     #if DEBUG

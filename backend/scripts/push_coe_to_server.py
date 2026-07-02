@@ -1,7 +1,7 @@
 """
 push_coe_to_server.py
 
-Uploads all local backend/data/coe/*.json files to a remote Fcounselors server
+Uploads all local backend/data/coe/*.json files to a remote Hokie Advisor server
 via the POST /admin/seed-coe endpoint.
 
 Usage:

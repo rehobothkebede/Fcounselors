@@ -20,14 +20,14 @@ enum APIError: LocalizedError {
                      NSURLErrorNetworkConnectionLost,
                      NSURLErrorTimedOut,
                      NSURLErrorCannotFindHost:
-                    return "We could not analyze your file right now. Check your connection and try again."
+                    return "We could not complete that request right now. Check your connection and try again."
                 default:
                     break
                 }
             }
             return e.localizedDescription
         case .serverError:
-            return "We could not analyze your file right now. Check your connection and try again."
+            return "We could not complete that request right now. Check your connection and try again."
         case .serverMessage(let statusCode, _, let message):
             return "\(message) (HTTP \(statusCode))"
         case .decodingError:       return "Could not read server response."
@@ -153,7 +153,9 @@ final class APIService {
                 do {
                     let (bytes, response) = try await URLSession.shared.bytes(for: req)
                     if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-                        continuation.finish(throwing: APIError.serverError(http.statusCode))
+                        let data = (try? await collectErrorBody(from: bytes)) ?? Data()
+                        debugLogResponse(endpoint: url.absoluteString, statusCode: http.statusCode, data: data)
+                        continuation.finish(throwing: error(from: data, statusCode: http.statusCode))
                         return
                     }
                     for try await line in bytes.lines {
@@ -304,6 +306,15 @@ final class APIService {
             return .serverMessage(statusCode, detail.code, detail.message)
         }
         return .serverError(statusCode)
+    }
+
+    private static func collectErrorBody(from bytes: URLSession.AsyncBytes, limit: Int = 16_384) async throws -> Data {
+        var data = Data()
+        for try await byte in bytes {
+            guard data.count < limit else { break }
+            data.append(byte)
+        }
+        return data
     }
 
     private static func usesUserSession(_ headers: [String: String]) -> Bool {

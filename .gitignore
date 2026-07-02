@@ -190,6 +190,9 @@ xcuserdata/
 # macOS
 .DS_Store
 
+# Supabase local CLI state
+backend/supabase/.temp/
+
 # Ruff stuff:
 .ruff_cache/
 

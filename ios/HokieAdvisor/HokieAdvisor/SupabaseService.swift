@@ -256,7 +256,7 @@ actor SupabaseAuthService {
 
     func deleteAccount() async throws {
         guard SupabaseConfig.isConfigured else { throw SupabaseAuthError.notConfigured }
-        guard let session = try currentSession() else {
+        guard let session = try await validatedCurrentSession() else {
             signOut()
             return
         }
@@ -504,7 +504,7 @@ actor SupabaseAuthService {
         guard !(200..<300).contains(http.statusCode) else { return }
 
         if let errorBody = try? JSONDecoder().decode(SupabaseErrorBody.self, from: data) {
-            throw SupabaseAuthError.server(errorBody.message ?? errorBody.errorDescription ?? errorBody.msg ?? "Supabase returned \(http.statusCode).")
+            throw SupabaseAuthError.server(errorBody.message(fallback: "Supabase returned \(http.statusCode)."))
         }
         let text = String(data: data, encoding: .utf8) ?? "Supabase returned \(http.statusCode)."
         throw SupabaseAuthError.server(text)
@@ -539,10 +539,48 @@ nonisolated struct SupabaseErrorBody: Decodable {
     let msg: String?
     let message: String?
     let errorDescription: String?
+    let detail: SupabaseErrorDetail?
 
     enum CodingKeys: String, CodingKey {
-        case msg, message
+        case msg, message, detail
         case errorDescription = "error_description"
+    }
+
+    func message(fallback: String) -> String {
+        message ?? errorDescription ?? msg ?? detail?.message ?? fallback
+    }
+}
+
+nonisolated enum SupabaseErrorDetail: Decodable {
+    case string(String)
+    case object(code: String?, message: String?)
+
+    var message: String? {
+        switch self {
+        case .string(let value):
+            return value
+        case .object(_, let message):
+            return message
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case code, message, detail
+    }
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(),
+           let message = try? container.decode(String.self) {
+            self = .string(message)
+            return
+        }
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self = .object(
+            code: try container.decodeIfPresent(String.self, forKey: .code),
+            message: try container.decodeIfPresent(String.self, forKey: .message)
+                ?? container.decodeIfPresent(String.self, forKey: .detail)
+        )
     }
 }
 

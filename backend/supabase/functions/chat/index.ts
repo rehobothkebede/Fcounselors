@@ -94,7 +94,13 @@ Deno.serve(async (req) => {
 
     if (!openAIResponse.ok) {
       const detail = await safeErrorText(openAIResponse);
-      return json({ detail }, 502);
+      console.warn(`Chat OpenAI request failed with status ${openAIResponse.status}: ${detail}`);
+      return json({
+        detail: {
+          code: "CHAT_AI_REQUEST_FAILED",
+          message: "We could not reach the advisor right now. Check your connection and try again.",
+        },
+      }, 502);
     }
 
     if (shouldStream) {
@@ -104,7 +110,13 @@ Deno.serve(async (req) => {
     const data = await openAIResponse.json();
     return json({ reply: data.choices?.[0]?.message?.content ?? "" });
   } catch (error) {
-    return json({ detail: `AI service error: ${errorMessage(error)}` }, 502);
+    console.warn(`Chat AI service error: ${errorMessage(error)}`);
+    return json({
+      detail: {
+        code: "CHAT_AI_REQUEST_FAILED",
+        message: "We could not reach the advisor right now. Check your connection and try again.",
+      },
+    }, 502);
   }
 });
 

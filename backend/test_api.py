@@ -1,5 +1,5 @@
 """
-Quick integration test for the Fcounselors API.
+Quick integration test for the Hokie Advisor API.
 Run with: python test_api.py
 Make sure the server is running: uvicorn app.main:app --reload
 """
@@ -82,7 +82,7 @@ def test_courses(subject="CS"):
 
 
 if __name__ == "__main__":
-    print(f"Testing Fcounselors API at {BASE_URL}\n")
+    print(f"Testing Hokie Advisor API at {BASE_URL}\n")
     try:
         httpx.get(f"{BASE_URL}/health", timeout=5)
     except Exception:

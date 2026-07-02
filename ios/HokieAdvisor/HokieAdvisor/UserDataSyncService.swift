@@ -11,14 +11,17 @@ actor SupabaseUserDataService {
         accessToken: String
     ) async throws -> SupabaseStudentSnapshot {
         let profile = try await fetchProfile(userID: userID, accessToken: accessToken)
-        let transcript = try await fetchLatestTranscript(userID: userID, accessToken: accessToken)
-        let degreeAudit = try? await fetchLatestDegreeAudit(userID: userID, accessToken: accessToken)
-        let darsAudit = try? await fetchLatestDarsAudit(userID: userID, accessToken: accessToken)
+        let transcriptResult = await optionalSnapshot { try await self.fetchLatestTranscript(userID: userID, accessToken: accessToken) }
+        let degreeAuditResult = await optionalSnapshot { try await self.fetchLatestDegreeAudit(userID: userID, accessToken: accessToken) }
+        let darsAuditResult = await optionalSnapshot { try await self.fetchLatestDarsAudit(userID: userID, accessToken: accessToken) }
         return SupabaseStudentSnapshot(
             profile: profile,
-            transcript: transcript,
-            degreeAudit: degreeAudit,
-            darsAudit: darsAudit
+            transcript: transcriptResult.value,
+            didFetchTranscript: transcriptResult.didFetch,
+            degreeAudit: degreeAuditResult.value,
+            didFetchDegreeAudit: degreeAuditResult.didFetch,
+            darsAudit: darsAuditResult.value,
+            didFetchDarsAudit: darsAuditResult.didFetch
         )
     }
 
@@ -317,7 +320,7 @@ actor SupabaseUserDataService {
         guard let http = response as? HTTPURLResponse else { return }
         guard (200..<300).contains(http.statusCode) else {
             if let errorBody = try? JSONDecoder().decode(SupabaseErrorBody.self, from: data) {
-                throw SupabaseAuthError.server(errorBody.message ?? errorBody.errorDescription ?? errorBody.msg ?? "Supabase returned \(http.statusCode).")
+                throw SupabaseAuthError.server(errorBody.message(fallback: "Supabase returned \(http.statusCode)."))
             }
             throw SupabaseAuthError.server(String(data: data, encoding: .utf8) ?? "Supabase returned \(http.statusCode).")
         }
@@ -347,13 +350,30 @@ actor SupabaseUserDataService {
         }
         return ISO8601DateFormatter().date(from: value)
     }
+
+    private func optionalSnapshot<Value>(
+        _ load: () async throws -> Value?
+    ) async -> (value: Value?, didFetch: Bool) {
+        do {
+            return (try await load(), true)
+        } catch {
+            return (nil, false)
+        }
+    }
 }
 
 nonisolated struct SupabaseStudentSnapshot {
     let profile: SupabaseProfileSnapshot?
     let transcript: SupabaseTranscriptSnapshot?
+    let didFetchTranscript: Bool
     let degreeAudit: DegreeAuditResponse?
+    let didFetchDegreeAudit: Bool
     let darsAudit: DarsAuditResponse?
+    let didFetchDarsAudit: Bool
+
+    var didFetchAllStudentData: Bool {
+        didFetchTranscript && didFetchDegreeAudit && didFetchDarsAudit
+    }
 }
 
 nonisolated struct SupabaseProfileSnapshot {

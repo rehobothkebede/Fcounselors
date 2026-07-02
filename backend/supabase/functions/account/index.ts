@@ -48,7 +48,14 @@ Deno.serve(async (req) => {
     },
   });
   if (!deleteResponse.ok) {
-    return json({ detail: await safeErrorText(deleteResponse) }, 502);
+    const detail = await safeErrorText(deleteResponse);
+    console.warn(`Account deletion failed with status ${deleteResponse.status}: ${detail}`);
+    return json({
+      detail: {
+        code: "ACCOUNT_DELETE_FAILED",
+        message: "Could not delete the remote account right now. Please try again.",
+      },
+    }, 502);
   }
 
   return json({ deleted: true });

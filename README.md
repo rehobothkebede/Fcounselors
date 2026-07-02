@@ -14,6 +14,10 @@ The iOS app currently calls hosted Supabase Edge Functions for chat, transcript 
 
 ## Setup
 
+Open the iOS app from `ios/HokieAdvisor/HokieAdvisor.xcodeproj` and run the
+`HokieAdvisor` scheme. The current deployment target is iOS 18.0 because the
+SwiftUI screens use iOS 18 scroll-geometry APIs.
+
 ```bash
 cd backend
 python -m venv .venv

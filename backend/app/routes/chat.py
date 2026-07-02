@@ -6,7 +6,7 @@ from app.routes.errors import error_detail
 from app.services.ai_service import chat_with_advisor, chat_stream_with_advisor
 from app.services.coe_service import get_coe_context_for_major, resolve_full_major_name
 
-router = APIRouter(prefix="/chat", tags=["AI Advisor"])
+router = APIRouter(prefix="/chat", tags=["Advisor Chat"])
 
 
 class Message(BaseModel):

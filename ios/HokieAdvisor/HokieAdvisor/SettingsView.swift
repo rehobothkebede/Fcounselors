@@ -452,7 +452,7 @@ struct SettingsView: View {
             .buttonStyle(.plain)
             divider
             Button { showClearDataAlert = true } label: {
-                row(icon: "trash.fill", iconColor: .red, label: "Clear Transcript Data") {
+                row(icon: "trash.fill", iconColor: .red, label: "Clear Local Data") {
                     EmptyView()
                 }
             }

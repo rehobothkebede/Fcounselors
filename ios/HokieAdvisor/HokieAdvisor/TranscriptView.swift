@@ -77,7 +77,7 @@ struct TranscriptView: View {
         HokiePageHeader(
             title: "Transcript",
             eyebrow: "Course record",
-            subtitle: "Upload once, then let the app read your CS path.",
+            subtitle: "Upload once, then let the app read your academic path.",
             symbol: "doc.text.fill",
             accent: .vtOrange,
             stat: transcriptHeaderStat
